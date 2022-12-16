@@ -176,6 +176,9 @@ class Button_scroll5(Button):
 class scatter(Scatter):
     source = ObjectProperty()
 
+class Off(Screen):
+    title = ObjectProperty() 
+
 class MainScreen(ScreenManager):
     mgr5 = ObjectProperty()
 
@@ -301,6 +304,16 @@ class MainScreen(ScreenManager):
         pop = Popup(title='', content=Factory.scatter(source= source),
                     size_hint=(None, None), size=(self.width, self.width),separator_height= 0)
         pop.open()
+
+    def open_category(self, cat):
+        category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش'}
+        self.mgr6.title= get_display(arabic_reshaper.reshape(category_dict[cat]))
+        for i in range(10):
+            self.mgr6.mgr2.add_widget(Factory.StackLayoutOff(title_= 'salam'))
+
+
+        self.current= "off"
+
 
 
 
