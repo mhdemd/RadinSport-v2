@@ -1,0 +1,45 @@
+#:import Window kivy.core.window
+
+<GridLayout1@GridLayout>:
+    canvas.after:
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]   
+            source: 'img/App/gl1.jpg'
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('instagram')
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('digikala')
+
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('digistal')
+
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('weblog')
+
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('contact_us')
+
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.current='off'
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('kalands')
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('bazar')

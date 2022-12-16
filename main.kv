@@ -1,0 +1,46 @@
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+<MainScreen>:
+    source: 'img/Products/2465152.jpg' 
+    transition: NoTransition()
+    active_page: ''
+    mgr1: _main
+    mgr2: _search
+    mgr5: _product
+    mgr6: _off
+    mgr7: _order
+    mgr8: _grouping
+    mgr9: _account
+
+	Main:
+        id: _main
+	Search:
+        id: _search
+    Product:
+        id: _product
+    Off:
+        id: _off
+    Order:
+        id: _order
+    Grouping:
+        id: _grouping
+    Account:
+        id: _account
+
+<Main@Screen>:
+    name: "main"
+    mgr3: _scroll_main
+    mgr4: _bot_nav
+    BoxLayout:
+        orientation: 'vertical'
+        SearchBar:
+            id: _search_bar
+            #size_hint:(1, 1/13)
+            size_hint_y: None
+            height: mm(9)
+        ScrollMain:
+            id: _scroll_main
+            size_hint:(1, 11/13)
+        BottomNavigation:
+            id: _bot_nav
+            size_hint_y: None
+            height: mm(9)#dp(47)

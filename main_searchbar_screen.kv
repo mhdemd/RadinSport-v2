@@ -1,0 +1,31 @@
+#:import MDTextFieldPersian persianuix.MDTextFieldPersian
+#:import arabic_reshaper arabic_reshaper
+#:import get_display bidi.algorithm.get_display
+
+<Search@Screen>:
+    name: "search"
+    BoxLayout:
+        orientation: 'vertical'
+        #padding:20, 40, 0, 20
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint:(1, 1/14)
+            #padding: 10, 40, 0, 20
+            MDTextFieldPersian:
+                id: _MDTextFieldPersian2
+                line_color_focus: 0, 0, 0, 1
+                line_color: 0, 0, 0, 1
+                base_direction: 'rtl'
+                multiline: False
+                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                on_text_validate: 
+                    app.root.print()
+            MDIconButton:
+                icon: "arrow-right"
+                icon_size: "20sp"
+                on_press: 
+                    app.root.current= app.root.active_page
+        ScrollView:
+            size_hint:(1, 13/14)
+            Label:
+                text: 'search_screen'

@@ -1,0 +1,184 @@
+<Order@Screen>:
+    name: 'order'
+    mgr1: _bot_nav
+    mgr2: _RecycleView_order
+    BoxLayout:
+        orientation: 'vertical'
+        MDLabel:
+            size_hint_y: 1/13
+            halign: 'center'
+            size_hint_y: None
+            height: mm(9)      
+            text: get_display(arabic_reshaper.reshape('سبد خرید'))
+            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+        Widget:
+            size_hint_y: None
+            height: dp(3)
+            canvas:
+                Color:
+                    rgba: 128/255, 128/255, 128/255, .1
+                Rectangle:
+                    pos: dp(0), self.y
+                    size: root.width - dp(0), self.height
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 10/13
+            RV: 
+                mgr3: _RecycleBoxLayout_order
+                viewclass: 'MyButton'
+                id: _RecycleView_order
+                RecycleBoxLayout:
+                    id: _RecycleBoxLayout_order
+                    default_size: None, dp(150)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 1/13
+            padding: dp(10), dp(5), dp(10), dp(5) 
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: dp(5)
+                MDLabel:
+                    halign: 'left'
+                    size_hint_y: None
+                    height: dp(15)        
+                    text: get_display(arabic_reshaper.reshape('جمع سبد خرید'))
+                    #font_name: 'font/XB Niloofar.ttf'
+                    font_size: '12sp'
+                    theme_text_color: "Custom"
+                    text_color: 128/255, 128/255, 128/255, 1
+                MDLabel:
+                    halign: 'left'
+                    size_hint_y: None
+                    height: dp(20)        
+                    text: get_display(arabic_reshaper.reshape('%s تومان'%(root.mgr2.total))) if root.mgr2.total != None else '0'
+                    #font_name: 'font/XB Niloofar.ttf'
+                    font_size: '14sp'
+
+            MDFillRoundFlatButton:
+                md_bg_color: "red"
+                halign: 'right'
+                size_hint_y: None
+                height: dp(32)        
+                text: get_display(arabic_reshaper.reshape('ادامه فرایند خرید'))
+                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+
+        BottomNavigation:
+            id: _bot_nav
+            #size_hint:(1, 1/13)
+            size_hint_y: None
+            height: mm(9)#dp(47)
+
+<MyButton@BoxLayout>:
+    image: ''
+    title: ''
+    price_off: ''
+    color_en: root.color_en
+    color_fa: ''
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: dp(150)
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_x: 20/27
+        spacing: dp(5)
+        MDLabel:
+            size_hint_y: 1/5
+            halign: 'right'
+            font_size: '14sp'       
+            text: get_display(arabic_reshaper.reshape(root.title))
+            #font_name: 'font/XB Niloofar.ttf'
+        GridLayout:             
+            cols: 2
+            size_hint_y: 1/5
+            MDLabel:
+                halign: 'right'
+                font_size: '10sp'       
+                text: get_display(arabic_reshaper.reshape('گارانتی اصالت و سلامت فیزیکی کالا'))
+                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                theme_text_color: "Custom"
+                text_color: 128/255, 128/255, 128/255, 1
+
+            MDIconButton:
+                icon: "shield-check-outline"
+                theme_text_color: "Custom"
+                icon_color: 128/255, 128/255, 128/255, 1
+                icon_size: '14sp'
+        GridLayout:
+            cols: 2
+            size_hint_y: 1/5
+            MDLabel:
+                halign: 'right'
+                font_size: '10sp'       
+                text: get_display(arabic_reshaper.reshape('موجود در انبار فروشگاه'))
+                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                theme_text_color: "Custom"
+                text_color: 128/255, 128/255, 128/255, 1
+
+            MDIconButton:
+                icon: "storefront-check-outline"
+                theme_text_color: "Custom"
+                icon_color: 128/255, 128/255, 128/255, 1
+                icon_size: '14sp'
+        GridLayout:   
+            cols: 2
+            size_hint_y: 1/5
+            MDLabel:
+                halign: 'right'
+                font_size: '10sp'       
+                text: get_display(arabic_reshaper.reshape(root.color_fa))
+                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                theme_text_color: "Custom"
+                text_color: 128/255, 128/255, 128/255, 1
+
+            MDIconButton:
+                icon: "circle"
+                theme_icon_color: "Custom"
+                icon_color: root.color_en
+                theme_text_color: "Custom"
+                icon_size: '14sp'
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_y: 1/5
+            padding: dp(10), 0, 0, 0
+            spacing: dp(10)
+            MDRectangleFlatIconButton:
+                icon: 'trash-can-outline'
+                size_hint: None, .8
+                width: dp(20)
+                icon_color: 'red'
+                text_color: 'red'
+                line_color: 'red'
+                line_width: .3
+                halign: 'left'
+                font_size: '12sp'       
+                text: get_display(arabic_reshaper.reshape('حذف'))
+                #font_name: 'font/XB Niloofar.ttf'
+                on_release:
+                    app.root.mgr7.mgr2.remove_from_order(self, root.DKP, root.color_en)
+                    app.root.mgr7.mgr2.refresh_from_data()
+            MDLabel:
+                halign: 'left'
+                font_size: '12sp'       
+                text: '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(root.price_off)))
+                #font_name: 'font/XB Niloofar.ttf'
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_x: 7/27
+        Image:
+            source: root.image  
+
+<Widget1@Widget>:
+    size_hint_y: None
+    height: dp(1)
+    canvas:
+        Color:
+            rgba: 128/255, 128/255, 128/255, .1
+        Rectangle:
+            pos: dp(0), self.y
+            size: root.width - dp(0), self.height

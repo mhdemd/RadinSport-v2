@@ -1,0 +1,52 @@
+#:import MDTextFieldPersian persianuix.MDTextFieldPersian
+
+<ScrollMain>:
+    id: _scroll_main
+    mgr1: _carousel
+    mgr2: _ScrollView1
+    effect_cls: 'ScrollEffect'
+    do_scroll_x: False
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: 1, None
+        height: self.minimum_height  
+        padding: 0, dp(5), 0, 0
+        Carousel1:
+            id: _carousel
+            size_hint: 1, None
+            height: mm(31)#dp(210)
+
+        GridLayout1:
+            cols: 4
+            size_hint: 1, None
+            height: mm(36)#dp(210)
+
+        ScrollView1:
+            id: _ScrollView1
+            size_hint: 1, None
+            
+        GridLayout2:
+            cols: 2
+            size_hint: 1, None
+            height: mm(55)#dp(260)
+
+        ScrollView2:
+            size_hint: 1, None
+            height: dp(390)
+            do_scroll: True, True
+
+        MDLabel:
+            bold: True
+            color: [0, 0, 0, 1]
+            font_size:'18sp'
+            text: get_display(arabic_reshaper.reshape('خرید بر اساس دسته بندی'))
+            ##font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+            halign: "center"
+            size_hint: 1, None
+            height: dp(90)
+
+        GridLayout3:
+            cols: 3
+            size_hint: 1, None
+            height: dp(430)
+ 

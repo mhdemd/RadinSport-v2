@@ -1,0 +1,122 @@
+#:import Factory kivy.factory.Factory
+
+<Product>:
+    name: "product"
+    mgr1: _scroll_view3
+    mgr2: _swiper
+    dkp: ''
+    title: ''
+    price: ''
+    price_off: ''
+    off: ''
+    icon: "cards-heart-outline"
+    
+    BoxLayout:
+        orientation: 'vertical'
+        FloatLayout:
+            size_hint:(1, 1/13)
+            #height: dp(32)
+            pos_hint: {'top': .5}
+            MDIconButton:
+                icon: "window-close"
+                pos_hint: {"center_x": .95, "top": 1}
+                on_press:
+                    app.root.current= 'main'
+            MDIconButton:
+                icon: root.icon
+                pos_hint: {"center_x": .05, "top": 1}
+                on_press:
+                    app.root.changeـheartـicon()
+
+            MDIconButton:
+                icon: "cart-outline"
+                pos_hint: {"center_x": .15, "top": 1} 
+                on_press:
+                    app.root.mgr7.mgr1.canvas.after.get_group('a')[0].source='img/App/nav3.jpg'
+                    app.root.current= 'order'
+        MDSwiper:
+            id: _swiper
+            size_hint_y: None
+            height: dp(260)#root.height  - dp(40)
+
+        ScrollView3:
+            id: _scroll_view3
+            size_hint:(1, 6/13)
+        BoxLayout:
+            size_hint_y: None
+            height: dp(65)
+            orientation: 'horizontal'
+            padding: dp(10), dp(5), dp(10), dp(5)
+            spacing: dp(10)
+            GridLayout:
+                padding: dp(5), 0, 0, dp(5)
+                size_hint: .6, 1
+                cols: 2
+                MDLabel:
+                    font_size:'14sp'
+                    text: '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(str(root.price_off)))) if root.off != 0 else '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(str(root.price))))
+                    #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                    halign: "center"
+                MDLabel:
+                    canvas.before:
+                        Color:
+                            rgba: 1, 0, 0, 1
+                        RoundedRectangle:
+                            pos: self.center_x - dp(18), self.center_y  - dp(10) 
+                            size: [mm(6), self.texture_size[1]] if root.off != 0 else [.05, .05]
+                            radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
+                    font_size:'12sp'
+                    text: get_display(arabic_reshaper.reshape('%s٪'%(root.off))) if root.off != 0 else ''
+                    #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                    halign: "center"    
+                MDLabel:
+                    canvas.after:
+                        Color:
+                            rgba: 1, 0, 0, 1
+                        Line:
+                            points: [self.x + dp(10) , self.y + dp(5), self.x + self.width - dp(10), self.y + self.height - dp(5)]
+                            width: 1 if root.off != 0 else 0.0000001
+                    font_size:'12sp'
+                    text: get_display(arabic_reshaper.reshape('%s'%(root.price))) if root.off != 0 else ''
+                    #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                    halign: "center"
+            MDLabel:
+                size_hint: .15, 1
+            MDFillRoundFlatButton:
+                md_bg_color: "red"
+                size_hint: .25, .7
+                pos_hint: {'center_y': .5}
+                text: get_display(arabic_reshaper.reshape('افزودن به سبد خرید'))
+                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                on_press:
+                    app.root.mgr7.mgr2.add_to_order()
+                on_release:
+                    app.root.mgr7.mgr2.refresh_from_data()
+                    app.root.current='order'
+                    app.root.mgr7.mgr1.canvas.after.get_group('a')[0].source='img/App/nav3.jpg'
+
+<MySwiper>:
+    source: ''
+    Button:
+        id: _but
+        size_hint: None, None
+        size: dp(260), dp(260)
+        background_color: 0, 0, 0, 0
+        canvas.after:
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]   
+                source: root.source #app.root.mgr5.source 
+        on_press:
+            app.root.zoom_product_image(root.source)
+            
+<scatter>: 
+    do_rotation: False
+    scale_min: 1
+    scale_max: 3
+    source: ''
+    FitImage:
+        id: _mgr
+        source: root.source
+        size: root.width, root.width

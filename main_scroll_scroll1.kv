@@ -1,0 +1,123 @@
+#:import arabic_reshaper arabic_reshaper
+#:import get_display bidi.algorithm.get_display
+
+<ScrollView1>:
+    mgr1: _GridLayout_scroll1
+    effect_cls: 'ScrollEffect'
+    scroll_type: ['content']
+    do_scroll_y: False
+    height: mm(66)#dp(390)
+    scroll_x: 1
+    GridLayout:
+        id: _GridLayout_scroll1
+        canvas.before:
+            Color:
+                rgba: 208/255,29/255,56/255,1
+            RoundedRectangle:
+                size: self.size
+                radius: [(0, 0), (0, 0), (0, 0), (0, 0)]
+        cols: 9
+        orientation: 'rl-tb'
+        padding: dp(10), mm(4), dp(0), mm(4)
+        spacing: mm(1)
+        size_hint: None, 1
+        width: self.minimum_width                 
+        Button: 
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Line:
+                    width: 2
+                    rectangle: self.x, self.y, self.width, self.height
+            canvas.after:
+                #Color:
+                #    rgba: 208/255,29/255,56/255,1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    #radius: [(dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7))]
+                    source: 'img/App/off1.jpg'
+            text: ''
+            size_hint: None, 1
+            size: mm(27), 1
+            on_press:
+                app.root.print()
+
+
+<BoxLayout_mainscroll_scroll1@BoxLayout>:
+    dkp: app.root.mgr1.mgr3.mgr2.dkp
+    canvas:
+        Color:
+            rgba: 1,1,1,1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [(dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7))]
+
+    padding: 0, dp(5), 0, dp(5)
+    spacing: dp(2)
+    orientation: 'vertical' 
+    size_hint: None, 1
+    size: mm(27), 1
+    MDLabel:
+        font_size:'12sp'
+        bold: True
+        text: get_display(arabic_reshaper.reshape('%s'%(app.root.mgr1.mgr3.mgr2.text_title))) 
+        #font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        halign: "center"
+        #size_hint_y: None 
+
+        text_size: self.width, None
+        size_hint: 1, None
+        height: self.texture_size[1]
+
+    BoxLayout:
+        size_hint: 1, 0.45
+        Image:
+            source: app.root.mgr1.mgr3.mgr2.source_image
+    MDLabel:
+        font_size:'10sp'
+        text: '%s \n %s'%(get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr2.detail_1)), get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr2.detail_2)))
+        #font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        halign: "center"
+        size_hint: 1, 0.2
+    GridLayout:
+        padding: dp(5), 0, 0, dp(5)
+        size_hint: 1, 0.15
+        cols: 2
+        MDLabel: 
+            font_size:'12sp'
+            text: get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr2.price_off))
+            #font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            halign: "center"
+        MDLabel:
+            canvas.before:
+                Color:
+                    rgba: 1, 0, 0, 1
+                RoundedRectangle:
+                    pos: self.center_x - dp(18), self.center_y  - dp(10)
+                    size: [self.width - dp(45), self.texture_size[1]] if self.text != "" else [.05, .05]
+                    radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
+            font_size:'12sp'
+            text: '%s٪'%(get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr2.off)))
+            #font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            halign: "center"
+        MDLabel:
+            canvas.after:
+                Color:
+                    rgba: 1, 0, 0, 1
+                Line:
+                    points: [self.x + dp(10) , self.y + dp(5), self.x + self.width - dp(10), self.y + self.height - dp(5)]
+                    width: 1
+            font_size:'10sp'
+            text: get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr2.price))
+            #font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            halign: "center"
+    MDRoundFlatButton:
+        size_hint:  0.7, 0.05
+        text: get_display(arabic_reshaper.reshape('سفارش کالا'))
+        #font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        line_color: 238/255,70/255,87/255,1
+        pos_hint:{"center_x": .5}
+        on_press:
+            app.root.open_product_screen(root.dkp)

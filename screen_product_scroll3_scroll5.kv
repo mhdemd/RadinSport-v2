@@ -1,0 +1,32 @@
+#:import arabic_reshaper arabic_reshaper
+#:import get_display bidi.algorithm.get_display
+ 
+<ScrollView5>:
+    effect_cls: 'ScrollEffect'
+    scroll_type: ['content']
+    scroll_distance: dp(10)
+    size_hint_y: None
+    do_scroll_y: False
+    scroll_x: 1
+    bar_width: 0
+    GridLayout:
+        id: _GridLayout
+        canvas.before:
+            Color:
+                rgba: 128/255, 128/255, 128/255, .1
+            RoundedRectangle:
+                size: self.size
+                radius: [(0, 0), (0, 0), (0, 0), (0, 0)]
+        cols: 8
+        padding: dp(4), dp(0), dp(4), dp(0)
+        spacing: dp(4)
+        size_hint: None, 1
+        width: self.minimum_width  
+<Button_scroll5>:
+    image_source: ''
+    background_normal: root.image_source
+    size_hint: None, None 
+    size: (dp(150),dp(150))
+    on_press:
+        app.root.open_product_screen(self.image_source)
+        app.root.mgr5.mgr1.scroll_y=1

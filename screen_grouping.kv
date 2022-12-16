@@ -1,0 +1,269 @@
+<cat1>:
+    effect_cls: 'ScrollEffect'
+    scroll_type: ['content']
+    do_scroll_y: False
+    scroll_x: 1
+    bar_width: 0
+    GridLayout:
+        cols: 5
+        #orientation: 'rl-tb'
+        padding: dp(0), dp(7), dp(0), dp(7)
+        spacing: mm(1)
+        size_hint: None, 1 
+        width: self.minimum_width  
+        Button:
+            background_normal: 'img/App/cat1/1.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+                 
+        Button:
+            background_normal: 'img/App/cat1/2.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+             
+        Button:
+            background_normal: 'img/App/cat1/3.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+             
+        Button:
+            background_normal: 'img/App/cat1/4.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+              
+        Button:
+            background_normal: 'img/App/cat1/5.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+                   
+<cat2>:
+    effect_cls: 'ScrollEffect'
+    scroll_type: ['content']
+    do_scroll_y: False
+    scroll_x: 1
+    bar_width: 0
+    GridLayout:
+        cols: 6
+        #orientation: 'rl-tb'
+        padding: dp(0), dp(7), dp(0), dp(7)
+        spacing: mm(1)
+        size_hint: None, 1
+        width: self.minimum_width  
+        Button:
+            background_normal: 'img/App/cat2/1.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+              
+        Button:
+            background_normal: 'img/App/cat2/2.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+              
+        Button:
+            background_normal: 'img/App/cat2/3.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+              
+        Button:
+            background_normal: 'img/App/cat2/4.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+              
+        Button:
+            background_normal: 'img/App/cat2/5.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+ 
+        Button:
+            background_normal: 'img/App/cat2/6.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+                   
+<cat3>:
+    effect_cls: 'ScrollEffect'
+    scroll_type: ['content']
+    do_scroll_y: False
+    scroll_x: 1
+    bar_width: 0
+    GridLayout:
+        cols: 6
+        #orientation: 'rl-tb'
+        padding: dp(0), dp(7), dp(0), dp(7)
+        spacing: mm(1)
+        size_hint: None, 1
+        width: self.minimum_width  
+        Button:
+            background_normal: 'img/App/cat3/1.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+                
+        Button:
+            background_normal: 'img/App/cat3/2.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+              
+        Button:
+            background_normal: 'img/App/cat3/3.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+             
+        Button:
+            background_normal: 'img/App/cat3/4.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+            
+        Button:
+            background_normal: 'img/App/cat3/5.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+        
+        Button:
+            background_normal: 'img/App/cat3/6.jpg' 
+            size_hint: None, 1 
+            width: mm(17)
+             
+                
+<Grouping@Screen>:
+    name: 'grouping'
+    mgr1: _bot_nav
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: dp(5)
+        SearchBar:
+            id: _search_bar
+            #size_hint:(1, 1/13)
+            size_hint_y: None
+            height: mm(9)
+        ScrollView:
+            effect_cls: 'ScrollEffect'
+            do_scroll_x: False
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height  
+                padding: dp(10), 0, dp(10), 0
+                BoxLayout:
+                    orientation:'horizontal'
+                    size_hint_y: None
+                    height: mm(10)
+                    MDTextButton:
+                        text: get_display(arabic_reshaper.reshape('مشاهده همه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        font_size: '14sp'
+                        theme_text_color: "Custom"
+                        text_color: 105/255, 171/255, 185/255, 1
+                        halign: "left"
+                        valign: 'bottom'
+                    MDLabel:
+                        text: get_display(arabic_reshaper.reshape('زیبایی و سلامت'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        halign: "right"
+                        valign: 'bottom'
+                cat1:
+                    size_hint_y: None
+                    height: mm(26)
+                BoxLayout:
+                    orientation:'horizontal'
+                    size_hint_y: None
+                    height: mm(10)
+                    MDTextButton:
+                        text: get_display(arabic_reshaper.reshape('مشاهده همه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        font_size: '14sp'
+                        theme_text_color: "Custom"
+                        text_color: 105/255, 171/255, 185/255, 1
+                        halign: "left"
+                        valign: 'bottom'
+                    MDLabel:
+                        text: get_display(arabic_reshaper.reshape('خانه و آشپزخانه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        halign: "right"
+                        valign: 'bottom'
+                cat2:
+                    size_hint_y: None
+                    height: mm(26)
+                BoxLayout:
+                    orientation:'horizontal'
+                    size_hint_y: None
+                    height: mm(10)
+                    MDTextButton:
+                        text: get_display(arabic_reshaper.reshape('مشاهده همه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        font_size: '14sp'
+                        theme_text_color: "Custom"
+                        text_color: 105/255, 171/255, 185/255, 1
+                        halign: "left"
+                        valign: 'bottom'
+                    MDLabel:
+                        text: get_display(arabic_reshaper.reshape('کتاب، لوازم التحریر و هنر'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        halign: "right"
+                        valign: 'bottom'
+                cat3:
+                    size_hint_y: None
+                    height: mm(26)
+                BoxLayout:
+                    orientation:'horizontal'
+                    size_hint_y: None
+                    height: mm(10)
+                    MDTextButton:
+                        text: get_display(arabic_reshaper.reshape('مشاهده همه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        font_size: '14sp'
+                        theme_text_color: "Custom"
+                        text_color: 105/255, 171/255, 185/255, 1
+                        halign: "left"
+                        valign: 'bottom'
+                    MDLabel:
+                        text: get_display(arabic_reshaper.reshape('زیبایی و سلامت'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        halign: "right"
+                        valign: 'bottom'
+                cat1:
+                    size_hint_y: None
+                    height: mm(26)
+                BoxLayout:
+                    orientation:'horizontal'
+                    size_hint_y: None
+                    height: mm(10)
+                    MDTextButton:
+                        text: get_display(arabic_reshaper.reshape('مشاهده همه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        font_size: '14sp'
+                        theme_text_color: "Custom"
+                        text_color: 105/255, 171/255, 185/255, 1
+                        halign: "left"
+                        valign: 'bottom'
+                    MDLabel:
+                        text: get_display(arabic_reshaper.reshape('خانه و آشپزخانه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        halign: "right"
+                        valign: 'bottom'
+                cat2:
+                    size_hint_y: None
+                    height: mm(26)
+                BoxLayout:
+                    orientation:'horizontal'
+                    size_hint_y: None
+                    height: mm(10)
+                    MDTextButton:
+                        text: get_display(arabic_reshaper.reshape('مشاهده همه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        font_size: '14sp'
+                        theme_text_color: "Custom"
+                        text_color: 105/255, 171/255, 185/255, 1
+                        halign: "left"
+                        valign: 'bottom'
+                    MDLabel:
+                        text: get_display(arabic_reshaper.reshape('کتاب، لوازم التحریر و هنر'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        halign: "right"
+                        valign: 'bottom'
+                cat3:
+                    size_hint_y: None
+                    height: mm(26)
+        BottomNavigation:
+            id: _bot_nav
+            size_hint_y: None
+            height: mm(9)#dp(47)
+ 

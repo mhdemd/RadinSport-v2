@@ -1,0 +1,25 @@
+<Carousel1@BoxLayout>:
+    orientation: 'horizontal'
+    size_hint: None, 1.01
+    width: self.minimum_width
+    Carousel:
+        id: _carousel_
+        size_hint: None, None
+        loop: True
+        size: root.width, dp(210)
+        ignore_perpendicular_swipes: False
+        min_move: 0.02
+        scroll_distance: dp(0.01)
+        #scroll_timeout: 0.50000
+        Image:
+            source: 'img/App/s1.jpg'
+        Image:
+            source: 'img/App/s2.jpg'
+        Image:
+            source: 'img/App/s3.jpg'
+        Image:
+            source: 'img/App/s4.jpg'
+        Image:
+            source: 'img/App/s5.jpg'
+        Image:
+            source: 'img/App/s5.jpg'

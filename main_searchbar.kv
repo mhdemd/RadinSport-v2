@@ -1,0 +1,22 @@
+#:import MDTextFieldPersian persianuix.MDTextFieldPersian
+#:import arabic_reshaper arabic_reshaper
+#:import get_display bidi.algorithm.get_display
+
+
+<SearchBar@BoxLayout>:
+    Button:
+        canvas.after:
+            Rectangle:
+                group: 'a'
+                pos: self.pos
+                size: self.size
+                source: 'img/App/search_bar.jpg'
+        pos_hint: {'top': 1}
+        size_hint_y: None
+        height: mm(8)
+        on_press:
+            app.root.active_page= app.root.current 
+            app.root.current='search'
+            
+
+

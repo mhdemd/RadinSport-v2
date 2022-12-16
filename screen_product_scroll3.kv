@@ -1,0 +1,245 @@
+#:import MDTextFieldPersian persianuix.MDTextFieldPersian
+#:import arabic_reshaper arabic_reshaper
+#:import get_display bidi.algorithm.get_display
+
+<ScrollView3>:
+    mgr1: _color_scroll
+    mgr2: _ScrollView5
+    mgr3: _color_palets
+    effect_cls: 'ScrollEffect'
+    do_scroll_x: False
+    scroll_type: ['content']
+    material: ''
+    made_in: ''
+    type: ''
+    detail_1: ''
+    detail_2: ''
+    color: ''
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_y: None
+        height: self.minimum_height
+        spacing: dp(10)
+        padding: 0, dp(10), 0, 0
+        MDLabel:
+            pos_hint: {'right': 0.95}
+            halign: 'right'
+            size_hint_y: None
+            height: dp(32)        
+            text: get_display(arabic_reshaper.reshape(root.parent.parent.title)) 
+            #font_name: 'font/XB Niloofar.ttf'
+        Widget:
+            size_hint_y: None
+            height: dp(1)
+            canvas:
+                Color:
+                    rgba: 128/255, 128/255, 128/255, .1
+                Rectangle:
+                    pos: dp(20), self.y
+                    size: self.width - dp(40), self.height
+        GridLayout:
+            size_hint_y: None
+            height: dp(25)
+            cols: 2
+            pos_hint: {'right': 0.95}
+            MDLabel:
+                id: _color_label
+                halign: 'right'
+                size_hint: .9, None
+                height: dp(26)        
+                text: root.color
+                #font_name: 'font/XB Niloofar.ttf'
+            MDLabel:
+                halign: 'right'
+                size_hint: .1, None
+                height: dp(26)       
+                text:  get_display(arabic_reshaper.reshape('رنگ:')) if root.sizee == '-' else get_display(arabic_reshaper.reshape('سایز:'))
+                #font_name: 'font/XB Niloofar.ttf'
+        ScrollView4:
+            id: _color_palets
+            effect_cls: 'ScrollEffect'
+            bar_width: 0         
+            size_hint_y: None
+            do_scroll_y: False
+            height: dp(50)
+            scroll_x: 1
+            GridLayout:
+                id: _color_scroll
+                spacing: dp(5)
+                size_hint_x: None
+                width: self.minimum_width 
+
+        Widget:
+            size_hint_y: None
+            height: dp(7)
+            canvas:
+                Color:
+                    rgba: 128/255, 128/255, 128/255, .1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        GridLayout:
+            cols: 2
+            #pos_hint: {'right': 0.95}
+            size_hint_y: None
+            height: dp(35)
+            MDLabel:
+                #pos_hint: {'right': 0.95}
+                halign: 'right'
+                #size_hint_y: None
+                #height: dp(30)
+                font_size: '14sp'       
+                text: get_display(arabic_reshaper.reshape('گارانتی اصالت و سلامت فیزیکی کالا'))
+                #font_name: 'font/XB Niloofar.ttf'
+            
+            MDIconButton:
+                icon: "shield-check-outline"
+        Widget:
+            size_hint_y: None
+            height: dp(1)
+            canvas:
+                Color:
+                    rgba: 128/255, 128/255, 128/255, .1
+                Rectangle:
+                    pos: dp(20), self.y
+                    size: self.width - dp(40), self.height
+        GridLayout:
+            cols: 2
+            #pos_hint: {'right': 0.95}
+            size_hint_y: None
+            height: dp(35)
+
+            MDLabel:
+                #pos_hint: {'right': 0.95}
+                halign: 'right'
+                #size_hint_y: None
+                #height: dp(30)
+                font_size: '14sp'       
+                text: get_display(arabic_reshaper.reshape('موجود در انبار فروشگاه'))
+                #font_name: 'font/XB Niloofar.ttf'
+            
+            MDIconButton:
+                icon: "storefront-check-outline"
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(130)
+            padding: 0, dp(10), 0, dp(10)
+            canvas:
+                Color:
+                    rgba: 128/255, 128/255, 128/255, .1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            GridLayout:
+                pos_hint:{'center_x': .5, 'center_y': .5}
+                size_hint: (.8, .5)
+                cols: 2
+                canvas:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [(dp(10), dp(10)), (dp(10), dp(10)), (dp(10), dp(10)), (dp(10), dp(10))]
+                Image:
+                    source: 'img/App/FreeShping.png' 
+                BoxLayout:
+                    orientation: 'vertical'
+                    padding: 0, 0, dp(15), 0
+                    MDLabel:
+                        halign: 'right'
+                        font_size: '16sp'       
+                        text: get_display(arabic_reshaper.reshape('ارسال رایگان'))
+                        #font_name: 'font/XB Niloofar.ttf'
+                    MDLabel:
+                        halign: 'right'
+                        font_size: '10sp'       
+                        text: get_display(arabic_reshaper.reshape('برای سفارش بالای ۵۰۰ هزار تومان'))
+                        #font_name: 'font/XB Niloofar.ttf'
+        
+        MDLabel:
+            markup: True
+            pos_hint: {'right': 0.95}
+            halign: 'right'
+            size_hint_y: None
+            height: dp(150)
+            #font_name: 'font/XB Niloofar.ttf'
+            text: 
+                '%s\n\n[color=808080]%s[/color]\n\
+                [color=808080]%s[/color]\n\
+                [color=808080]%s[/color]\n'%(\
+                get_display(arabic_reshaper.reshape('مشخصات محصول:')),\
+                get_display(arabic_reshaper.reshape('جنس:   %s'%(root.material))),\
+                get_display(arabic_reshaper.reshape('ساخت:   %s'%(root.made_in))),\
+                get_display(arabic_reshaper.reshape('نوع:   %s'%(root.type))),\
+                )
+        Widget:
+            size_hint_y: None
+            height: dp(1)
+            canvas:
+                Color:
+                    rgba: 128/255, 128/255, 128/255, .1
+                Rectangle:
+                    pos: dp(20), self.y
+                    size: self.width - dp(40), self.height
+
+        MDLabel:
+            markup: True
+            pos_hint: {'right': 0.95}
+            halign: 'right'
+            size_hint_y: None
+            height: dp(130)
+            #font_name: 'font/XB Niloofar.ttf'
+            text: 
+                '%s\n\n[color=808080]%s[/color]\n\
+                [color=808080]%s[/color]\n'%(\
+                get_display(arabic_reshaper.reshape('جزئیات:')),\
+                get_display(arabic_reshaper.reshape('- %s'%(root.detail_1))),\
+                get_display(arabic_reshaper.reshape('- %s'%(root.detail_2)))\
+                )
+        Widget:
+            size_hint_y: None
+            height: dp(7)
+            canvas:
+                Color:
+                    rgba: 128/255, 128/255, 128/255, .1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        MDLabel:
+            pos_hint: {'right': 0.95}
+            halign: 'right'
+            size_hint_y: None
+            height: dp(32)
+            #font_name: 'font/XB Niloofar.ttf'
+            text: get_display(arabic_reshaper.reshape('محصولات مشابه'))
+        ScrollView5:
+            id: _ScrollView5
+            size_hint_y: None
+            height: dp(150)
+        Widget:
+            size_hint_y: None
+            height: dp(7)
+            canvas:
+                Color:
+                    rgba: 128/255, 128/255, 128/255, .1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+
+
+<color_buttom>:
+    title: ''
+    ic_color: ''
+    text: get_display(arabic_reshaper.reshape(root.title))
+    #font_name: 'font/XB Niloofar.ttf'
+    icon: "circle"
+    icon_color: root.ic_color
+    on_press:
+        app.root.mgr5.mgr1.ids._color_label.text = self.text
+        app.root.mgr5.icon_color = self.icon_color
+        app.root.Price_change_with_variety_change(root.ic_color, self.text)

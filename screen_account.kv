@@ -1,0 +1,74 @@
+<Account@Screen>:
+    name: 'account'
+    mgr1: _bot_nav
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 0, 0, 0, 0
+        MDLabel:
+            size_hint_y: None  
+            height: dp(50)  
+            halign: "right"
+            text: get_display(arabic_reshaper.reshape('اطلاعات حساب کاربری'))
+            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+
+        Widget:
+            size_hint_y: None
+            height: dp(2)
+            canvas:
+                Color:
+                    rgba: 128/255, 128/255, 128/255, .1
+                Rectangle:
+                    pos: dp(0), self.y
+                    size: root.width - dp(0), self.height
+        BoxLayout:
+            orientation: 'vertical'
+            ScrollView:
+                effect_cls: 'ScrollEffect'
+                bar_width: 0
+                BoxLayout:
+                    orientation:'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height  
+                    MDLabel:
+                        size_hint_y: None    
+                        height: dp(35)
+                        halign: "right"
+                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                    MDLabel:
+                        size_hint_y: None
+                        height: dp(35)    
+                        halign: "right"
+                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                    MDLabel:
+                        size_hint_y: None
+                        height: dp(35)    
+                        halign: "right"
+                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                    MDLabel:
+                        size_hint_y: None
+                        height: dp(35)    
+                        halign: "right"
+                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                    MDLabel:
+                        size_hint_y: None                        
+                        height: dp(35)
+                        halign: "right"
+                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                    MDLabel:
+                        size_hint_y: None
+                        height: dp(35)
+                        halign: "right"
+                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
+                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+
+
+        BottomNavigation:
+            id: _bot_nav
+            size_hint_y: None
+            height: mm(9)#dp(47)
+
