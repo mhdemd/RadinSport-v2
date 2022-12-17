@@ -34,6 +34,7 @@ dataframe_products = dataframe_products.astype({"price_off": int})
 dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
 
 items_in_order_screen = []
+items_in_category_screen = []
  
 #Window.size = (350, 610)
 
@@ -51,7 +52,7 @@ Builder.load_file('main_bottom_navigation.kv')
 Builder.load_file('screen_product.kv')
 Builder.load_file('screen_product_scroll3.kv')
 Builder.load_file('screen_product_scroll3_scroll5.kv')
-Builder.load_file('screen_off.kv')
+Builder.load_file('screen_off.kv') 
 Builder.load_file('screen_order.kv')
 Builder.load_file('screen_grouping.kv')
 Builder.load_file('screen_account.kv')
@@ -117,7 +118,7 @@ class cat3(ScrollView):
         super().on_scroll_move(touch)
         touch.ud['sv.handled']['y'] = False 
 
-class RV(RecycleView):
+class RV_Order(RecycleView):
     dkp = ObjectProperty()
     title = ObjectProperty()
     price_off = ObjectProperty()
@@ -125,9 +126,8 @@ class RV(RecycleView):
     color_fa = ObjectProperty()
     total = ObjectProperty()
     
-
     def __init__(self, **kwargs):
-        super(RV, self).__init__(**kwargs)
+        super(RV_Order, self).__init__(**kwargs)
         #self.data = [{'text': str(x)} for x in range(100)]
         self.data = [item for item in items_in_order_screen]
 
@@ -154,6 +154,14 @@ class RV(RecycleView):
         total = self.total
         self.total = f'{total:,}'
         self.mgr3.remove_widget(instance.parent.parent)
+
+class RV_Category(RecycleView):
+    #ObjectProperty()
+
+    def __init__(self, **kwargs):
+        super(RV_Category, self).__init__(**kwargs)
+        #self.data = [{'text': str(x)} for x in range(100)]
+        self.data = [item for item in items_in_category_screen]               
 
 class MySwiper(MDSwiperItem):
     source = ObjectProperty()
@@ -300,18 +308,38 @@ class MainScreen(ScreenManager):
         self.mgr5.icon = 'cards-heart'
 
     def zoom_product_image(self, source):
-        #self.mgr5.mgr2.add_widget(Factory.MySwiper(source= 'img/Products/%s/%s-%s.jpg'%(DKP, DKP, i)))
         pop = Popup(title='', content=Factory.scatter(source= source),
                     size_hint=(None, None), size=(self.width, self.width),separator_height= 0)
         pop.open()
 
     def open_category(self, cat):
+        items_in_category_screen = []
         category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش'}
         self.mgr6.title= get_display(arabic_reshaper.reshape(category_dict[cat]))
-        for i in range(10):
-            self.mgr6.mgr2.add_widget(Factory.StackLayoutOff(title_= 'salam'))
+        
+        filtered_df = dataframe_products[(dataframe_products['stock'] != 0) & (dataframe_products['cat'] == cat)]
+        filtered_df.drop_duplicates(subset="DKP",keep='first', inplace=True)
 
+        for i in range(len(filtered_df.index)):
+            title = filtered_df.iloc[i]['title']
+            if len(title) > 20:
+                title = title[:17] + '...'
+            price_off = filtered_df.iloc[i]['price_off']
+            price_off = f'{price_off:,}'
+            price = filtered_df.iloc[i]['price']
+            price = f'{price:,}'
 
+            items_in_category_screen.append(
+                {'title1': get_display(arabic_reshaper.reshape(title)),
+                'source1': 'img/Products/%s/%s-0.jpg'%(filtered_df.iloc[i]['DKP'], filtered_df.iloc[i]['DKP']),
+                  'detail_3_1': get_display(arabic_reshaper.reshape(filtered_df.iloc[i]['detail_3'])),
+                    'detail_4_1': get_display(arabic_reshaper.reshape(filtered_df.iloc[i]['detail_4'])),
+                      'price1': price,
+                        'off1': str(filtered_df.iloc[i]['off']),
+                          'price_off1': price_off}
+            )
+        RV_Category.data = [item for item in items_in_category_screen]
+        self.mgr6.mgr2.refresh_from_data()
         self.current= "off"
 
 

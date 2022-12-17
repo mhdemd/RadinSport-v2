@@ -1,47 +1,48 @@
-<StackLayoutOff@StackLayout>:
-    title_: ''
-    size_hint_y: None 
-    height: self.minimum_height
-    orientation: 'rl-tb'
-    spacing: dp(5)
-    padding: 0, 0, dp(10), 0
+<MyBoxLayoutCat@BoxLayout>:
+    title1: ''
+    source1: ''
+    detail_3_1: ''
+    detail_4_1: ''
+    price1: ''
+    off1: ''
+    price_off1: ''
     BoxLayout:
         canvas:
             Color:
-                rgba: 1,1,1,1
+                rgba: 1, 1, 1, 1
             RoundedRectangle:
                 pos: self.pos
                 size: self.size
                 radius: [(dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7))]
-
         padding: 0, dp(5), 0, dp(5)
         spacing: dp(5)
         orientation: 'vertical' 
-        size_hint: None, None
-        size: root.width/2.1, root.width
+        size_hint: 1, 1
+        #size: root.width, root.width
         MDLabel:
-            font_size:'16sp'
-            text: root.title_ # get_display(arabic_reshaper.reshape('کلاه نایک اعلا'))
+            font_size:'13sp'
+            text: root.title1 #get_display(arabic_reshaper.reshape('کلاه نایک اعلا'))
             #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
             halign: "center"
             size_hint: 1, 0.1
         BoxLayout:
             size_hint: 1, 0.5
             Image:
-                source: 'img/Products/2465152.jpg'     
+                source: root.source1 # 'img/Products/2465152.jpg'     
         MDLabel:
             font_size:'10sp'
-            text: '%s \n %s'%(get_display(arabic_reshaper.reshape('کلاه نایک ساخت چین')), get_display(arabic_reshaper.reshape('دارای ضمانت ۶ ماهه رادین کالا')))
+            text: '%s \n %s'%(root.detail_3_1, root.detail_4_1)  #%(get_display(arabic_reshaper.reshape('کلاه نایک ساخت چین')), get_display(arabic_reshaper.reshape('دارای ضمانت ۶ ماهه رادین کالا')))
             #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
             halign: "center"
             size_hint: 1, 0.2
         GridLayout:
             padding: dp(5), 0, 0, dp(5)
+            spacing: dp(5)
             size_hint: 1, 0.15
             cols: 2
             MDLabel:
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('125.000 تومان'))
+                font_size:'13sp'
+                text: '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), root.price_off1) if root.off1 != '0' else '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), root.price1)
                 #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
                 halign: "center"
             MDLabel:
@@ -50,10 +51,10 @@
                         rgba: 1, 0, 0, 1
                     RoundedRectangle:
                         pos: self.center_x - dp(18), self.center_y  - dp(10)
-                        size: [self.width - dp(45), self.texture_size[1]] if self.text != "" else [.05, .05]
+                        size: [self.width - dp(50), self.texture_size[1]] if self.text != "" else [.05, .05]
                         radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
                 font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('40 ٪'))
+                text: get_display(arabic_reshaper.reshape('%s٪'%(root.off1))) if root.off1 != '0' else ''
                 #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
                 halign: "center"
             MDLabel:
@@ -62,9 +63,9 @@
                         rgba: 1, 0, 0, 1
                     Line:
                         points: [self.x + dp(10) , self.y + dp(5), self.x + self.width - dp(10), self.y + self.height - dp(5)]
-                        width: 1
+                        width: 1 if root.off1 != '0' else 0.0000001
                 font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('75.000 تومان'))
+                text: root.price1 if root.off1 != '0' else ''
                 #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
                 halign: "center"
         MDRoundFlatButton:
@@ -74,316 +75,16 @@
             line_color: 238/255,70/255,87/255,1
             pos_hint:{"center_x": .5}
             on_press:
-                app.root.printt()
-    BoxLayout:
-        canvas:
-            Color:
-                rgba: 1,1,1,1
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [(dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7))]
-
-        padding: 0, dp(5), 0, dp(5)
-        spacing: dp(5)
-        orientation: 'vertical' 
-        size_hint: None, None
-        size: root.width/2.1, root.width
-        MDLabel:
-            font_size:'16sp'
-            text: get_display(arabic_reshaper.reshape('کلاه نایک اعلا'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            halign: "center"
-            size_hint: 1, 0.1
-        BoxLayout:
-            size_hint: 1, 0.5
-            Image:
-                source: 'img/Products/2465152.jpg'     
-        MDLabel:
-            font_size:'10sp'
-            text: '%s \n %s'%(get_display(arabic_reshaper.reshape('کلاه نایک ساخت چین')), get_display(arabic_reshaper.reshape('دارای ضمانت ۶ ماهه رادین کالا')))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            halign: "center"
-            size_hint: 1, 0.2
-        GridLayout:
-            padding: dp(5), 0, 0, dp(5)
-            size_hint: 1, 0.15
-            cols: 2
-            MDLabel:
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('125.000 تومان'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-            MDLabel:
-                canvas.before:
-                    Color:
-                        rgba: 1, 0, 0, 1
-                    RoundedRectangle:
-                        pos: self.center_x - dp(18), self.center_y  - dp(10)
-                        size: [self.width - dp(45), self.texture_size[1]] if self.text != "" else [.05, .05]
-                        radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('40 ٪'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-            MDLabel:
-                canvas.after:
-                    Color:
-                        rgba: 1, 0, 0, 1
-                    Line:
-                        points: [self.x + dp(10) , self.y + dp(5), self.x + self.width - dp(10), self.y + self.height - dp(5)]
-                        width: 1
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('75.000 تومان'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-        MDRoundFlatButton:
-            size_hint:  0.7, 0.05
-            text: get_display(arabic_reshaper.reshape('سفارش کالا'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            line_color: 238/255,70/255,87/255,1
-            pos_hint:{"center_x": .5}
-            on_press:
-                app.root.printt()
-
-    Widget:
-        size_hint_y: None
-        height: dp(7)
-        canvas:
-            Color:
-                rgba: 128/255, 128/255, 128/255, .1
-            Rectangle:
-                pos: 0, self.y
-                size: root.width , self.height
+                app.root.open_product_screen(root.source1)
+                app.root.mgr5.mgr1.scroll_y=1
 
 
-    BoxLayout:
-        canvas:
-            Color:
-                rgba: 1,1,1,1
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [(dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7))]
-
-        padding: 0, dp(5), 0, dp(5)
-        spacing: dp(5)
-        orientation: 'vertical' 
-        size_hint: None, None
-        size: root.width/2.1, root.width
-        MDLabel:
-            font_size:'16sp'
-            text: get_display(arabic_reshaper.reshape('کلاه نایک اعلا'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            halign: "center"
-            size_hint: 1, 0.1
-        BoxLayout:
-            size_hint: 1, 0.5
-            Image:
-                source: 'img/Products/2465152.jpg'     
-        MDLabel:
-            font_size:'10sp'
-            text: '%s \n %s'%(get_display(arabic_reshaper.reshape('کلاه نایک ساخت چین')), get_display(arabic_reshaper.reshape('دارای ضمانت ۶ ماهه رادین کالا')))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            halign: "center"
-            size_hint: 1, 0.2
-        GridLayout:
-            padding: dp(5), 0, 0, dp(5)
-            size_hint: 1, 0.15
-            cols: 2
-            MDLabel:
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('125.000 تومان'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-            MDLabel:
-                canvas.before:
-                    Color:
-                        rgba: 1, 0, 0, 1
-                    RoundedRectangle:
-                        pos: self.center_x - dp(18), self.center_y  - dp(10)
-                        size: [self.width - dp(45), self.texture_size[1]] if self.text != "" else [.05, .05]
-                        radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('40 ٪'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-            MDLabel:
-                canvas.after:
-                    Color:
-                        rgba: 1, 0, 0, 1
-                    Line:
-                        points: [self.x + dp(10) , self.y + dp(5), self.x + self.width - dp(10), self.y + self.height - dp(5)]
-                        width: 1
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('75.000 تومان'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-        MDRoundFlatButton:
-            size_hint:  0.7, 0.05
-            text: get_display(arabic_reshaper.reshape('سفارش کالا'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            line_color: 238/255,70/255,87/255,1
-            pos_hint:{"center_x": .5}
-            on_press:
-                app.root.printt()
-    BoxLayout:
-        canvas:
-            Color:
-                rgba: 1,1,1,1
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [(dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7))]
-
-        padding: 0, dp(5), 0, dp(5)
-        spacing: dp(5)
-        orientation: 'vertical' 
-        size_hint: None, None
-        size: root.width/2.1, root.width
-        MDLabel:
-            font_size:'16sp'
-            text: get_display(arabic_reshaper.reshape('کلاه نایک اعلا'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            halign: "center"
-            size_hint: 1, 0.1
-        BoxLayout:
-            size_hint: 1, 0.5
-            Image:
-                source: 'img/Products/2465152.jpg'     
-        MDLabel:
-            font_size:'10sp'
-            text: '%s \n %s'%(get_display(arabic_reshaper.reshape('کلاه نایک ساخت چین')), get_display(arabic_reshaper.reshape('دارای ضمانت ۶ ماهه رادین کالا')))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            halign: "center"
-            size_hint: 1, 0.2
-        GridLayout:
-            padding: dp(5), 0, 0, dp(5)
-            size_hint: 1, 0.15
-            cols: 2
-            MDLabel:
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('125.000 تومان'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-            MDLabel:
-                canvas.before:
-                    Color:
-                        rgba: 1, 0, 0, 1
-                    RoundedRectangle:
-                        pos: self.center_x - dp(18), self.center_y  - dp(10)
-                        size: [self.width - dp(45), self.texture_size[1]] if self.text != "" else [.05, .05]
-                        radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('40 ٪'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-            MDLabel:
-                canvas.after:
-                    Color:
-                        rgba: 1, 0, 0, 1
-                    Line:
-                        points: [self.x + dp(10) , self.y + dp(5), self.x + self.width - dp(10), self.y + self.height - dp(5)]
-                        width: 1
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('75.000 تومان'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-        MDRoundFlatButton:
-            size_hint:  0.7, 0.05
-            text: get_display(arabic_reshaper.reshape('سفارش کالا'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            line_color: 238/255,70/255,87/255,1
-            pos_hint:{"center_x": .5}
-            on_press:
-                app.root.printt()
-    Widget:
-        size_hint_y: None
-        height: dp(7)
-        canvas:
-            Color:
-                rgba: 128/255, 128/255, 128/255, .1
-            Rectangle:
-                pos: 0, self.y
-                size: root.width , self.height
-
-
-    BoxLayout:
-        canvas:
-            Color:
-                rgba: 1,1,1,1
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [(dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7))]
-
-        padding: 0, dp(5), 0, dp(5)
-        spacing: dp(5)
-        orientation: 'vertical' 
-        size_hint: None, None
-        size: root.width/2.1, root.width
-        MDLabel:
-            font_size:'16sp'
-            text: get_display(arabic_reshaper.reshape('کلاه نایک اعلا'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            halign: "center"
-            size_hint: 1, 0.1
-        BoxLayout:
-            size_hint: 1, 0.5
-            Image:
-                source: 'img/Products/2465152.jpg'     
-        MDLabel:
-            font_size:'10sp'
-            text: '%s \n %s'%(get_display(arabic_reshaper.reshape('کلاه نایک ساخت چین')), get_display(arabic_reshaper.reshape('دارای ضمانت ۶ ماهه رادین کالا')))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            halign: "center"
-            size_hint: 1, 0.2
-        GridLayout:
-            padding: dp(5), 0, 0, dp(5)
-            size_hint: 1, 0.15
-            cols: 2
-            MDLabel:
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('125.000 تومان'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-            MDLabel:
-                canvas.before:
-                    Color:
-                        rgba: 1, 0, 0, 1
-                    RoundedRectangle:
-                        pos: self.center_x - dp(18), self.center_y  - dp(10)
-                        size: [self.width - dp(45), self.texture_size[1]] if self.text != "" else [.05, .05]
-                        radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('40 ٪'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-            MDLabel:
-                canvas.after:
-                    Color:
-                        rgba: 1, 0, 0, 1
-                    Line:
-                        points: [self.x + dp(10) , self.y + dp(5), self.x + self.width - dp(10), self.y + self.height - dp(5)]
-                        width: 1
-                font_size:'12sp'
-                text: get_display(arabic_reshaper.reshape('75.000 تومان'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                halign: "center"
-        MDRoundFlatButton:
-            size_hint:  0.7, 0.05
-            text: get_display(arabic_reshaper.reshape('سفارش کالا'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            line_color: 238/255,70/255,87/255,1
-            pos_hint:{"center_x": .5}
-            on_press:
-                app.root.printt()
 
 <Off>:
     name: 'off'
     mgr1: _bot_nav
-    mgr2: _sc
-    title: ''
+    mgr2: _RecycleView_category
+    title: 'dfhg'
     BoxLayout:
         orientation: 'vertical'
         GridLayout:
@@ -406,22 +107,37 @@
 
         Widget:
             size_hint_y: None
-            height: dp(1)
+            height: dp(5)
             canvas:
                 Color:
                     rgba: 128/255, 128/255, 128/255, .1
                 Rectangle:
-                    pos: dp(20), self.y
-                    size: root.width - dp(40), self.height
+                    pos: dp(0), self.y
+                    size: root.width - dp(0), self.height
         BoxLayout:
+            canvas:
+                Color:
+                    rgba: 0,0,0,.1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
             orientation: 'vertical'
             size_hint_y: 11/13
-            ScrollView:
-                id: _sc
-                effect_cls: 'ScrollEffect'
-                bar_width: 0
-                StackLayoutOff:
-
+            RV_Category:
+                mgr1: _RecycleBoxLayout_category
+                viewclass: 'MyBoxLayoutCat'
+                id: _RecycleView_category
+                RecycleGridLayout:
+                    padding: dp(3), 0, dp(3), 0
+                    spacing: dp(2)
+                    cols: 2
+                    id: _RecycleBoxLayout_category
+                    default_size: None, cm(7)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    #orientation: 'vertical'
+                    
         BottomNavigation:
             id: _bot_nav
             #size_hint:(1, 1/13)
