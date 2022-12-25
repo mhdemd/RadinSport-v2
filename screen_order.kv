@@ -26,7 +26,7 @@
             RV_Order: 
                 mgr3: _RecycleBoxLayout_order
                 viewclass: 'MyButton'
-                id: _RecycleView_order
+                id: _RecycleView_order 
                 RecycleBoxLayout:
                     id: _RecycleBoxLayout_order
                     default_size: None, dp(150)
@@ -77,6 +77,7 @@
     image: ''
     title: ''
     price_off: ''
+    price: ''
     color_en: root.color_en
     color_fa: ''
     orientation: 'horizontal'
@@ -164,7 +165,7 @@
             MDLabel:
                 halign: 'left'
                 font_size: '12sp'       
-                text: '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(root.price_off)))
+                text: '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(root.price_off))) if root.price_off != '0' else '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(root.price)))
                 #font_name: 'font/XB Niloofar.ttf'
 
     BoxLayout:

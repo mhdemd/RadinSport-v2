@@ -21,7 +21,7 @@
                 icon: "window-close"
                 pos_hint: {"center_x": .95, "top": 1}
                 on_press:
-                    app.root.current= 'main'
+                    app.root.current= app.root.active_page
             MDIconButton:
                 icon: root.icon
                 pos_hint: {"center_x": .05, "top": 1}

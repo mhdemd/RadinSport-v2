@@ -122,6 +122,7 @@ class RV_Order(RecycleView):
     dkp = ObjectProperty()
     title = ObjectProperty()
     price_off = ObjectProperty()
+    price = ObjectProperty()
     icon_color = ObjectProperty()
     color_fa = ObjectProperty()
     total = ObjectProperty()
@@ -133,11 +134,11 @@ class RV_Order(RecycleView):
 
     def add_to_order(self):
         items_in_order_screen.append(
-            {"DKP": '%s'%(self.dkp), 'image': 'img/Products/%s/%s-0.jpg'%(self.dkp, self.dkp), 'title': self.title, 'price_off': str(self.price_off), 'color_en': self.icon_color, 'color_fa': get_display(arabic_reshaper.reshape(self.color_fa))}
+            {"DKP": '%s'%(self.dkp), 'image': 'img/Products/%s/%s-0.jpg'%(self.dkp, self.dkp), 'title': self.title, 'price_off': str(self.price_off), 'price': str(self.price), 'color_en': self.icon_color, 'color_fa': get_display(arabic_reshaper.reshape(self.color_fa))}
         )
         self.total = 0
         for i in range(len(items_in_order_screen)):
-            self.total += int(items_in_order_screen[i]['price_off'].replace(",",""))
+            self.total += int(items_in_order_screen[i]['price_off'].replace(",","")) if items_in_order_screen[i]['price_off'] != '0' else int(items_in_order_screen[i]['price'].replace(",","")) 
         total = self.total
         self.total = f'{total:,}'
         self.data = [item for item in items_in_order_screen]
@@ -150,7 +151,7 @@ class RV_Order(RecycleView):
 
         self.total = 0
         for i in range(len(items_in_order_screen)):
-            self.total += int(items_in_order_screen[i]['price_off'].replace(",",""))
+            self.total += int(items_in_order_screen[i]['price_off'].replace(",","")) if items_in_order_screen[i]['price_off'] != '0' else int(items_in_order_screen[i]['price'].replace(",","")) 
         total = self.total
         self.total = f'{total:,}'
         self.mgr3.remove_widget(instance.parent.parent)
@@ -188,17 +189,19 @@ class Off(Screen):
     title = ObjectProperty() 
 
 class MainScreen(ScreenManager):
-    mgr5 = ObjectProperty()
-
     # Deine back bottom in android
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.on_key)
+
     def on_key(self, window, key, *args):
         if key == 27:  # the esc key
-            if self.current_screen.name == "product" or self.current_screen.name == "off" or self.current_screen.name == "order" or self.current_screen.name == "grouping":
-                self.current = "main"
+            if self.current_screen.name == "product" or self.current_screen.name == "order" or self.current_screen.name == "grouping":
+                self.current = self.active_page
                 return True  # exit the app from this page
+            elif self.current_screen.name == "off":
+                self.current = 'main'
+                return True
             elif self.current_screen.name == "main":
                 return True
             
@@ -258,6 +261,7 @@ class MainScreen(ScreenManager):
         price_off = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['price_off'].values[0])
         self.mgr5.price_off = f'{price_off:,}'
         self.mgr7.mgr2.price_off = self.mgr5.price_off
+        self.mgr7.mgr2.price = self.mgr5.price
         self.mgr5.off = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['off'].values[0])
         # Add similar product
         ## Drop all children
@@ -284,6 +288,7 @@ class MainScreen(ScreenManager):
         price_off = int(dataframe_products[(dataframe_products['DKP'] == self.mgr5.dkp) & (dataframe_products['color'] == icon_color) ]['price_off'].values[0])
         self.mgr5.price_off = f'{price_off:,}'
         self.mgr7.mgr2.price_off = self.mgr5.price_off
+        self.mgr7.mgr2.price = self.mgr5.price
         self.mgr5.off = int(dataframe_products[(dataframe_products['DKP'] == self.mgr5.dkp) & (dataframe_products['color'] == icon_color) ]['off'].values[0])
         self.mgr7.mgr2.icon_color = icon_color
         self.mgr7.mgr2.color_fa = color_fa
@@ -340,7 +345,9 @@ class MainScreen(ScreenManager):
             )
         RV_Category.data = [item for item in items_in_category_screen]
         self.mgr6.mgr2.refresh_from_data()
-        self.current= "off"
+        self.current = "off"
+        self.active_page = 'off'
+        self.active_page_variable = cat
 
 
 
