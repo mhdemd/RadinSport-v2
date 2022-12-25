@@ -379,9 +379,10 @@ class DigiApp(MDApp):
         carousel = self.root.mgr1.mgr3.mgr1.ids._carousel_
         # Schedule after every 3 seconds.
         Clock.schedule_interval(carousel.load_next, 3.0)
+
         # Add widget to scrollview1 in main screen
-        list_DKP = dataframe_products[dataframe_products['off'] != 0]['DKP'].drop_duplicates().to_list()  
-        j = 8 #len(list_DKP)
+        list_DKP = dataframe_products[(dataframe_products['off'] != 0) & (dataframe_products['cat'] == 'H')]['DKP'].drop_duplicates().to_list()  
+        j = 6 #len(list_DKP)
         for i in range(j):
             dkp = list_DKP[i]
             self.root.mgr1.mgr3.mgr2.dkp= dkp
@@ -398,5 +399,25 @@ class DigiApp(MDApp):
             price_off = dataframe_products[(dataframe_products['DKP'] == dkp)]['price_off'].tolist()[0]
             self.root.mgr1.mgr3.mgr2.price_off= f'{price_off:,}'
             self.root.mgr1.mgr3.mgr2.mgr1.add_widget(Factory.BoxLayout_mainscroll_scroll1())
+        
+        # Add widget to scrollview2 in main screen
+        list_DKP_Gl = dataframe_products[(dataframe_products['off'] != 0) & (dataframe_products['cat'] == 'GL')]['DKP'].drop_duplicates().to_list()  
+        for i in range(j):
+            dkp_Gl = list_DKP_Gl[i]
+            self.root.mgr1.mgr3.mgr3.dkp_Gl= dkp_Gl
+            text_title = dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['title'].tolist()[0]
+            if len(text_title) > 20:
+                text_title = text_title[:17] + '...'
+            self.root.mgr1.mgr3.mgr3.text_title= text_title
+            self.root.mgr1.mgr3.mgr3.source_image= 'img/Products/%s/%s-0.jpg'%(dkp_Gl, dkp_Gl)
+            self.root.mgr1.mgr3.mgr3.detail_1= dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['detail_3'].tolist()[0]
+            self.root.mgr1.mgr3.mgr3.detail_2= dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['detail_4'].tolist()[0]
+            self.root.mgr1.mgr3.mgr3.off= str(dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['off'].tolist()[0])
+            price = int(dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['price'].tolist()[0])
+            self.root.mgr1.mgr3.mgr3.price= f'{price:,}'
+            price_off = dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['price_off'].tolist()[0]
+            self.root.mgr1.mgr3.mgr3.price_off= f'{price_off:,}'
+            self.root.mgr1.mgr3.mgr3.mgr1.add_widget(Factory.BoxLayout_mainscroll_scroll2())
+
 if __name__=="__main__":
     DigiApp().run()

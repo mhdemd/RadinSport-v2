@@ -4,6 +4,8 @@
     id: _scroll_main
     mgr1: _carousel
     mgr2: _ScrollView1
+    mgr3: _ScrollView2
+
     effect_cls: 'ScrollEffect'
     do_scroll_x: False
     BoxLayout:
@@ -31,9 +33,8 @@
             height: mm(55)#dp(260)
 
         ScrollView2:
+            id: _ScrollView2
             size_hint: 1, None
-            height: dp(390)
-            do_scroll: True, True
 
         MDLabel:
             bold: True
