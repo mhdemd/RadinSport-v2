@@ -17,8 +17,8 @@
         padding: 0, dp(5), 0, dp(5)
         spacing: dp(5)
         orientation: 'vertical' 
-        size_hint: 1, 1
-        #size: root.width, root.width
+        size_hint: None, 1
+        width: root.width if len(app.root.items_in_category_screen) != 1 else root.width / 2
         MDLabel:
             font_size:'13sp'
             text: root.title1 #get_display(arabic_reshaper.reshape('کلاه نایک اعلا'))

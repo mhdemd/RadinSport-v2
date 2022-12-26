@@ -318,8 +318,8 @@ class MainScreen(ScreenManager):
         pop.open()
 
     def open_category(self, cat):
-        items_in_category_screen = []
-        category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش'}
+        self.items_in_category_screen = []
+        category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش', 'R': 'طناب', 'PI': 'پیلاتس و بدنسازی'}
         self.mgr6.title= get_display(arabic_reshaper.reshape(category_dict[cat]))
         
         filtered_df = dataframe_products[(dataframe_products['stock'] != 0) & (dataframe_products['cat'] == cat)]
@@ -334,7 +334,7 @@ class MainScreen(ScreenManager):
             price = filtered_df.iloc[i]['price']
             price = f'{price:,}'
 
-            items_in_category_screen.append(
+            self.items_in_category_screen.append(
                 {'title1': get_display(arabic_reshaper.reshape(title)),
                 'source1': 'img/Products/%s/%s-0.jpg'%(filtered_df.iloc[i]['DKP'], filtered_df.iloc[i]['DKP']),
                   'detail_3_1': get_display(arabic_reshaper.reshape(filtered_df.iloc[i]['detail_3'])),
@@ -343,7 +343,7 @@ class MainScreen(ScreenManager):
                         'off1': str(filtered_df.iloc[i]['off']),
                           'price_off1': price_off}
             )
-        RV_Category.data = [item for item in items_in_category_screen]
+        RV_Category.data = [item for item in self.items_in_category_screen]
         self.mgr6.mgr2.refresh_from_data()
         self.current = "off"
         self.active_page = 'off'
@@ -374,7 +374,7 @@ class DigiApp(MDApp):
        #self.theme_cls.theme_style = "Dark"
         return MainScreen()
 
-    def on_start(self):
+    def on_start(self): 
         # Access the carousel.
         carousel = self.root.mgr1.mgr3.mgr1.ids._carousel_
         # Schedule after every 3 seconds.
