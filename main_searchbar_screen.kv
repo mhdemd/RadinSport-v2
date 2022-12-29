@@ -2,8 +2,9 @@
 #:import arabic_reshaper arabic_reshaper
 #:import get_display bidi.algorithm.get_display
 
-<Search@Screen>:
+<Search>:
     name: "search"
+    source: ''
     BoxLayout:
         orientation: 'vertical'
         #padding:20, 40, 0, 20
@@ -13,19 +14,28 @@
             #padding: 10, 40, 0, 20
             MDTextFieldPersian:
                 id: _MDTextFieldPersian2
+                #focus: True
                 line_color_focus: 0, 0, 0, 1
                 line_color: 0, 0, 0, 1
                 base_direction: 'rtl'
                 multiline: False
                 #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
                 on_text_validate: 
-                    app.root.print()
+                    app.root.show_popup('')
+                on_text_validate: 
+                    Clock.schedule_once(partial(app.root.Search_in_search_bar, self.text), 0.05)
+                    #app.root.Search_in_search_bar(self.text) 
             MDIconButton:
                 icon: "arrow-right"
                 icon_size: "20sp"
-                on_press: 
+                on_press:          
+                    root.source= '' 
                     app.root.current= app.root.active_page
-        ScrollView:
+        BoxLayout:
+            orientation: 'vertical'
             size_hint:(1, 13/14)
-            Label:
-                text: 'search_screen'
+            Image:
+                size_hint_y: .2
+                source: root.source
+            BoxLayout:
+                size_hint_y: .8

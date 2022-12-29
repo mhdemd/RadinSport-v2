@@ -13,9 +13,9 @@ from kivy.factory import Factory
 from kivy.uix.recycleview import RecycleView
 from kivy.utils import rgba
 from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.scatter import Scatter
-
 
 import os
 from kivymd.app import MDApp
@@ -28,6 +28,7 @@ from kivymd.uix.button import MDRoundFlatIconButton
 import random
 #from openpyxl import load_workbook
 import webbrowser
+import time
 
 dataframe_products = pd.read_excel (r'products.xls')
 dataframe_products = dataframe_products.astype({"price_off": int})
@@ -179,6 +180,9 @@ class Product(Screen):
     off = ObjectProperty()
     icon = ObjectProperty()
 
+class Search(Screen):
+    source = ObjectProperty()
+
 class Button_scroll5(Button):
     image_source = ObjectProperty()
 
@@ -196,8 +200,9 @@ class MainScreen(ScreenManager):
 
     def on_key(self, window, key, *args):
         if key == 27:  # the esc key
-            if self.current_screen.name == "product" or self.current_screen.name == "order" or self.current_screen.name == "grouping":
+            if self.current_screen.name == "product" or self.current_screen.name == "order" or self.current_screen.name == "grouping" or self.current_screen.name == 'search':
                 self.current = self.active_page
+                self.mgr2.source= ''
                 return True  # exit the app from this page
             elif self.current_screen.name == "off":
                 self.current = 'main'
@@ -317,7 +322,8 @@ class MainScreen(ScreenManager):
                     size_hint=(None, None), size=(self.width, self.width),separator_height= 0)
         pop.open()
 
-    def open_category(self, cat):
+    def open_category(self, cat, arg):
+        
         self.items_in_category_screen = []
         category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش', 'R': 'طناب', 'PI': 'پیلاتس و بدنسازی'}
         self.mgr6.title= get_display(arabic_reshaper.reshape(category_dict[cat]))
@@ -325,7 +331,8 @@ class MainScreen(ScreenManager):
         filtered_df = dataframe_products[(dataframe_products['stock'] != 0) & (dataframe_products['cat'] == cat)]
         filtered_df.drop_duplicates(subset="DKP",keep='first', inplace=True)
 
-        for i in range(len(filtered_df.index)):
+        temp_len = len(filtered_df.index)
+        for i in range(temp_len):
             title = filtered_df.iloc[i]['title']
             if len(title) > 20:
                 title = title[:17] + '...'
@@ -349,9 +356,31 @@ class MainScreen(ScreenManager):
         self.active_page = 'off'
         self.active_page_variable = cat
 
+        try:
+            if self.pop_up:
+                self.pop_up.dismiss()
+        except: 
+            pass
 
+    def Search_in_search_bar(self, word, arg):
+        #if dataframe_products['titleـfa']:
+        #    pass
+        #else:
+        dataframe_products['titleـfa'] = dataframe_products.apply(lambda row : get_display(arabic_reshaper.reshape(row['title'])), axis = 1)
+        try:
+            df = dataframe_products[dataframe_products['titleـfa'].str.contains('.*%s.*'%(word), regex=True)]['cat'].drop_duplicates()        
+            self.open_category(df.values[0], '')
+        except:
+            self.mgr2.source= 'img/App/not_find.jpg'
+            try:
+                if self.pop_up:
+                    self.pop_up.dismiss()
+            except: 
+                pass
 
-
+    def show_keyboard(self, arg):
+        self.mgr2.ids._MDTextFieldPersian2.focus= True
+    
     def print(self):
         print('OK')
     def printt(self):
@@ -364,6 +393,18 @@ class MainScreen(ScreenManager):
         print('OK3')
     def print4(self):
         print('OK4')
+
+    def show_popup(self, args):
+        reshaped_loading = arabic_reshaper.reshape("لطفاً منتظر بمانید")
+        bidi_loading = get_display(reshaped_loading)
+        self.pop_up = Factory.PopupBox()
+        self.pop_up.update_pop_up_text(bidi_loading)
+        self.pop_up.open()
+
+class PopupBox(Popup):
+    pop_up_text = ObjectProperty()
+    def update_pop_up_text(self, p_message):
+        self.pop_up_text.text = p_message
 
 class DigiApp(MDApp):
     def build(self):
@@ -418,6 +459,6 @@ class DigiApp(MDApp):
             price_off = dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['price_off'].tolist()[0]
             self.root.mgr1.mgr3.mgr3.price_off= f'{price_off:,}'
             self.root.mgr1.mgr3.mgr3.mgr1.add_widget(Factory.BoxLayout_mainscroll_scroll2())
-
+        
 if __name__=="__main__":
     DigiApp().run()

@@ -15,6 +15,7 @@
         size_hint_y: None
         height: mm(8)
         on_press:
+            Clock.schedule_once(app.root.show_keyboard, 0.1)
             app.root.active_page= app.root.current 
             app.root.current='search'
             

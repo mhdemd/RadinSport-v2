@@ -32,6 +32,7 @@
     name: "main"
     mgr3: _scroll_main
     mgr4: _bot_nav
+    #mgr5: _spinner
     BoxLayout:
         orientation: 'vertical'
         SearchBar:
@@ -46,3 +47,25 @@
             id: _bot_nav
             size_hint_y: None
             height: mm(9)#dp(47)
+    #MDSpinner:
+    #    id: _spinner
+    #    color: [1, 0, 0, 0]
+    #    determinate: True
+    #    active: False
+    #    size_hint: None, None
+    #    size: dp(46), dp(46)
+    #    pos_hint: {'center_x': .5, 'center_y': .5}
+
+<PopupBox>:
+    pop_up_text: _pop_up_text
+    size_hint: .55, .15
+    auto_dismiss: True
+    title: ""
+    separator_color: 1, 0, 0, 1
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            id: _pop_up_text
+            text: '' 
+            #font_name: "XB Niloofar.ttf"
+

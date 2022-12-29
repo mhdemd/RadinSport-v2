@@ -6,27 +6,33 @@
             radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]   
             source: 'img/App/gl3.jpg'
     Button:
-        background_color: 0, 0, 0, 0
         on_press:
-            app.root.open_category("H")
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'H'), 0.005)
     Button:
-        background_color: 0, 0, 0, 0
         on_press:
-            app.root.open_category("GL")
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'GL'), 0.005)
     Button:
-        background_color: 0, 0, 0, 0
         on_press:
-            app.root.open_category("SW")
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'SW'), 0.005)
     Button:
-        background_color: 0, 0, 0, 0
         on_press:
-            app.root.open_category("PI")
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'PI'), 0.005)
     Button:
-        background_color: 0, 0, 0, 0
         on_press:
-            app.root.open_category("SH")
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'SH'), 0.005)
     Button:
-        background_color: 0, 0, 0, 0
         on_press:
-            app.root.open_category("R")
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'R'), 0.005)
 
