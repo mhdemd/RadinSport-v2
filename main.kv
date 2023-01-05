@@ -32,17 +32,19 @@
     name: "main"
     mgr3: _scroll_main
     mgr4: _bot_nav
+    mgr5:_search_bar
     #mgr5: _spinner
-    BoxLayout:
+    FloatLayout:
         orientation: 'vertical'
-        SearchBar:
-            id: _search_bar
-            #size_hint:(1, 1/13)
-            size_hint_y: None
-            height: mm(9)
         ScrollMain:
             id: _scroll_main
-            size_hint:(1, 11/13)
+            pos_hint: {'top': 0.9496062978108724 }
+        SearchBar:
+            id: _search_bar
+            pos_hint: {'top': 1}
+            #size_hint:(1, 1/13)
+            size_hint_y: None
+            height: mm(8)
         BottomNavigation:
             id: _bot_nav
             size_hint_y: None
@@ -61,7 +63,7 @@
     size_hint: .55, .15
     auto_dismiss: True
     title: ""
-    separator_color: 1, 0, 0, 1
+    separator_color: 1, 0, 0, 0.5
     BoxLayout:
         orientation: "vertical"
         Label:

@@ -101,23 +101,14 @@ class ScrollView5(ScrollView):
         super().on_scroll_move(touch)
         touch.ud['sv.handled']['y'] = False 
 
-class cat1(ScrollView):
+class Cat(ScrollView):
     # screen_product_scroll3.kv
     def on_scroll_move(self, touch):
         super().on_scroll_move(touch)
         touch.ud['sv.handled']['y'] = False 
 
-class cat2(ScrollView):
-    # screen_product_scroll3.kv
-    def on_scroll_move(self, touch):
-        super().on_scroll_move(touch)
-        touch.ud['sv.handled']['y'] = False 
-
-class cat3(ScrollView):
-    # screen_product_scroll3.kv
-    def on_scroll_move(self, touch):
-        super().on_scroll_move(touch)
-        touch.ud['sv.handled']['y'] = False 
+class Category_boxlayout(BoxLayout):
+    cat = ObjectProperty()
 
 class RV_Order(RecycleView):
     dkp = ObjectProperty()
@@ -193,6 +184,7 @@ class Off(Screen):
     title = ObjectProperty() 
 
 class MainScreen(ScreenManager):
+    category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش', 'R': 'طناب', 'PI': 'پیلاتس و بدنسازی'}
     # Deine back bottom in android
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
@@ -200,13 +192,11 @@ class MainScreen(ScreenManager):
 
     def on_key(self, window, key, *args):
         if key == 27:  # the esc key
-            if self.current_screen.name == "product" or self.current_screen.name == "order" or self.current_screen.name == "grouping" or self.current_screen.name == 'search':
+            if self.current_screen.name == "product" or self.current_screen.name == "order" or self.current_screen.name == "grouping" or self.current_screen.name == 'search':# or self.current_screen.name == "off":
                 self.current = self.active_page
                 self.mgr2.source= ''
                 return True  # exit the app from this page
-            elif self.current_screen.name == "off":
-                self.current = 'main'
-                return True
+
             elif self.current_screen.name == "main":
                 return True
             
@@ -323,11 +313,21 @@ class MainScreen(ScreenManager):
         pop.open()
 
     def open_category(self, cat, arg):
-        
         self.items_in_category_screen = []
-        category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش', 'R': 'طناب', 'PI': 'پیلاتس و بدنسازی'}
-        self.mgr6.title= get_display(arabic_reshaper.reshape(category_dict[cat]))
-        
+        try:
+            self.mgr6.title= get_display(arabic_reshaper.reshape(self.category_dict[cat]))
+        except:
+            # list out keys and values separately
+            key_list = list(self.category_dict.keys())
+            val_list = list(self.category_dict.values())
+
+            # get position of value 2 in second list
+            position = val_list.index(cat)
+
+            # get key with position calculated above
+            cat = key_list[position]
+            self.mgr6.title= get_display(arabic_reshaper.reshape(self.category_dict[cat]))
+
         filtered_df = dataframe_products[(dataframe_products['stock'] != 0) & (dataframe_products['cat'] == cat)]
         filtered_df.drop_duplicates(subset="DKP",keep='first', inplace=True)
 
@@ -381,8 +381,45 @@ class MainScreen(ScreenManager):
     def show_keyboard(self, arg):
         self.mgr2.ids._MDTextFieldPersian2.focus= True
     
+    def open_grouping(self):
+        
+        if self.mgr8.mgr2.children != []:
+            self.mgr8.ids._sc.scroll_y=1
+        else:
+            # Forming a list of category dictionary keys
+            list_ = list(self.category_dict.keys())
+            for i in range(len(list_)):
+                
+                category_boxlayout = Category_boxlayout(size_hint_y= None, height= '30mm',
+                        cat= self.category_dict[list_[i]]
+                    )
+                cat_ = Cat(size_hint_y= None, height= '20mm'
+                    )
+
+                DKP_list = dataframe_products[dataframe_products['cat'] == list_[i]]['DKP'].drop_duplicates().to_list()  
+
+                for j in range(len(DKP_list) if len(DKP_list) < 5 else 5):
+                    cat_.ids._grid.add_widget(Button(
+                    background_normal= 'img/Products/%s/%s-%s.jpg'%(DKP_list[j], DKP_list[j], 0),
+                    background_down= 'img/Products/%s/%s-%s.jpg'%(DKP_list[j], DKP_list[j], 0),
+                    size_hint= (None, None), width= '20mm', height= '20mm'
+                        ))
+
+                category_boxlayout.add_widget(cat_)
+
+                self.mgr8.mgr2.add_widget(category_boxlayout)
+
+    def show_popup(self, args):
+        reshaped_loading = arabic_reshaper.reshape("لطفاً منتظر بمانید")
+        bidi_loading = get_display(reshaped_loading)
+        self.pop_up = Factory.PopupBox()
+        self.pop_up.update_pop_up_text(bidi_loading)
+        self.pop_up.open()
+        
     def print(self):
-        print('OK')
+        self.pos_scroll_main = (self.height - self.mgr1.mgr5.height) / self.height 
+        print(self.pos_scroll_main, self.mgr1.mgr5.height)
+        print(self.category_dict)
     def printt(self):
         print('OK')
     def print1(self):
@@ -393,13 +430,6 @@ class MainScreen(ScreenManager):
         print('OK3')
     def print4(self):
         print('OK4')
-
-    def show_popup(self, args):
-        reshaped_loading = arabic_reshaper.reshape("لطفاً منتظر بمانید")
-        bidi_loading = get_display(reshaped_loading)
-        self.pop_up = Factory.PopupBox()
-        self.pop_up.update_pop_up_text(bidi_loading)
-        self.pop_up.open()
 
 class PopupBox(Popup):
     pop_up_text = ObjectProperty()
