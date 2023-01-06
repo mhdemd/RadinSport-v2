@@ -9,7 +9,7 @@
     ToggleButton: 
         group: "x"
         on_press: 
-            app.root.active_page= 'account'
+            app.root.active_page_main= 'account'
             app.root.current='account'
             root.nav_bot_source= 'img/App/nav1.jpg'
         on_release:
@@ -17,15 +17,17 @@
     ToggleButton: 
         group: "x"
         on_press: 
-            app.root.active_page= 'off'
+            app.root.show_popup('')
+            app.root.active_page_main= 'off'
             app.root.current='off'
             root.nav_bot_source= 'img/App/nav2.jpg'
         on_release:
             app.root.mgr6.mgr1.canvas.after.get_group('a')[0].source='img/App/nav2.jpg'
+            Clock.schedule_once(partial(app.root.open_category, 'H'), 0.005)
     ToggleButton: 
         group: "x"
         on_press: 
-            app.root.active_page= 'order'
+            app.root.active_page_main= 'order'
             app.root.current='order' 
             root.nav_bot_source= 'img/App/nav3.jpg'
         on_release:
@@ -33,17 +35,19 @@
     ToggleButton: 
         group: "x"
         on_press: 
-            app.root.active_page= 'grouping'
+            app.root.show_popup('')
+            app.root.active_page_main= 'grouping'
             app.root.current='grouping'
             root.nav_bot_source= 'img/App/nav4.jpg'
-            app.root.open_grouping()
+            #app.root.open_grouping()
         on_release:
             app.root.mgr8.mgr1.canvas.after.get_group('a')[0].source='img/App/nav4.jpg'
+            Clock.schedule_once(partial(app.root.open_grouping), 0.005)
 
     ToggleButton: 
         group: "x"
         on_press: 
-            app.root.active_page= 'main'
+            app.root.active_page_main= 'main'
             app.root.current='main'
             root.nav_bot_source= 'img/App/nav5.jpg'
         on_release:

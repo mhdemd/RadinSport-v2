@@ -14,7 +14,7 @@ from kivy.properties import ObjectProperty, NumericProperty, StringProperty
 class MDTextFieldPersian(MDTextField):
     max_chars = NumericProperty(20)  # maximum character allowed
     str = StringProperty()
-
+    
     def __init__(self, **kwargs):
         super(MDTextFieldPersian, self).__init__(**kwargs)
         self.text = get_display(arabic_reshaper.reshape(""))
@@ -30,7 +30,6 @@ class MDTextFieldPersian(MDTextField):
     def do_backspace(self, from_undo=False, mode='bkspc'):
         self.str = self.str[0:len(self.str)-1]
         self.text = get_display(arabic_reshaper.reshape(self.str))
-
 
 class MainApp(MDApp):
 

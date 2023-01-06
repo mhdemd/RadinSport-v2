@@ -1,15 +1,14 @@
 <Category_boxlayout>:
     cat: 'asdsdsd'
     orientation:'vertical'
-
     BoxLayout:
         orientation:'horizontal'
         size_hint_y: None
-        height: mm(10)
+        height: mm(8)
         MDTextButton:
             text: get_display(arabic_reshaper.reshape('مشاهده همه'))
             #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            font_size: '14sp'
+            font_size: '12sp'
             theme_text_color: "Custom"
             text_color: 105/255, 171/255, 185/255, 1
             halign: "left"
@@ -19,12 +18,15 @@
                 app.root.show_popup('')
             on_release:
                 Clock.schedule_once(partial(app.root.open_category, root.cat), 0.005)
-
-        MDLabel:
-            text: get_display(arabic_reshaper.reshape(root.cat))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            halign: "right"
-            valign: 'bottom'
+        BoxLayout:
+            orientation:'vertical'
+            MDLabel:
+            MDLabel:
+                font_size: '14sp'
+                text: get_display(arabic_reshaper.reshape(root.cat))
+                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                halign: "right"
+                valign: 'bottom'
 
 
 <Cat>:
@@ -38,7 +40,7 @@
         id: _grid
         cols: 5
         #orientation: 'rl-tb'
-        padding: dp(0), dp(7), dp(0), dp(7)
+        padding: dp(0), dp(7), dp(0), dp(17)
         spacing: mm(1)
         size_hint: None, 1 
         width: self.minimum_width  
@@ -55,7 +57,7 @@
             id: _search_bar
             #size_hint:(1, 1/13)
             size_hint_y: None
-            height: mm(9)
+            height: mm(8)
         ScrollView:
             id: _sc
             effect_cls: 'ScrollEffect'

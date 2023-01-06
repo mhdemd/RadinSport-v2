@@ -84,7 +84,7 @@
     name: 'off'
     mgr1: _bot_nav
     mgr2: _RecycleView_category
-    title: 'dfhg'
+    title: ''
     BoxLayout:
         orientation: 'vertical'
         GridLayout:
@@ -94,7 +94,7 @@
             MDLabel:
                 size_hint_x: .9     
                 halign: "right"
-                text: root.title
+                text: root.title 
                 #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
             FloatLayout:
                 size_hint_x: .1     
@@ -103,7 +103,7 @@
                     icon: "window-close"
                     pos_hint: {"center_x": .95, "top": 1}
                     on_press:
-                        app.root.current= 'main'
+                        app.root.current= app.root.active_page_main
 
         Widget:
             size_hint_y: None

@@ -192,12 +192,12 @@ class MainScreen(ScreenManager):
 
     def on_key(self, window, key, *args):
         if key == 27:  # the esc key
-            if self.current_screen.name == "product" or self.current_screen.name == "order" or self.current_screen.name == "grouping" or self.current_screen.name == 'search':# or self.current_screen.name == "off":
+            if self.current_screen.name == "product" or  self.current_screen.name == 'search':
                 self.current = self.active_page
                 self.mgr2.source= ''
                 return True  # exit the app from this page
-
-            elif self.current_screen.name == "main":
+            elif self.current_screen.name == "order" or self.current_screen.name == "grouping" or self.current_screen.name == "off" or self.current_screen.name == "main":
+                self.current = self.active_page_main
                 return True
             
     def open_product_screen(self, DKP):  
@@ -308,11 +308,20 @@ class MainScreen(ScreenManager):
         self.mgr5.icon = 'cards-heart'
 
     def zoom_product_image(self, source):
-        pop = Popup(title='', content=Factory.scatter(source= source),
+        self.pop = Popup(title='', content=Factory.scatter(source= source),
                     size_hint=(None, None), size=(self.width, self.width),separator_height= 0)
-        pop.open()
+        self.pop.open()
+
+    def close_image_pop(self):
+        try:
+            if self.pop:
+                self.pop.dismiss()
+        except: 
+            pass
 
     def open_category(self, cat, arg):
+        self.mgr6.ids._RecycleView_category.scroll_y=1 
+
         self.items_in_category_screen = []
         try:
             self.mgr6.title= get_display(arabic_reshaper.reshape(self.category_dict[cat]))
@@ -381,20 +390,19 @@ class MainScreen(ScreenManager):
     def show_keyboard(self, arg):
         self.mgr2.ids._MDTextFieldPersian2.focus= True
     
-    def open_grouping(self):
+    def open_grouping(self, arg):
         
         if self.mgr8.mgr2.children != []:
-            self.mgr8.ids._sc.scroll_y=1
+            self.mgr8.ids._sc.scroll_y=1 
         else:
             # Forming a list of category dictionary keys
             list_ = list(self.category_dict.keys())
             for i in range(len(list_)):
                 
-                category_boxlayout = Category_boxlayout(size_hint_y= None, height= '30mm',
+                category_boxlayout = Category_boxlayout(size_hint_y= None, height= '25mm',
                         cat= self.category_dict[list_[i]]
                     )
-                cat_ = Cat(size_hint_y= None, height= '20mm'
-                    )
+                cat_ = Cat()
 
                 DKP_list = dataframe_products[dataframe_products['cat'] == list_[i]]['DKP'].drop_duplicates().to_list()  
 
@@ -402,12 +410,17 @@ class MainScreen(ScreenManager):
                     cat_.ids._grid.add_widget(Button(
                     background_normal= 'img/Products/%s/%s-%s.jpg'%(DKP_list[j], DKP_list[j], 0),
                     background_down= 'img/Products/%s/%s-%s.jpg'%(DKP_list[j], DKP_list[j], 0),
-                    size_hint= (None, None), width= '20mm', height= '20mm'
+                    size_hint= (None, None), width= '17mm', height= '17mm'
                         ))
 
                 category_boxlayout.add_widget(cat_)
 
                 self.mgr8.mgr2.add_widget(category_boxlayout)
+        try:
+            if self.pop_up:
+                self.pop_up.dismiss()
+        except: 
+            pass
 
     def show_popup(self, args):
         reshaped_loading = arabic_reshaper.reshape("لطفاً منتظر بمانید")

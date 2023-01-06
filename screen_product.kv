@@ -113,10 +113,16 @@
             
 <scatter>: 
     do_rotation: False
+    do_translation: False
     scale_min: 1
     scale_max: 3
     source: ''
+
     FitImage:
         id: _mgr
         source: root.source
         size: root.width, root.width
+    MDIconButton:
+        icon: "window-close"
+        on_press: 
+            app.root.close_image_pop()

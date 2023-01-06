@@ -13,20 +13,24 @@
     Button:
         on_press:
             app.root.show_popup('')
+            app.root.active_page= 'main'
         on_release:
             Clock.schedule_once(partial(app.root.open_category, 'H'), 0.005)
     Button:
         on_press:
             app.root.show_popup('')
+            app.root.active_page= 'main'
         on_release:
             Clock.schedule_once(partial(app.root.open_category, 'GL'), 0.005)
     Button:
         on_press:
             app.root.show_popup('')
+            app.root.active_page= 'main'
         on_release:
             Clock.schedule_once(partial(app.root.open_category, 'SH'), 0.005)
     Button:
         on_press:
             app.root.show_popup('')
+            app.root.active_page= 'main'
         on_release:
             Clock.schedule_once(partial(app.root.open_category, 'SW'), 0.005)
