@@ -9,16 +9,17 @@
     ToggleButton: 
         group: "x"
         on_press: 
-            app.root.active_page_main= 'account'
+            app.root.active_page= 'account'
             app.root.current='account'
             root.nav_bot_source= 'img/App/nav1.jpg'
         on_release:
             app.root.mgr9.mgr1.canvas.after.get_group('a')[0].source='img/App/nav1.jpg'
+            app.root.open_account_xls()
     ToggleButton: 
         group: "x"
         on_press: 
             app.root.show_popup('')
-            app.root.active_page_main= 'off'
+            app.root.active_page= 'off'
             app.root.current='off'
             root.nav_bot_source= 'img/App/nav2.jpg'
         on_release:
@@ -27,7 +28,7 @@
     ToggleButton: 
         group: "x"
         on_press: 
-            app.root.active_page_main= 'order'
+            app.root.active_page= 'order'
             app.root.current='order' 
             root.nav_bot_source= 'img/App/nav3.jpg'
         on_release:
@@ -36,7 +37,7 @@
         group: "x"
         on_press: 
             app.root.show_popup('')
-            app.root.active_page_main= 'grouping'
+            app.root.active_page= 'grouping'
             app.root.current='grouping'
             root.nav_bot_source= 'img/App/nav4.jpg'
             #app.root.open_grouping()
@@ -47,7 +48,7 @@
     ToggleButton: 
         group: "x"
         on_press: 
-            app.root.active_page_main= 'main'
+            app.root.active_page= 'main'
             app.root.current='main'
             root.nav_bot_source= 'img/App/nav5.jpg'
         on_release:

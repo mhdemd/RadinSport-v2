@@ -4,7 +4,6 @@
     transition: NoTransition()
     # Can be used to return to the previous page
     active_page: 'main' 
-    active_page_main: 'main' 
 
     mgr1: _main
     mgr2: _search
@@ -13,6 +12,7 @@
     mgr7: _order
     mgr8: _grouping
     mgr9: _account
+    mgr10: _signup
 
 	Main:
         id: _main
@@ -28,7 +28,9 @@
         id: _grouping
     Account:
         id: _account
-
+    Sign_up:
+        id: _signup
+        
 <Main@Screen>:
     name: "main"
     mgr3: _scroll_main

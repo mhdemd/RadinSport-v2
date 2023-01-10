@@ -1,27 +1,15 @@
 <Account@Screen>:
     name: 'account'
     mgr1: _bot_nav
+    text1: ''
     BoxLayout:
         orientation: 'vertical'
         padding: 0, 0, 0, 0
-        MDLabel:
-            size_hint_y: None  
-            height: dp(50)  
-            halign: "right"
-            text: get_display(arabic_reshaper.reshape('اطلاعات حساب کاربری'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
 
-        Widget:
-            size_hint_y: None
-            height: dp(2)
-            canvas:
-                Color:
-                    rgba: 128/255, 128/255, 128/255, .1
-                Rectangle:
-                    pos: dp(0), self.y
-                    size: root.width - dp(0), self.height
+
         BoxLayout:
             orientation: 'vertical'
+            size_hint:(1, 11/13)
             ScrollView:
                 effect_cls: 'ScrollEffect'
                 bar_width: 0
@@ -29,44 +17,42 @@
                     orientation:'vertical'
                     size_hint_y: None
                     height: self.minimum_height  
+                    spacing: mm(10)
                     MDLabel:
+                        halign: 'center'
+                        text: ''
+                        font_size:'12sp'
+                    MDLabel:
+                        halign: 'center'
+                        text: '%s %s'%( get_display(arabic_reshaper.reshape('عزیز خوش آمدید')), root.text1) if root.text1 != '-' else '' 
+                        font_size:'12sp'
+                        theme_text_color: "Custom"
+                        text_color: "blue"
+                    Image:
                         size_hint_y: None    
-                        height: dp(35)
-                        halign: "right"
-                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
-                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        height: dp(200)
+                        source: 'img/App/rs.png'
                     MDLabel:
-                        size_hint_y: None
-                        height: dp(35)    
-                        halign: "right"
-                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
-                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                    MDLabel:
-                        size_hint_y: None
-                        height: dp(35)    
-                        halign: "right"
-                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
-                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                    MDLabel:
-                        size_hint_y: None
-                        height: dp(35)    
-                        halign: "right"
-                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
-                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                    MDLabel:
-                        size_hint_y: None                        
-                        height: dp(35)
-                        halign: "right"
-                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
-                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                    MDLabel:
-                        size_hint_y: None
-                        height: dp(35)
-                        halign: "right"
-                        text: get_display(arabic_reshaper.reshape('تخفیف های ویژه'))
-                        #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                        halign: 'center'
+                        text: get_display(arabic_reshaper.reshape('جهت تسهیل در فرایند خرید لطفا ثبت نام کنید.')) if root.text1 == '-' else ''
+                        font_size:'12sp'
+                    MDFillRoundFlatButton:
+                        text: get_display(arabic_reshaper.reshape('ثبت نام')) if root.text1 == '-' else  get_display(arabic_reshaper.reshape('تغییر مشخصات فردی')) 
+                        md_bg_color: "red"
+                        pos_hint: {'center_x': .5}
+                        on_press:
+                            app.root.current= 'signup' if self.text == get_display(arabic_reshaper.reshape('ثبت نام')) else 'signup'
+                            app.root.open_account_xls()
+                            app.root.load_account_data() if root.text1 != '-' else app.root.clear_account_data()
+                            app.root.mgr10.mgr1.scroll_y=1
 
-
+                    MDFillRoundFlatIconButton:
+                        text: get_display(arabic_reshaper.reshape('خروج از حساب کاربری')) 
+                        md_bg_color: "red"
+                        pos_hint: {'center_x': .5} if root.text1 != '-' else {'center_x': -5000}
+                        icon: 'exit-to-app'  
+                        on_press:
+                            app.root.delete_Personal_Information()
         BottomNavigation:
             id: _bot_nav
             size_hint_y: None

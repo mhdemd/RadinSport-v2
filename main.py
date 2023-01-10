@@ -26,7 +26,6 @@ import pandas as pd #openpyxl
 from kivymd.uix.swiper import MDSwiperItem
 from kivymd.uix.button import MDRoundFlatIconButton
 import random
-#from openpyxl import load_workbook
 import webbrowser
 import time
 
@@ -57,6 +56,7 @@ Builder.load_file('screen_off.kv')
 Builder.load_file('screen_order.kv')
 Builder.load_file('screen_grouping.kv')
 Builder.load_file('screen_account.kv')
+Builder.load_file('screen_account_sign_up.kv')
 
 class ScrollMain(ScrollView):
     mgr1 = ObjectProperty()
@@ -183,6 +183,11 @@ class scatter(Scatter):
 class Off(Screen):
     title = ObjectProperty() 
 
+class PopupBox(Popup):
+    pop_up_text = ObjectProperty()
+    def update_pop_up_text(self, p_message):
+        self.pop_up_text.text = p_message
+
 class MainScreen(ScreenManager):
     category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش', 'R': 'طناب', 'PI': 'پیلاتس و بدنسازی'}
     # Deine back bottom in android
@@ -192,14 +197,17 @@ class MainScreen(ScreenManager):
 
     def on_key(self, window, key, *args):
         if key == 27:  # the esc key
-            if self.current_screen.name == "product" or  self.current_screen.name == 'search':
+            if self.current_screen.name == "product" or  self.current_screen.name == 'search' or  self.current_screen.name == 'signup':
                 self.current = self.active_page
                 self.mgr2.source= ''
                 return True  # exit the app from this page
-            elif self.current_screen.name == "order" or self.current_screen.name == "grouping" or self.current_screen.name == "off" or self.current_screen.name == "main":
-                self.current = self.active_page_main
+            elif self.current_screen.name == "order" or self.current_screen.name == "grouping" or self.current_screen.name == "off" or self.current_screen.name == "account":
+                self.current = 'main'
                 return True
-            
+            elif self.current_screen.name == "mian":
+                DigiApp.get_running_app().root_window.minimize()
+                return True
+
     def open_product_screen(self, DKP):  
         try:
             DKP.split('/')
@@ -428,7 +436,90 @@ class MainScreen(ScreenManager):
         self.pop_up = Factory.PopupBox()
         self.pop_up.update_pop_up_text(bidi_loading)
         self.pop_up.open()
-        
+    
+    def open_account_xls(self, *args):
+        try:
+            self.df_account = pd.read_excel (r'Personal_Information.xls')
+            self.mgr9.text1 = self.df_account['Name'][0]
+        except:
+            self.mgr9.text1 = '-'
+
+    def sign_up(self):
+        if self.mgr10.ids._name.text == '' or \
+        self.mgr10.ids._last_name.text == '' or \
+        self.mgr10.ids._mobile_number.text == '' or \
+        self.mgr10.ids._home_number.text == '' or \
+        self.mgr10.ids._address.text == '' or \
+        self.mgr10.ids._postal_code.text == '' or \
+        self.mgr10.ids._email.text == '':
+
+            # create content and add to the popup
+            content = Button(text= get_display(arabic_reshaper.reshape('تکمیل فرم')), size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(arabic_reshaper.reshape('پر کردن تمامی موارد الزامیست')), content= content,
+            title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
+            # bind the on_press event of the button to the dismiss function
+            content.bind(on_press=pop.dismiss)
+            pop.open()
+
+        else:
+            d = {'Name': [self.mgr10.ids._name.text],
+            'Last name': [self.mgr10.ids._last_name.text],
+            'Mobile number': [self.mgr10.ids._mobile_number.text],
+            'Home number': [self.mgr10.ids._home_number.text],
+            'Address': [self.mgr10.ids._address.text],
+            'Postal code': [self.mgr10.ids._postal_code.text],
+            'Email': [self.mgr10.ids._email.text],
+            }
+            df = pd.DataFrame(data=d)
+            df.to_excel("Personal_Information.xls")
+            self.current= 'account'
+
+    def delete_Personal_Information(self):
+        # create content and add to the popup
+        content = BoxLayout(orientation= 'horizontal')
+        bt1 = Button(text= get_display(arabic_reshaper.reshape('خیر')), size_hint=(.5, None), size=('20mm', '6mm'))
+        bt2 = Button(text= get_display(arabic_reshaper.reshape('بلی')), size_hint=(.5, None), size=('20mm', '6mm'))
+        #self.ids['bt2'] = bt2
+        content.add_widget(bt1)
+        content.add_widget(bt2)
+
+        pop = Popup(title= get_display(arabic_reshaper.reshape('آیا از حذف کامل مشخصات اطمینان دارید؟')), content= content,
+        title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
+        bt1.bind(on_press= pop.dismiss)
+        bt2.bind(on_press= self.delete_Personal_Information_OK)
+        bt2.bind(on_press= pop.dismiss)
+        bt2.bind(on_press= self.open_account_xls)
+        pop.open()
+
+    def delete_Personal_Information_OK(self, *args):
+        os.remove("Personal_Information.xls")
+        self.current= 'main'
+
+    def load_account_data(self):
+        self.mgr10.ids._name.text = str(self.df_account['Name'][0])
+        self.mgr10.ids._last_name.text = str(self.df_account['Last name'][0])
+        self.mgr10.ids._mobile_number.text = str(self.df_account['Mobile number'][0])
+        self.mgr10.ids._home_number.text = str(self.df_account['Home number'][0])
+        self.mgr10.ids._address.text = str(self.df_account['Address'][0])
+        self.mgr10.ids._postal_code.text = str(self.df_account['Postal code'][0])
+        self.mgr10.ids._email.text = str(self.df_account['Email'][0])
+
+    def clear_account_data(self):
+        self.mgr10.ids._name.str = ''
+        self.mgr10.ids._name.text = ''
+        self.mgr10.ids._last_name.str = ''
+        self.mgr10.ids._last_name.text = ''
+        self.mgr10.ids._mobile_number.str = ''
+        self.mgr10.ids._mobile_number.text = ''
+        self.mgr10.ids._home_number.str = ''
+        self.mgr10.ids._home_number.text = ''
+        self.mgr10.ids._address.str = ''
+        self.mgr10.ids._address.text = ''
+        self.mgr10.ids._postal_code.str = ''
+        self.mgr10.ids._postal_code.text = ''
+        self.mgr10.ids._email.str = ''
+        self.mgr10.ids._email.text = ''
+
     def print(self):
         self.pos_scroll_main = (self.height - self.mgr1.mgr5.height) / self.height 
         print(self.pos_scroll_main, self.mgr1.mgr5.height)
@@ -443,11 +534,6 @@ class MainScreen(ScreenManager):
         print('OK3')
     def print4(self):
         print('OK4')
-
-class PopupBox(Popup):
-    pop_up_text = ObjectProperty()
-    def update_pop_up_text(self, p_message):
-        self.pop_up_text.text = p_message
 
 class DigiApp(MDApp):
     def build(self):

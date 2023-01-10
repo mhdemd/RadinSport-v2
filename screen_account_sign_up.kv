@@ -1,0 +1,187 @@
+#:import MDTextFieldPersianrect persianuixrect.MDTextFieldPersianrect
+
+<Sign_up@Screen>:
+    name: "signup"
+    mgr1: _sc
+    ScrollView:
+        id: _sc
+        effect_cls: 'ScrollEffect'
+        bar_width: 0
+        BoxLayout:
+            orientation:'vertical'
+            size_hint_y: None
+            height: self.minimum_height  
+            padding:mm(2), 0, mm(2), mm(20)
+            spacing: 0
+            MDLabel:
+                halign: 'center'
+                font_size: sp(14)
+                text: get_display(arabic_reshaper.reshape('فرم ثبت مشخصات'))
+                size_hint_y: None
+                height: mm(6)
+            Widget:
+                size_hint_y: None
+                height: dp(5)
+                canvas:
+                    Color:
+                        rgba: 128/255, 128/255, 128/255, .1
+                    Rectangle:
+                        pos: dp(0), self.y
+                        size: root.width - dp(0), self.height
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: None
+                height: mm(16)
+                BoxLayout:
+                    orientation:'vertical'
+                    MDLabel:
+                        halign: 'right'
+                        font_size: sp(12)
+                        text: get_display(arabic_reshaper.reshape('نام خانوادگی:'))
+                        size_hint_y: None
+                        height: mm(6)
+
+                    MDTextFieldPersianrect:
+                        id: _last_name
+                        base_direction: 'rtl'
+                        multiline: False
+                        font_size: sp(12)
+                        size_hint: 1, None
+                        height: mm(6)
+                        
+                        helper_text_mode: "on_error"
+                        helper_text: "Enter text"
+                BoxLayout:
+                    orientation:'vertical'
+                    MDLabel:
+                        halign: 'right'
+                        font_size: sp(12)
+                        text: get_display(arabic_reshaper.reshape('نام:'))
+                        size_hint_y: None
+                        height: mm(6)
+
+                    MDTextFieldPersianrect:
+                        id: _name
+                        base_direction: 'rtl'
+                        multiline: False
+                        font_size: sp(12)
+                        
+                        helper_text_mode: "on_error"
+                        helper_text: "Enter text"
+                        size_hint: 1, None
+                        height: mm(6)
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: None
+                height: mm(16)
+                BoxLayout:
+                    orientation:'vertical'
+                    MDLabel:
+                        halign: 'right'
+                        font_size: sp(12)
+                        text: get_display(arabic_reshaper.reshape('شماره تلفن همراه:'))
+                        size_hint_y: None
+                        height: mm(6)
+
+                    MDTextFieldPersianrect:
+                        id: _mobile_number
+                        base_direction: 'rtl'
+                        multiline: False
+                        font_size: sp(12)
+                        
+                        helper_text_mode: "on_error"
+                        helper_text: "Enter text"
+                        size_hint: 1, None
+                        height: mm(6)
+                BoxLayout:
+                    orientation:'vertical'
+                    MDLabel:
+                        halign: 'right'
+                        font_size: sp(12)
+                        text: get_display(arabic_reshaper.reshape('شماره تلفن ثابت:'))
+                        size_hint_y: None
+                        height: mm(6)
+
+                    MDTextFieldPersianrect:
+                        id: _home_number
+                        base_direction: 'rtl'
+                        multiline: False
+                        font_size: sp(12)
+                        size_hint: 1, None
+                        height: mm(6)
+            MDLabel:
+                halign: 'right'
+                font_size: sp(12)
+                text: get_display(arabic_reshaper.reshape('آدرس:'))
+                size_hint_y: None
+                height: mm(6)
+
+            MDTextFieldPersianrect:
+                id: _address
+                base_direction: 'rtl'
+                font_size: sp(12)
+                
+                helper_text_mode: "on_error"
+                helper_text: "Enter text"
+                size_hint: 1, None
+                height: mm(16)
+                multiline: True
+            Label:
+                size_hint_y: None
+                height: dp(15)
+            MDLabel:
+                halign: 'right'
+                font_size: sp(12)
+                text: get_display(arabic_reshaper.reshape('کد پستی:'))
+                size_hint_y: None
+                height: mm(6)
+
+            MDTextFieldPersianrect:
+                id: _postal_code
+                base_direction: 'rtl'
+                multiline: False
+                
+                font_size: sp(12)
+                
+                helper_text_mode: "on_error"
+                helper_text: "Enter text"
+                size_hint: 1, None
+                height: mm(6)
+            Label:
+                size_hint_y: None
+                height: dp(15)
+            MDLabel:
+                halign: 'right'
+                font_size: sp(12)
+                text: get_display(arabic_reshaper.reshape('ایمیل:'))
+                size_hint_y: None
+                height: mm(6)
+
+            MDTextFieldPersianrect:
+                id: _email
+                base_direction: 'rtl'
+                multiline: False
+                
+                font_size: sp(12)
+                size_hint: 1, None
+                height: mm(6)
+            Label:
+                size_hint_y: None
+                height: dp(15)
+            MDLabel:
+                halign: 'right'
+                font_size: sp(12)
+                size_hint_y: None
+                height: mm(6)
+
+            MDFillRoundFlatButton:
+                text: get_display(arabic_reshaper.reshape('ذخیره مشخصات')) 
+                md_bg_color: "red"
+                pos_hint: {'center_x': .5}
+                on_press:
+                    app.root.sign_up()
+                    app.root.open_account_xls()
+            Label:
+                size_hint_y: None
+                height: mm(40)
+           
