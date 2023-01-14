@@ -14,10 +14,9 @@
             halign: "left"
             valign: 'bottom'
             on_press:
-                
                 app.root.show_popup('')
             on_release:
-                Clock.schedule_once(partial(app.root.open_category, root.cat), 0.005)
+                Clock.schedule_once(partial(app.root.open_category, root.cat), 0.75)
         BoxLayout:
             orientation:'vertical'
             MDLabel:

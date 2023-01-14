@@ -23,7 +23,7 @@
                 on_text_validate: 
                     app.root.show_popup('')
                 on_text_validate: 
-                    Clock.schedule_once(partial(app.root.Search_in_search_bar, self.text), 0.05)
+                    Clock.schedule_once(partial(app.root.Search_in_search_bar, self.text), 0.75)
                     #app.root.Search_in_search_bar(self.text) 
             MDIconButton:
                 icon: "arrow-right"

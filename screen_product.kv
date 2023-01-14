@@ -3,7 +3,7 @@
 <Product>:
     name: "product"
     mgr1: _scroll_view3
-    mgr2: _swiper
+    #mgr2: _swiper
     dkp: ''
     title: ''
     price: ''
@@ -34,59 +34,57 @@
                 on_press:
                     app.root.mgr7.mgr1.canvas.after.get_group('a')[0].source='img/App/nav3.jpg'
                     app.root.current= 'order'
-        MDSwiper:
-            id: _swiper
-            size_hint_y: None
-            height: dp(260)#root.height  - dp(40)
+                
 
         ScrollView3:
             id: _scroll_view3
-            size_hint:(1, 6/13)
+            #size_hint:(1, 6/13)
+
         BoxLayout:
             size_hint_y: None
             height: dp(65)
             orientation: 'horizontal'
-            padding: dp(10), dp(5), dp(10), dp(5)
-            spacing: dp(10)
-            GridLayout:
-                padding: dp(5), 0, 0, dp(5)
-                size_hint: .6, 1
-                cols: 2
+            padding: dp(2), dp(1), dp(2), dp(1)
+            spacing: dp(2)
+            BoxLayout:
+                orientation:'vertical'
+                padding: dp(2), 0, 0, dp(2)
+                size_hint: .5, 1
                 MDLabel:
-                    font_size:'14sp'
+                    font_size:'12sp'
                     text: '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(str(root.price_off)))) if root.off != 0 else '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(str(root.price))))
                     #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
                     halign: "center"
-                MDLabel:
-                    canvas.before:
-                        Color:
-                            rgba: 1, 0, 0, 1
-                        RoundedRectangle:
-                            pos: self.center_x - dp(18), self.center_y  - dp(10) 
-                            size: [mm(6), self.texture_size[1]] if root.off != 0 else [.05, .05]
-                            radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
-                    font_size:'12sp'
-                    text: get_display(arabic_reshaper.reshape('%s٪'%(root.off))) if root.off != 0 else ''
-                    #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-                    halign: "center"    
                 MDLabel:
                     canvas.after:
                         Color:
                             rgba: 1, 0, 0, 1
                         Line:
-                            points: [self.x + dp(10) , self.y + dp(5), self.x + self.width - dp(10), self.y + self.height - dp(5)]
+                            points: [self.x + self.width / 3 , self.y + dp(5), self.x + self.width - self.width / 3, self.y + self.height - dp(5)]
                             width: 1 if root.off != 0 else 0.0000001
-                    font_size:'12sp'
+                    font_size:'10sp'
                     text: get_display(arabic_reshaper.reshape('%s'%(root.price))) if root.off != 0 else ''
                     #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
                     halign: "center"
             MDLabel:
-                size_hint: .15, 1
+                size_hint: .2, 1
+                canvas.before:
+                    Color:
+                        rgba: 1, 0, 0, 1
+                    RoundedRectangle:
+                        pos: self.center_x - dp(18), self.center_y  - dp(10) 
+                        size: [mm(6), self.texture_size[1]] if root.off != 0 else [.05, .05]
+                        radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
+                font_size:'10sp'
+                text: get_display(arabic_reshaper.reshape('%s٪'%(root.off))) if root.off != 0 else ''
+                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                halign: "center"    
+
             MDFillRoundFlatButton:
                 md_bg_color: "red"
-                size_hint: .25, .7
+                size_hint: .3, .7
                 pos_hint: {'center_y': .5}
-                text: get_display(arabic_reshaper.reshape('افزودن به سبد خرید'))
+                text: get_display(arabic_reshaper.reshape('افزودن به سبد'))
                 #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
                 on_press:
                     app.root.mgr7.mgr2.add_to_order()
@@ -95,21 +93,6 @@
                     app.root.current='order'
                     app.root.mgr7.mgr1.canvas.after.get_group('a')[0].source='img/App/nav3.jpg'
 
-<MySwiper>:
-    source: ''
-    Button:
-        id: _but
-        size_hint: None, None
-        size: dp(260), dp(260)
-        background_color: 0, 0, 0, 0
-        canvas.after:
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]   
-                source: root.source #app.root.mgr5.source 
-        on_press:
-            app.root.zoom_product_image(root.source)
             
 <scatter>: 
     do_rotation: False

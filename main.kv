@@ -41,36 +41,40 @@
         orientation: 'vertical'
         ScrollMain:
             id: _scroll_main
-            pos_hint: {'top': 0.9496062978108724 }
+            pos_hint: {'top': 0.96}
         SearchBar:
             id: _search_bar
             pos_hint: {'top': 1}
             #size_hint:(1, 1/13)
             size_hint_y: None
-            height: mm(8)
+            height: (140 / 1080) * self.width 
         BottomNavigation:
             id: _bot_nav
             size_hint_y: None
-            height: mm(9)#dp(47)
-    #MDSpinner:
-    #    id: _spinner
-    #    color: [1, 0, 0, 0]
-    #    determinate: True
-    #    active: False
-    #    size_hint: None, None
-    #    size: dp(46), dp(46)
-    #    pos_hint: {'center_x': .5, 'center_y': .5}
+            height: (140 / 1080) * self.width 
 
 <PopupBox>:
-    pop_up_text: _pop_up_text
     size_hint: .55, .15
     auto_dismiss: True
-    title: ""
-    separator_color: 1, 0, 0, 0.5
+    title: ''
+    title_align: 'center'
+    separator_height: 0
+    #separator_color: 1, 0, 0, 0.5
     BoxLayout:
-        orientation: "vertical"
+        orientation: "horizontal"
+        size_hint: 1, None
+        size: dp(50), dp(50)
+        pos_hint: {'center_x': .5, 'center_y': .5}
         Label:
-            id: _pop_up_text
-            text: '' 
-            #font_name: "XB Niloofar.ttf"
+            text:''
+        MDSpinner:
+            id: _spinner
+            color: [1, 0, 0, 0]
+            determinate: True
+            active: True
+            size_hint: None, None
+            size: dp(48), dp(48)
+            pos_hint: {'center_x': .5, 'center_y': .5}
+        Label:
+            text:''
 

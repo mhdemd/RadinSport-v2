@@ -24,7 +24,7 @@
             root.nav_bot_source= 'img/App/nav2.jpg'
         on_release:
             app.root.mgr6.mgr1.canvas.after.get_group('a')[0].source='img/App/nav2.jpg'
-            Clock.schedule_once(partial(app.root.open_category, 'H'), 0.005)
+            Clock.schedule_once(partial(app.root.open_category, 'H'), 0.75)
     ToggleButton: 
         group: "x"
         on_press: 
@@ -43,7 +43,7 @@
             #app.root.open_grouping()
         on_release:
             app.root.mgr8.mgr1.canvas.after.get_group('a')[0].source='img/App/nav4.jpg'
-            Clock.schedule_once(partial(app.root.open_grouping), 0.005)
+            Clock.schedule_once(partial(app.root.open_grouping), 0.75)
 
     ToggleButton: 
         group: "x"

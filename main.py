@@ -1,33 +1,34 @@
-from kivy.app import App
+#from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from kivy.uix.gridlayout import GridLayout
-from kivy.properties import ObjectProperty, StringProperty
-from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
+#from kivy.uix.gridlayout import GridLayout
+from kivy.properties import ObjectProperty
+from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.clock import Clock
 from kivy.core.window import Window
-from kivy.uix.widget import Widget
+#from kivy.uix.widget import Widget
 from kivy.factory import Factory
 from kivy.uix.recycleview import RecycleView
-from kivy.utils import rgba
+#from kivy.utils import rgba
 from kivy.uix.popup import Popup
-from kivy.uix.label import Label
+#from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.scatter import Scatter
+from kivy.uix.carousel import Carousel
 
 import os
 from kivymd.app import MDApp
 import arabic_reshaper 
 from bidi.algorithm import get_display 
-from kivymd.uix.behaviors.toggle_behavior import MDToggleButton
+#from kivymd.uix.behaviors.toggle_behavior import MDToggleButton
 import pandas as pd #openpyxl
 from kivymd.uix.swiper import MDSwiperItem
 from kivymd.uix.button import MDRoundFlatIconButton
 import random
 import webbrowser
-import time
+#import time
 
 dataframe_products = pd.read_excel (r'products.xls')
 dataframe_products = dataframe_products.astype({"price_off": int})
@@ -89,6 +90,14 @@ class ScrollView3(ScrollView):
         super().on_scroll_move(touch)
         touch.ud['sv.handled']['y'] = False 
 
+    def on_touch_down(self, touch):
+        self.ids._carousel_.on_touch_down(touch)
+        return super().on_touch_down(touch)
+
+    def on_touch_up(self, touch):
+        self.ids._carousel_.on_touch_up(touch)
+        return super().on_touch_up(touch)
+
 class ScrollView4(ScrollView):
     # screen_product_scroll3.kv
     def on_scroll_move(self, touch):
@@ -100,6 +109,28 @@ class ScrollView5(ScrollView):
     def on_scroll_move(self, touch):
         super().on_scroll_move(touch)
         touch.ud['sv.handled']['y'] = False 
+
+class Carousel_product(Carousel):
+    def on_scroll_move(self, touch):
+        super().on_scroll_move(touch)
+        touch.ud['sv.handled']['y'] = False 
+
+    def on_touch_down(self, touch):
+        self.x1 = touch.pos[0]
+
+    def on_touch_up(self, touch):
+        self.x2 = touch.pos[0]
+        if (self.x1 - self.x2) > 0 and touch.spos[1] > 0.43: 
+            if self.index >= len(self.slides) - 1:
+                pass
+            else:
+                self.load_slide((self.slides)[ self.index + 1])
+
+        elif (self.x1 - self.x2) < 0 and touch.spos[1] > 0.43: 
+            if self.index <= 0:
+                pass
+            else:
+                self.load_slide((self.slides)[ self.index - 1])
 
 class Cat(ScrollView):
     # screen_product_scroll3.kv
@@ -186,7 +217,7 @@ class Off(Screen):
 class PopupBox(Popup):
     pop_up_text = ObjectProperty()
     def update_pop_up_text(self, p_message):
-        self.pop_up_text.text = p_message
+        self.title = p_message
 
 class MainScreen(ScreenManager):
     category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش', 'R': 'طناب', 'PI': 'پیلاتس و بدنسازی'}
@@ -221,18 +252,21 @@ class MainScreen(ScreenManager):
         self.mgr7.mgr2.dkp = DKP
         self.mgr5.mgr1.sizee = dataframe_products[(dataframe_products['DKP'] == DKP) ]['size'].values[0]
         self.mgr5.icon = "cards-heart-outline"
-        # Delete all Swiper's children
-        self.mgr5.mgr2.children[0].clear_widgets()
+        # Delete all carousel's children
+        try:
+            self.mgr5.mgr1.ids._carousel_.clear_widgets()
+        except:
+            pass
         # Add title
         self.mgr5.title = dataframe_products[(dataframe_products['DKP'] == DKP) ]['title'].values[0]
         self.mgr7.mgr2.title = self.mgr5.title
         # Calculate the number of photos
         directory_path = 'img/Products/%s'%(DKP)
         No_of_files = len(os.listdir(directory_path))
-        self.mgr5.mgr2.set_current(0)
-        # Add photos to Swiper
+        # Add photos to carousel
         for i in range(No_of_files):
-            self.mgr5.mgr2.add_widget(Factory.MySwiper(source= 'img/Products/%s/%s-%s.jpg'%(DKP, DKP, i)))
+            self.mgr5.mgr1.ids._carousel_.add_widget(Image(source= 'img/Products/%s/%s-%s.jpg'%(DKP, DKP, i), size_hint= (1, 1), allow_stretch= True ))
+        self.mgr5.mgr1.ids._carousel_.load_slide((self.mgr5.mgr1.ids._carousel_.slides)[0])
         # Creating a list of colors in Farsi and English
         list_colors = dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['stock'] != 0) ]['color'].tolist()
         list_colors_fa = dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['stock'] != 0) ]['color-fa'].tolist()
@@ -315,10 +349,10 @@ class MainScreen(ScreenManager):
     def changeـheartـicon(self):
         self.mgr5.icon = 'cards-heart'
 
-    def zoom_product_image(self, source):
-        self.pop = Popup(title='', content=Factory.scatter(source= source),
-                    size_hint=(None, None), size=(self.width, self.width),separator_height= 0)
-        self.pop.open()
+    #def zoom_product_image(self, source):
+    #    self.pop = Popup(title='', content=Factory.scatter(source= source),
+    #                size_hint=(None, None), size=(self.width, self.width),separator_height= 0)
+    #    self.pop.open()
 
     def close_image_pop(self):
         try:
@@ -370,7 +404,7 @@ class MainScreen(ScreenManager):
         RV_Category.data = [item for item in self.items_in_category_screen]
         self.mgr6.mgr2.refresh_from_data()
         self.current = "off"
-        self.active_page = 'off'
+        #self.active_page = 'off'
         self.active_page_variable = cat
 
         try:

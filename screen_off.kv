@@ -103,7 +103,8 @@
                     icon: "window-close"
                     pos_hint: {"center_x": .95, "top": 1}
                     on_press:
-                        app.root.current= app.root.active_page_main
+                        app.root.current= app.root.active_page
+                        print(app.root.active_page)
 
         Widget:
             size_hint_y: None

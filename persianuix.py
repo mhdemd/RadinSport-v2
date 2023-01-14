@@ -32,7 +32,6 @@ class MDTextFieldPersian(MDTextField):
         self.text = get_display(arabic_reshaper.reshape(self.str))
 
 class MainApp(MDApp):
-
     def build(self):
         return MDTextFieldPersian()
 

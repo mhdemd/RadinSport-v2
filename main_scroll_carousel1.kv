@@ -1,12 +1,13 @@
 <Carousel1@BoxLayout>:
     orientation: 'horizontal'
-    size_hint: None, 1.01
+    #size_hint: None, 1
+    #height: (523 / 1080) * self.width 
     width: self.minimum_width
     Carousel:
         id: _carousel_
         size_hint: None, None
         loop: True
-        size: root.width, dp(210)
+        size: root.width, (523 / 1080) * root.width 
         ignore_perpendicular_swipes: False
         min_move: 0.02
         scroll_distance: dp(0.01)
