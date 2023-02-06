@@ -14,9 +14,10 @@ from kivy.uix.recycleview import RecycleView
 #from kivy.utils import rgba
 from kivy.uix.popup import Popup
 #from kivy.uix.label import Label
-from kivy.uix.image import Image
-from kivy.uix.scatter import Scatter
+from kivy.uix.image import Image, AsyncImage
 from kivy.uix.carousel import Carousel
+from kivy.uix.behaviors import ButtonBehavior
+from kivy.loader import Loader
 
 import os
 from kivymd.app import MDApp
@@ -28,7 +29,10 @@ from kivymd.uix.swiper import MDSwiperItem
 from kivymd.uix.button import MDRoundFlatIconButton
 import random
 import webbrowser
-#import time
+from ftpretty import ftpretty
+
+f = ftpretty('31.7.73.165', 'mahdiem3', '2(v3Hj(6InRxG9')
+
 
 dataframe_products = pd.read_excel (r'products.xls')
 dataframe_products = dataframe_products.astype({"price_off": int})
@@ -36,7 +40,7 @@ dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
 
 items_in_order_screen = []
 items_in_category_screen = []
- 
+
 #Window.size = (350, 610)
 
 Builder.load_file('main.kv')
@@ -85,6 +89,8 @@ class ScrollView3(ScrollView):
     price_off = ObjectProperty()
     off = ObjectProperty()
     sizee = ObjectProperty()
+    slide_num = ObjectProperty()
+    slide_len = ObjectProperty()
 
     def on_scroll_move(self, touch):
         super().on_scroll_move(touch)
@@ -111,6 +117,8 @@ class ScrollView5(ScrollView):
         touch.ud['sv.handled']['y'] = False 
 
 class Carousel_product(Carousel):
+    temp = 1
+    x1 = 0
     def on_scroll_move(self, touch):
         super().on_scroll_move(touch)
         touch.ud['sv.handled']['y'] = False 
@@ -125,12 +133,16 @@ class Carousel_product(Carousel):
                 pass
             else:
                 self.load_slide((self.slides)[ self.index + 1])
-
+                self.temp = self.temp + 1
+                self.parent.parent.slide_num = self.temp
+                
         elif (self.x1 - self.x2) < 0 and touch.spos[1] > 0.43: 
             if self.index <= 0:
                 pass
             else:
                 self.load_slide((self.slides)[ self.index - 1])
+                self.temp = self.temp - 1
+                self.parent.parent.slide_num = self.index
 
 class Cat(ScrollView):
     # screen_product_scroll3.kv
@@ -157,7 +169,7 @@ class RV_Order(RecycleView):
 
     def add_to_order(self):
         items_in_order_screen.append(
-            {"DKP": '%s'%(self.dkp), 'image': 'img/Products/%s/%s-0.jpg'%(self.dkp, self.dkp), 'title': self.title, 'price_off': str(self.price_off), 'price': str(self.price), 'color_en': self.icon_color, 'color_fa': get_display(arabic_reshaper.reshape(self.color_fa))}
+            {"DKP": '%s'%(self.dkp), 'image': 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(self.dkp, self.dkp), 'title': self.title, 'price_off': str(self.price_off), 'price': str(self.price), 'color_en': self.icon_color, 'color_fa': get_display(arabic_reshaper.reshape(self.color_fa))}
         )
         self.total = 0
         for i in range(len(items_in_order_screen)):
@@ -205,11 +217,22 @@ class Product(Screen):
 class Search(Screen):
     source = ObjectProperty()
 
-class Button_scroll5(Button):
+class Button_scroll5(ButtonBehavior, AsyncImage):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
     image_source = ObjectProperty()
 
-class scatter(Scatter):
-    source = ObjectProperty()
+class BoxLayout_mainscroll_scroll1(ButtonBehavior, BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+class BoxLayout_mainscroll_scroll2(ButtonBehavior, BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+class MyBoxLayoutCat(ButtonBehavior, BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
 class Off(Screen):
     title = ObjectProperty() 
@@ -239,10 +262,9 @@ class MainScreen(ScreenManager):
                 DigiApp.get_running_app().root_window.minimize()
                 return True
 
-    def open_product_screen(self, DKP):  
+    def open_product_screen(self, DKP, arg): 
         try:
-            DKP.split('/')
-            DKP = int(DKP.split('/')[3].split('-')[0])
+            DKP = int(DKP.split('/')[4])
         except:
             pass
         self.mgr5.mgr1.mgr2.scroll_x = 1
@@ -261,17 +283,20 @@ class MainScreen(ScreenManager):
         self.mgr5.title = dataframe_products[(dataframe_products['DKP'] == DKP) ]['title'].values[0]
         self.mgr7.mgr2.title = self.mgr5.title
         # Calculate the number of photos
-        directory_path = 'img/Products/%s'%(DKP)
-        No_of_files = len(os.listdir(directory_path))
+        No_of_files = len(f.list('/my_upload/%s'%(DKP))) - 3
         # Add photos to carousel
+        self.mgr5.mgr1.slide_len = No_of_files
+        self.mgr5.mgr1.slide_num = '1'
+        self.mgr5.mgr1.ids._carousel_.temp = 1
         for i in range(No_of_files):
-            self.mgr5.mgr1.ids._carousel_.add_widget(Image(source= 'img/Products/%s/%s-%s.jpg'%(DKP, DKP, i), size_hint= (1, 1), allow_stretch= True ))
+            self.mgr5.mgr1.ids._carousel_.add_widget(AsyncImage(source= 'http://mahdiemadi.ir/Products/%s/%s-%s.jpg'%(DKP, DKP, i), size_hint= (1, 1), allow_stretch= True ))
         self.mgr5.mgr1.ids._carousel_.load_slide((self.mgr5.mgr1.ids._carousel_.slides)[0])
         # Creating a list of colors in Farsi and English
         list_colors = dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['stock'] != 0) ]['color'].tolist()
         list_colors_fa = dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['stock'] != 0) ]['color-fa'].tolist()
         # Calculate the number of colors in stock
         self.mgr5.mgr1.mgr1.cols= len(list_colors)
+        self.number_of_color= len(list_colors)
         # Delete all color_scrollview's children
         try:
             self.mgr5.mgr1.mgr1.clear_widgets()
@@ -306,7 +331,7 @@ class MainScreen(ScreenManager):
             self.mgr5.mgr1.mgr2.ids._GridLayout.clear_widgets()
         except:
             pass
-        ## Get categories
+    ## Get categories
         cat = dataframe_products[(dataframe_products['DKP'] == DKP) ]['cat'].values[0]   
         ## Create list of DKPs in our category without repeat
         list_cat = dataframe_products[(dataframe_products['cat'] == cat) & (dataframe_products['stock'] != 0) ]['DKP'].drop_duplicates().tolist()
@@ -315,9 +340,14 @@ class MainScreen(ScreenManager):
         ## Select 5 category randomly
         List_similar_product = random.sample(list_cat, 5 if len(list_cat) >= 5 else len(list_cat))
         for i in range(len(List_similar_product)):
-            self.mgr5.mgr1.mgr2.ids._GridLayout.add_widget(Factory.Button_scroll5(image_source= 'img/Products/%s/%s-0.jpg'%(List_similar_product[i], List_similar_product[i]) ))
+            self.mgr5.mgr1.mgr2.ids._GridLayout.add_widget(Factory.Button_scroll5(image_source= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(List_similar_product[i], List_similar_product[i]) ))
         # Set current screen
         self.current= "product"
+        try:
+            if self.pop_up:
+                self.pop_up.dismiss()
+        except: 
+            pass
 
     def Price_change_with_variety_change(self, icon_color, color_fa):
         price = int(dataframe_products[(dataframe_products['DKP'] == self.mgr5.dkp) & (dataframe_products['color'] == icon_color) ]['price'].values[0])
@@ -348,18 +378,6 @@ class MainScreen(ScreenManager):
 
     def changeـheartـicon(self):
         self.mgr5.icon = 'cards-heart'
-
-    #def zoom_product_image(self, source):
-    #    self.pop = Popup(title='', content=Factory.scatter(source= source),
-    #                size_hint=(None, None), size=(self.width, self.width),separator_height= 0)
-    #    self.pop.open()
-
-    def close_image_pop(self):
-        try:
-            if self.pop:
-                self.pop.dismiss()
-        except: 
-            pass
 
     def open_category(self, cat, arg):
         self.mgr6.ids._RecycleView_category.scroll_y=1 
@@ -394,7 +412,7 @@ class MainScreen(ScreenManager):
 
             self.items_in_category_screen.append(
                 {'title1': get_display(arabic_reshaper.reshape(title)),
-                'source1': 'img/Products/%s/%s-0.jpg'%(filtered_df.iloc[i]['DKP'], filtered_df.iloc[i]['DKP']),
+                'source1': 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(filtered_df.iloc[i]['DKP'], filtered_df.iloc[i]['DKP']),
                   'detail_3_1': get_display(arabic_reshaper.reshape(filtered_df.iloc[i]['detail_3'])),
                     'detail_4_1': get_display(arabic_reshaper.reshape(filtered_df.iloc[i]['detail_4'])),
                       'price1': price,
@@ -449,10 +467,9 @@ class MainScreen(ScreenManager):
                 DKP_list = dataframe_products[dataframe_products['cat'] == list_[i]]['DKP'].drop_duplicates().to_list()  
 
                 for j in range(len(DKP_list) if len(DKP_list) < 5 else 5):
-                    cat_.ids._grid.add_widget(Button(
-                    background_normal= 'img/Products/%s/%s-%s.jpg'%(DKP_list[j], DKP_list[j], 0),
-                    background_down= 'img/Products/%s/%s-%s.jpg'%(DKP_list[j], DKP_list[j], 0),
-                    size_hint= (None, None), width= '17mm', height= '17mm'
+                    cat_.ids._grid.add_widget(AsyncImage(
+                    source= 'http://mahdiemadi.ir/Products/%s/%s-%s-v_200-h_200-q_90.jpg'%(DKP_list[j], DKP_list[j], 0),
+                    size_hint= (None, None), width= '17mm', height= '17mm', allow_stretch= True
                         ))
 
                 category_boxlayout.add_widget(cat_)
@@ -465,7 +482,7 @@ class MainScreen(ScreenManager):
             pass
 
     def show_popup(self, args):
-        reshaped_loading = arabic_reshaper.reshape("لطفاً منتظر بمانید")
+        reshaped_loading = arabic_reshaper.reshape("لطفاً شکیبا باشید")
         bidi_loading = get_display(reshaped_loading)
         self.pop_up = Factory.PopupBox()
         self.pop_up.update_pop_up_text(bidi_loading)
@@ -482,14 +499,12 @@ class MainScreen(ScreenManager):
         if self.mgr10.ids._name.text == '' or \
         self.mgr10.ids._last_name.text == '' or \
         self.mgr10.ids._mobile_number.text == '' or \
-        self.mgr10.ids._home_number.text == '' or \
         self.mgr10.ids._address.text == '' or \
-        self.mgr10.ids._postal_code.text == '' or \
-        self.mgr10.ids._email.text == '':
+        self.mgr10.ids._postal_code.text == '':
 
             # create content and add to the popup
-            content = Button(text= get_display(arabic_reshaper.reshape('تکمیل فرم')), size_hint=(1, None), size=('20mm', '6mm'))
-            pop = Popup(title= get_display(arabic_reshaper.reshape('پر کردن تمامی موارد الزامیست')), content= content,
+            content = Button(text= get_display(arabic_reshaper.reshape('بازگشت')), size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(arabic_reshaper.reshape('لطفاً موارد الزامی پر شود')), content= content,
             title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
             # bind the on_press event of the button to the dismiss function
             content.bind(on_press=pop.dismiss)
@@ -571,6 +586,7 @@ class MainScreen(ScreenManager):
 
 class DigiApp(MDApp):
     def build(self):
+        Loader.loading_image = 'img/loading1.zip'
         self.theme_cls.primary_palette = "Gray"
         self.theme_cls.primary_hue = "900"
         self.theme_cls.accent_palette = "Blue"
@@ -594,7 +610,8 @@ class DigiApp(MDApp):
             if len(text_title) > 20:
                 text_title = text_title[:17] + '...'
             self.root.mgr1.mgr3.mgr2.text_title= text_title
-            self.root.mgr1.mgr3.mgr2.source_image= 'img/Products/%s/%s-0.jpg'%(dkp, dkp)
+            # Add image from host  
+            self.root.mgr1.mgr3.mgr2.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(dkp, dkp)
             self.root.mgr1.mgr3.mgr2.detail_1= dataframe_products[(dataframe_products['DKP'] == dkp)]['detail_3'].tolist()[0]
             self.root.mgr1.mgr3.mgr2.detail_2= dataframe_products[(dataframe_products['DKP'] == dkp)]['detail_4'].tolist()[0]
             self.root.mgr1.mgr3.mgr2.off= str(dataframe_products[(dataframe_products['DKP'] == dkp)]['off'].tolist()[0])
@@ -613,7 +630,8 @@ class DigiApp(MDApp):
             if len(text_title) > 20:
                 text_title = text_title[:17] + '...'
             self.root.mgr1.mgr3.mgr3.text_title= text_title
-            self.root.mgr1.mgr3.mgr3.source_image= 'img/Products/%s/%s-0.jpg'%(dkp_Gl, dkp_Gl)
+            # Add image from host
+            self.root.mgr1.mgr3.mgr3.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(dkp_Gl, dkp_Gl)
             self.root.mgr1.mgr3.mgr3.detail_1= dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['detail_3'].tolist()[0]
             self.root.mgr1.mgr3.mgr3.detail_2= dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['detail_4'].tolist()[0]
             self.root.mgr1.mgr3.mgr3.off= str(dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['off'].tolist()[0])
@@ -623,5 +641,6 @@ class DigiApp(MDApp):
             self.root.mgr1.mgr3.mgr3.price_off= f'{price_off:,}'
             self.root.mgr1.mgr3.mgr3.mgr1.add_widget(Factory.BoxLayout_mainscroll_scroll2())
         
-if __name__=="__main__":
+if __name__== "__main__":
     DigiApp().run()
+ 

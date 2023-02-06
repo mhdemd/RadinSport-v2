@@ -1,4 +1,4 @@
-<MyBoxLayoutCat@BoxLayout>:
+<MyBoxLayoutCat>:
     title1: ''
     source1: ''
     detail_3_1: ''
@@ -6,6 +6,12 @@
     price1: ''
     off1: ''
     price_off1: ''
+    on_press:   
+        app.root.show_popup('')
+        app.root.mgr5.mgr1.scroll_y=1
+    on_release:
+        Clock.schedule_once(partial(app.root.open_product_screen, root.source1), 0.75)
+            
     BoxLayout:
         canvas:
             Color:
@@ -27,8 +33,9 @@
             size_hint: 1, 0.1
         BoxLayout:
             size_hint: 1, 0.5
-            Image:
-                source: root.source1 # 'img/Products/2465152.jpg'     
+            AsyncImage: 
+                source: root.source1 # 'img/Products/2465152.jpg'   
+                allow_stretch: True
         MDLabel:
             font_size:'10sp'
             text: '%s \n %s'%(root.detail_3_1, root.detail_4_1)  #%(get_display(arabic_reshaper.reshape('کلاه نایک ساخت چین')), get_display(arabic_reshaper.reshape('دارای ضمانت ۶ ماهه رادین کالا')))
@@ -68,15 +75,15 @@
                 text: root.price1 if root.off1 != '0' else ''
                 #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
                 halign: "center"
-        MDRoundFlatButton:
-            size_hint:  0.7, 0.05
-            text: get_display(arabic_reshaper.reshape('سفارش کالا'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
-            line_color: 238/255,70/255,87/255,1
-            pos_hint:{"center_x": .5}
-            on_press:
-                app.root.open_product_screen(root.source1) 
-                app.root.mgr5.mgr1.scroll_y=1
+        #MDRoundFlatButton:
+        #    size_hint:  0.7, 0.05
+        #    text: get_display(arabic_reshaper.reshape('سفارش کالا'))
+        #    #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+        #    line_color: 238/255,70/255,87/255,1
+        #    pos_hint:{"center_x": .5}
+        #    on_press:
+        #        app.root.open_product_screen(root.source1) 
+        #        app.root.mgr5.mgr1.scroll_y=1
 
 
 
@@ -143,4 +150,4 @@
             id: _bot_nav
             #size_hint:(1, 1/13)
             size_hint_y: None
-            height: mm(9)#dp(47)
+            height: (140 / 1080) * self.width 

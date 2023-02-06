@@ -3,14 +3,12 @@
 <Product>:
     name: "product"
     mgr1: _scroll_view3
-    #mgr2: _swiper
     dkp: ''
     title: ''
     price: ''
     price_off: ''
     off: ''
     icon: "cards-heart-outline"
-    
     BoxLayout:
         orientation: 'vertical'
         FloatLayout:
@@ -94,18 +92,3 @@
                     app.root.mgr7.mgr1.canvas.after.get_group('a')[0].source='img/App/nav3.jpg'
 
             
-<scatter>: 
-    do_rotation: False
-    do_translation: False
-    scale_min: 1
-    scale_max: 3
-    source: ''
-
-    FitImage:
-        id: _mgr
-        source: root.source
-        size: root.width, root.width
-    MDIconButton:
-        icon: "window-close"
-        on_press: 
-            app.root.close_image_pop()

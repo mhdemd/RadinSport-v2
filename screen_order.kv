@@ -34,6 +34,7 @@
                     size_hint_y: None
                     height: self.minimum_height
                     orientation: 'vertical'
+                    spacing: dp(20)
 
         BoxLayout:
             orientation: 'horizontal'
@@ -66,12 +67,13 @@
                 height: dp(32)        
                 text: get_display(arabic_reshaper.reshape('ادامه فرایند خرید'))
                 #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                
 
         BottomNavigation:
             id: _bot_nav
             #size_hint:(1, 1/13)
             size_hint_y: None
-            height: mm(9)#dp(47)
+            height: (140 / 1080) * self.width 
 
 <MyButton@BoxLayout>:
     image: ''
@@ -83,6 +85,7 @@
     orientation: 'horizontal'
     size_hint_y: None
     height: dp(150)
+
     BoxLayout:
         orientation: 'vertical'
         size_hint_x: 20/27
@@ -91,7 +94,7 @@
             size_hint_y: 1/5
             halign: 'right'
             font_size: '14sp'       
-            text: get_display(arabic_reshaper.reshape(root.title))
+            text: get_display(arabic_reshaper.reshape(root.title)) if len(root.title) < 30 else get_display(arabic_reshaper.reshape('%s...'%(root.title[:27]))) 
             #font_name: 'font/XB Niloofar.ttf'
         GridLayout:             
             cols: 2
@@ -171,7 +174,7 @@
     BoxLayout:
         orientation: 'vertical'
         size_hint_x: 7/27
-        Image:
+        AsyncImage:
             source: root.image  
 
 <Widget1@Widget>:

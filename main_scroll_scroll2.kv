@@ -8,6 +8,7 @@
     do_scroll_y: False
     height: mm(66)#dp(390)
     scroll_x: 1
+    scroll_distance: dp(1)
     GridLayout:
         id: _GridLayout_scroll1
         canvas.before:
@@ -44,7 +45,7 @@
                 app.root.print()
 
 
-<BoxLayout_mainscroll_scroll2@BoxLayout>:
+<BoxLayout_mainscroll_scroll2>:
     dkp: app.root.mgr1.mgr3.mgr3.dkp_Gl
     canvas:
         Color:
@@ -59,6 +60,12 @@
     orientation: 'vertical' 
     size_hint: None, 1
     size: mm(27), 1
+    on_press:   
+        app.root.show_popup('')
+        app.root.active_page= 'main'
+    on_release:
+        Clock.schedule_once(partial(app.root.open_product_screen, root.dkp), 0.75)
+
     MDLabel:
         font_size:'12sp'
         bold: True
@@ -72,8 +79,10 @@
 
     BoxLayout:
         size_hint: 1, 0.45
-        Image:
+        AsyncImage:
             source: app.root.mgr1.mgr3.mgr3.source_image
+            allow_stretch: True
+            anim_delay: 1
     MDLabel:
         font_size:'10sp'
         text: '%s \n %s'%(get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr3.detail_1)), get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr3.detail_2)))
@@ -112,12 +121,3 @@
             text: get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr3.price_off))
             #font_name: 'font/IRANSansXFaNum-Medium.ttf'
             halign: "center"
-    MDRoundFlatButton:
-        size_hint:  0.7, 0.05
-        text: get_display(arabic_reshaper.reshape('سفارش کالا'))
-        #font_name: 'font/IRANSansXFaNum-Medium.ttf'
-        line_color: 238/255,70/255,87/255,1
-        pos_hint:{"center_x": .5}
-        on_press:
-            app.root.active_page= 'main'
-            app.root.open_product_screen(root.dkp)

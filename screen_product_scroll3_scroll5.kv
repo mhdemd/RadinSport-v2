@@ -24,9 +24,13 @@
         width: self.minimum_width  
 <Button_scroll5>:
     image_source: ''
-    background_normal: root.image_source
+    source: root.image_source
     size_hint: None, None 
     size: (dp(150),dp(150))
-    on_press:
-        app.root.open_product_screen(self.image_source)
-        app.root.mgr5.mgr1.scroll_y=1
+    allow_stretch: True
+    on_press:   
+        app.root.show_popup('')
+        app.root.mgr5.mgr1.scroll_y=1 
+    on_release:
+        Clock.schedule_once(partial(app.root.open_product_screen, self.image_source), 0.75)
+
