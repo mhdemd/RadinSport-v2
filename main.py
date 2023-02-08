@@ -2,6 +2,7 @@
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 #from kivy.uix.gridlayout import GridLayout
 from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -32,7 +33,7 @@ import webbrowser
 from ftpretty import ftpretty
 
 f = ftpretty('31.7.73.165', 'mahdiem3', '2(v3Hj(6InRxG9')
-
+f.get('/domains/mahdiemadi.ir/public_html/excel/products.xls', 'products.xls')
 
 dataframe_products = pd.read_excel (r'products.xls')
 dataframe_products = dataframe_products.astype({"price_off": int})
@@ -244,6 +245,7 @@ class PopupBox(Popup):
 
 class MainScreen(ScreenManager):
     category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش', 'R': 'طناب', 'PI': 'پیلاتس و بدنسازی'}
+    order_on= ''
     # Deine back bottom in android
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
@@ -521,7 +523,10 @@ class MainScreen(ScreenManager):
             }
             df = pd.DataFrame(data=d)
             df.to_excel("Personal_Information.xls")
-            self.current= 'account'
+            if self.order_on == True:
+                self.current= 'order'
+            else:
+                self.current= 'account'
 
     def delete_Personal_Information(self):
         # create content and add to the popup
@@ -569,11 +574,34 @@ class MainScreen(ScreenManager):
         self.mgr10.ids._email.str = ''
         self.mgr10.ids._email.text = ''
 
+    def check_registration(self):
+        # Checking the registration for the next step of the order
+        if os.path.isfile('Personal_Information.xls'):
+            content = Label(text= get_display(arabic_reshaper.reshape('با شما تماس گرفته خواهد شد')), size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(arabic_reshaper.reshape('سفارش با موفقیت ثبت شد')), content= content,
+            title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 5)
+            pop.open()
+
+        else:
+            content = Button(text= get_display(arabic_reshaper.reshape('ثبت نام')), size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(arabic_reshaper.reshape('لطفاٌ ابتدا ثبت نام کنید')), content= content,
+            title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
+            content.bind(on_press=self.change_screen_signup)
+            content.bind(on_release=pop.dismiss)
+            pop.open()
+
+    def change_screen_signup(self,arg):
+        # Opening the registration form if not registered
+        self.order_on= True
+        self.mgr9.mgr1.canvas.after.get_group('a')[0].source='img/App/nav1.jpg'
+        self.mgr9.text1 = '-'
+        self.current= 'signup' 
+
     def print(self):
         self.pos_scroll_main = (self.height - self.mgr1.mgr5.height) / self.height 
         print(self.pos_scroll_main, self.mgr1.mgr5.height)
         print(self.category_dict)
-    def printt(self):
+    def printt(self, arg):
         print('OK')
     def print1(self):
         print('OK1')
@@ -595,6 +623,10 @@ class DigiApp(MDApp):
         return MainScreen()
 
     def on_start(self): 
+        Clock.schedule_once(self.change_screen, .1)
+    
+    def change_screen(self, arg):
+        self.root.current = 'main'
         # Access the carousel.
         carousel = self.root.mgr1.mgr3.mgr1.ids._carousel_
         # Schedule after every 3 seconds.

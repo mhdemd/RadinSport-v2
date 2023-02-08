@@ -13,8 +13,10 @@
     mgr8: _grouping
     mgr9: _account
     mgr10: _signup 
-    
+    mgr11: _splash
 
+    Splash:
+        id: _splash
 	Main:
         id: _main
 	Search:
@@ -32,6 +34,22 @@
     Sign_up:
         id: _signup
         
+<Splash@Screen>:
+    # Set sc screen name
+    name: "SplashScreen"
+    # Start the progress bar animation when the screen is active
+    on_enter: self.ids.progress.start()
+    MDBoxLayout:
+        # Add float layout
+        #MDFloatLayout:
+            # Add Gif image
+        Image:
+            source:'img/loveandjoy.gif'
+            allow_stretch: True
+            anim_delay: 0
+            # anim_loop: 1
+            anim_reset: True
+
 <Main@Screen>:
     name: "main"
     mgr3: _scroll_main
