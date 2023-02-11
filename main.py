@@ -33,7 +33,7 @@ import webbrowser
 from ftpretty import ftpretty
 
 f = ftpretty('31.7.73.165', 'mahdiem3', '2(v3Hj(6InRxG9')
-f.get('/domains/mahdiemadi.ir/public_html/excel/products.xls', 'products.xls')
+#f.get('/domains/mahdiemadi.ir/public_html/excel/products.xls', 'products.xls')
 
 dataframe_products = pd.read_excel (r'products.xls')
 dataframe_products = dataframe_products.astype({"price_off": int})
@@ -162,7 +162,9 @@ class RV_Order(RecycleView):
     icon_color = ObjectProperty()
     color_fa = ObjectProperty()
     total = ObjectProperty()
-    
+    stock = ObjectProperty()
+    num_order = ObjectProperty()
+
     def __init__(self, **kwargs):
         super(RV_Order, self).__init__(**kwargs)
         #self.data = [{'text': str(x)} for x in range(100)]
@@ -170,8 +172,20 @@ class RV_Order(RecycleView):
 
     def add_to_order(self):
         items_in_order_screen.append(
-            {"DKP": '%s'%(self.dkp), 'image': 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(self.dkp, self.dkp), 'title': self.title, 'price_off': str(self.price_off), 'price': str(self.price), 'color_en': self.icon_color, 'color_fa': get_display(arabic_reshaper.reshape(self.color_fa))}
+            {"DKP": '%s'%(self.dkp),
+             'image': 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(self.dkp, self.dkp), 
+             'title': self.title, 
+             'price_off': str(self.price_off), 
+             'price': str(self.price), 
+             'color_en': self.icon_color, 
+             'color_fa': get_display(arabic_reshaper.reshape(self.color_fa)),
+             'stock': str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['stock'].tolist()[0]),
+             'p_code': str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['code'].tolist()[0]),
+             'num_order': '1'             
+             }
         )
+        #items_in_order_screen.reverse()
+        ##MDApp.get_running_app().root.mgr7.order_text#
         self.total = 0
         for i in range(len(items_in_order_screen)):
             self.total += int(items_in_order_screen[i]['price_off'].replace(",","")) if items_in_order_screen[i]['price_off'] != '0' else int(items_in_order_screen[i]['price'].replace(",","")) 
@@ -191,6 +205,19 @@ class RV_Order(RecycleView):
         total = self.total
         self.total = f'{total:,}'
         self.mgr3.remove_widget(instance.parent.parent)
+
+    def add_remove_count(self, *arg):
+        #index = (next((i for i, item in enumerate(items_in_order_screen) if item["p_code"] == arg[2]), None))
+        a = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == arg[2], items_in_order_screen))
+        if arg[1] == '+':
+            b = int(a[0]['num_order']) + 1 if int(a[0]['num_order']) < int(a[0]['stock']) else int(a[0]['num_order'])
+            a[0]['num_order'] = str(b)
+        if arg[1] == '-':
+            print(a[0]['num_order'])
+            b = int(a[0]['num_order']) - 1 if int(a[0]['num_order']) > 1 else int(a[0]['num_order'])
+            a[0]['num_order'] = str(b)
+
+        self.refresh_from_data()
 
 class RV_Category(RecycleView):
     #ObjectProperty()

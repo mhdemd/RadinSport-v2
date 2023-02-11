@@ -2,6 +2,7 @@
     name: 'order'
     mgr1: _bot_nav
     mgr2: _RecycleView_order
+    
     BoxLayout:
         orientation: 'vertical'
         MDLabel:
@@ -24,9 +25,11 @@
             orientation: 'vertical'
             size_hint_y: 10/13
             RV_Order: 
-                mgr3: _RecycleBoxLayout_order
-                viewclass: 'MyButton'
                 id: _RecycleView_order 
+                mgr3: _RecycleBoxLayout_order    
+                order_text: '1'            
+                viewclass: 'MyButton'
+                
                 RecycleBoxLayout:
                     id: _RecycleBoxLayout_order
                     default_size: None, dp(150)
@@ -83,9 +86,12 @@
     price: ''
     color_en: root.color_en
     color_fa: ''
+    stock: ''
     orientation: 'vertical'
     size_hint_y: None
-    height: dp(150)
+    height: dp(170)
+    p_code: ''
+    num_order: ''
     BoxLayout:
         orientation: 'horizontal'      
         BoxLayout:
@@ -152,21 +158,70 @@
                 size_hint_y: 1/5
                 padding: dp(10), 0, 0, 0
                 spacing: dp(10)
-                MDRectangleFlatIconButton:
-                    icon: 'trash-can-outline'
-                    size_hint: None, .8
-                    width: dp(20)
-                    icon_color: 'red'
-                    text_color: 'red'
-                    line_color: 'red'
-                    line_width: .3
-                    halign: 'left'
-                    font_size: '12sp'       
-                    text: get_display(arabic_reshaper.reshape('حذف'))
-                    #font_name: 'font/XB Niloofar.ttf'
-                    on_release:
-                        app.root.mgr7.mgr2.remove_from_order(self, root.DKP, root.color_en)
-                        app.root.mgr7.mgr2.refresh_from_data()
+                BoxLayout:
+                    orientation:'horizontal'
+                    canvas.before:
+                        Color:
+                            rgba: 0,0,0,.5
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [(10, 10), (10, 10), (10, 10), (10, 10)]
+                    canvas:
+                        Color:
+                            rgba: 1,1,1,1
+                        RoundedRectangle:
+                            pos: self.x + 1, self.y + 1 
+                            size: self.width - 2, self.height - 2 
+                            radius: [(10, 10), (10, 10), (10, 10), (10, 10)]
+                    MDIconButton:
+                        icon: 'trash-can-outline'
+                        size_hint_y:  .5
+                        size_hint_x:  .4
+                        pos_hint:{'center_y': .5}
+                        theme_icon_color: "Custom"
+                        icon_color: 'red'
+                        on_press: 
+                            app.root.mgr7.mgr2.add_remove_count(self, '-', '%s'%(root.p_code))
+
+                        #on_press:
+                        #    root.ids._lbl.text = str(int(root.ids._lbl.text) - 1) if int(root.ids._lbl.text) > 1 else root.ids._lbl.text 
+                        #    #root.order_text = str(int(root.order_text) - 1) if int(root.order_text) > 1 else root.order_text 
+                        #on_release:
+                        #    app.root.mgr7.mgr2.refresh_from_data()
+                        #    app.root.mgr7.mgr2.remove_from_order(self, root.DKP, root.color_en) if root.order_text == '1' else ''
+                            
+                    Label:
+                        id: _lbl
+                        text: root.num_order
+                        color: 'gray'
+                        size_hint_x:  .2
+                    MDIconButton:
+                        text: '%s'%(root.stock)
+                        icon: 'plus'
+                        size_hint_y:  .5
+                        pos_hint:{'center_y': .5}
+                        size_hint_x:  .4
+                        theme_icon_color: "Custom"
+                        icon_color: 'gray'
+                        on_press: 
+                            app.root.mgr7.mgr2.add_remove_count(self, '+', '%s'%(root.p_code))
+                            #root.ids._lbl.text = str(int(root.ids._lbl.text) + 1) if int(root.ids._lbl.text) < int(self.text) else root.ids._lbl.text 
+                #MDRectangleFlatIconButton:
+                #    icon: 'trash-can-outline'
+                #    size_hint: None, .8
+                #    width: dp(20)
+                #    icon_color: 'red'
+                #    text_color: 'red'
+                #    line_color: 'red'
+                #    line_width: .3
+                #    halign: 'left'
+                #    font_size: '12sp'       
+                #    text: get_display(arabic_reshaper.reshape('حذف'))
+                #    #font_name: 'font/XB Niloofar.ttf'
+                #    on_release:
+                #        app.root.mgr7.mgr2.remove_from_order(self, root.DKP, root.color_en)
+                #        app.root.mgr7.mgr2.refresh_from_data()
                 MDLabel:
                     halign: 'left'
                     font_size: '12sp'       
