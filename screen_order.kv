@@ -11,7 +11,7 @@
             size_hint_y: None
             height: mm(9)      
             text: get_display(arabic_reshaper.reshape('سبد خرید'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
         Widget:
             size_hint_y: None
             height: dp(3)
@@ -51,7 +51,7 @@
                     size_hint_y: None
                     height: dp(15)        
                     text: get_display(arabic_reshaper.reshape('جمع سبد خرید'))
-                    #font_name: 'font/XB Niloofar.ttf'
+                    font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     font_size: '12sp'
                     theme_text_color: "Custom"
                     text_color: 128/255, 128/255, 128/255, 1
@@ -60,7 +60,7 @@
                     size_hint_y: None
                     height: dp(20)        
                     text: get_display(arabic_reshaper.reshape('%s تومان'%(root.mgr2.total))) if root.mgr2.total != None else '0'
-                    #font_name: 'font/XB Niloofar.ttf'
+                    font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     font_size: '14sp'
 
             MDFillRoundFlatButton:
@@ -69,7 +69,7 @@
                 size_hint_y: None
                 height: dp(32)        
                 text: get_display(arabic_reshaper.reshape('ادامه فرایند خرید'))
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 on_press: 
                     app.root.check_registration()
                     
@@ -89,7 +89,7 @@
     stock: ''
     orientation: 'vertical'
     size_hint_y: None
-    height: dp(170)
+    height: dp(250)
     p_code: ''
     num_order: ''
     BoxLayout:
@@ -99,19 +99,19 @@
             size_hint_x: 20/27
             spacing: dp(5)
             MDLabel:
-                size_hint_y: 1/5
+                size_hint_y: 1.15/5
                 halign: 'right'
                 font_size: '14sp'       
                 text: get_display(arabic_reshaper.reshape(root.title)) if len(root.title) < 30 else get_display(arabic_reshaper.reshape('%s...'%(root.title[:27]))) 
-                #font_name: 'font/XB Niloofar.ttf'
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
             GridLayout:             
                 cols: 2
-                size_hint_y: 1/5
+                size_hint_y: .85/5
                 MDLabel:
                     halign: 'right'
                     font_size: '10sp'       
                     text: get_display(arabic_reshaper.reshape('گارانتی اصالت و سلامت فیزیکی کالا'))
-                    #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                    font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     theme_text_color: "Custom"
                     text_color: 128/255, 128/255, 128/255, 1
 
@@ -122,12 +122,12 @@
                     icon_size: '14sp'
             GridLayout:
                 cols: 2
-                size_hint_y: 1/5
+                size_hint_y: .85/5
                 MDLabel:
                     halign: 'right'
                     font_size: '10sp'       
                     text: get_display(arabic_reshaper.reshape('موجود در انبار فروشگاه'))
-                    #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                    font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     theme_text_color: "Custom"
                     text_color: 128/255, 128/255, 128/255, 1
 
@@ -138,12 +138,12 @@
                     icon_size: '14sp'
             GridLayout:   
                 cols: 2
-                size_hint_y: 1/5
+                size_hint_y: .85/5
                 MDLabel:
                     halign: 'right'
                     font_size: '10sp'       
                     text: get_display(arabic_reshaper.reshape(root.color_fa))
-                    #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                    font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     theme_text_color: "Custom"
                     text_color: 128/255, 128/255, 128/255, 1
 
@@ -155,10 +155,11 @@
                     icon_size: '14sp'
             BoxLayout:
                 orientation: "horizontal"
-                size_hint_y: 1/5
+                size_hint_y: 1.3/5
                 padding: dp(10), 0, 0, 0
                 spacing: dp(10)
                 BoxLayout:
+                    size_hint_x: .4
                     orientation:'horizontal'
                     canvas.before:
                         Color:
@@ -176,7 +177,7 @@
                             radius: [(10, 10), (10, 10), (10, 10), (10, 10)]
                     MDIconButton:
                         icon: 'trash-can-outline'
-                        size_hint_y:  .5
+                        size_hint_y:  .8
                         size_hint_x:  .4
                         pos_hint:{'center_y': .5}
                         theme_icon_color: "Custom"
@@ -194,12 +195,13 @@
                     Label:
                         id: _lbl
                         text: root.num_order
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         color: 'gray'
                         size_hint_x:  .2
                     MDIconButton:
                         text: '%s'%(root.stock)
                         icon: 'plus'
-                        size_hint_y:  .5
+                        size_hint_y:  .8
                         pos_hint:{'center_y': .5}
                         size_hint_x:  .4
                         theme_icon_color: "Custom"
@@ -207,26 +209,12 @@
                         on_press: 
                             app.root.mgr7.mgr2.add_remove_count(self, '+', '%s'%(root.p_code))
                             #root.ids._lbl.text = str(int(root.ids._lbl.text) + 1) if int(root.ids._lbl.text) < int(self.text) else root.ids._lbl.text 
-                #MDRectangleFlatIconButton:
-                #    icon: 'trash-can-outline'
-                #    size_hint: None, .8
-                #    width: dp(20)
-                #    icon_color: 'red'
-                #    text_color: 'red'
-                #    line_color: 'red'
-                #    line_width: .3
-                #    halign: 'left'
-                #    font_size: '12sp'       
-                #    text: get_display(arabic_reshaper.reshape('حذف'))
-                #    #font_name: 'font/XB Niloofar.ttf'
-                #    on_release:
-                #        app.root.mgr7.mgr2.remove_from_order(self, root.DKP, root.color_en)
-                #        app.root.mgr7.mgr2.refresh_from_data()
                 MDLabel:
+                    size_hint_x: .6
                     halign: 'left'
                     font_size: '12sp'       
                     text: '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(root.price_off))) if root.price_off != '0' else '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(root.price)))
-                    #font_name: 'font/XB Niloofar.ttf'
+                    font_name: 'font/IRANSansXFaNum-Medium.ttf'
 
         BoxLayout:
             orientation: 'vertical'

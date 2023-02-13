@@ -179,23 +179,22 @@ class RV_Order(RecycleView):
              'price': str(self.price), 
              'color_en': self.icon_color, 
              'color_fa': get_display(arabic_reshaper.reshape(self.color_fa)),
-             'stock': str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['stock'].tolist()[0]),
-             'p_code': str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['code'].tolist()[0]),
-             'num_order': '1'             
+             'stock': str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['stock'].tolist()[0]) if self.icon_color != 'white' else str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['stock'].tolist()[0]),
+             'p_code': str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['code'].tolist()[0]) if self.icon_color != 'white' else str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['stock'].tolist()[0]),
+             'num_order': '1',          
+             'Total': int(self.price.replace(",","")) if  int(self.price_off.replace(",","")) == 0 else int(self.price_off.replace(",",""))  
              }
         )
-        #items_in_order_screen.reverse()
-        ##MDApp.get_running_app().root.mgr7.order_text#
         self.total = 0
         for i in range(len(items_in_order_screen)):
-            self.total += int(items_in_order_screen[i]['price_off'].replace(",","")) if items_in_order_screen[i]['price_off'] != '0' else int(items_in_order_screen[i]['price'].replace(",","")) 
+            self.total += items_in_order_screen[i]['Total'] 
         total = self.total
         self.total = f'{total:,}'
         self.data = [item for item in items_in_order_screen]
         
-    def remove_from_order(self, instance, DKP, color_en):
+    def remove_from_order(self, instance, DKP, p_code):
         for i in items_in_order_screen: 
-            if i['DKP'] == DKP and i['color_en'] == color_en:
+            if i['DKP'] == DKP and i['p_code'] == color_en:
                 items_in_order_screen.remove(i)
                 self.data = [item for item in items_in_order_screen]
 
@@ -207,16 +206,28 @@ class RV_Order(RecycleView):
         self.mgr3.remove_widget(instance.parent.parent)
 
     def add_remove_count(self, *arg):
-        #index = (next((i for i, item in enumerate(items_in_order_screen) if item["p_code"] == arg[2]), None))
         a = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == arg[2], items_in_order_screen))
         if arg[1] == '+':
             b = int(a[0]['num_order']) + 1 if int(a[0]['num_order']) < int(a[0]['stock']) else int(a[0]['num_order'])
             a[0]['num_order'] = str(b)
-        if arg[1] == '-':
-            print(a[0]['num_order'])
-            b = int(a[0]['num_order']) - 1 if int(a[0]['num_order']) > 1 else int(a[0]['num_order'])
-            a[0]['num_order'] = str(b)
 
+
+        elif arg[1] == '-':
+            if int(a[0]['num_order']) > 1:
+                b = int(a[0]['num_order']) - 1 
+                a[0]['num_order'] = str(b)
+            else:
+                index = (next((i for i, item in enumerate(items_in_order_screen) if item["p_code"] == arg[2]), None))
+                del items_in_order_screen[index]
+
+        self.total = 0
+        for i in range(len(items_in_order_screen)):
+            print(int(items_in_order_screen[i]['num_order']) )
+            self.total += items_in_order_screen[i]['Total'] * int(items_in_order_screen[i]['num_order']) 
+        total = self.total
+        self.total = f'{total:,}'
+
+        self.data = [item for item in items_in_order_screen]
         self.refresh_from_data()
 
 class RV_Category(RecycleView):
@@ -269,6 +280,7 @@ class PopupBox(Popup):
     pop_up_text = ObjectProperty()
     def update_pop_up_text(self, p_message):
         self.title = p_message
+        self.title_font = 'font/IRANSansXFaNum-Medium.ttf'
 
 class MainScreen(ScreenManager):
     category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش', 'R': 'طناب', 'PI': 'پیلاتس و بدنسازی'}
@@ -333,7 +345,7 @@ class MainScreen(ScreenManager):
             pass
         # Add colors button to scrollview3
         for i in range(len(list_colors)):
-            self.mgr5.mgr1.mgr1.add_widget(Factory.color_buttom(title= str(list_colors_fa[i]), ic_color= list_colors[i]))
+            self.mgr5.mgr1.mgr1.add_widget(Factory.color_buttom(title= str(list_colors_fa[i]), ic_color= list_colors[i]))#(int(a[0]), int(a[2]), int(a[4]), int(a[6]))))#(list_colors[i])))
         # Add the first color label
         self.mgr5.mgr1.color= get_display(arabic_reshaper.reshape(str(list_colors_fa[len(list_colors_fa) - 1]))) 
         self.mgr7.mgr2.color_fa = self.mgr5.mgr1.color
@@ -532,8 +544,8 @@ class MainScreen(ScreenManager):
         self.mgr10.ids._postal_code.text == '':
 
             # create content and add to the popup
-            content = Button(text= get_display(arabic_reshaper.reshape('بازگشت')), size_hint=(1, None), size=('20mm', '6mm'))
-            pop = Popup(title= get_display(arabic_reshaper.reshape('لطفاً موارد الزامی پر شود')), content= content,
+            content = Button(text= get_display(arabic_reshaper.reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(arabic_reshaper.reshape('لطفاً موارد الزامی پر شود')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
             title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
             # bind the on_press event of the button to the dismiss function
             content.bind(on_press=pop.dismiss)
@@ -558,13 +570,13 @@ class MainScreen(ScreenManager):
     def delete_Personal_Information(self):
         # create content and add to the popup
         content = BoxLayout(orientation= 'horizontal')
-        bt1 = Button(text= get_display(arabic_reshaper.reshape('خیر')), size_hint=(.5, None), size=('20mm', '6mm'))
-        bt2 = Button(text= get_display(arabic_reshaper.reshape('بلی')), size_hint=(.5, None), size=('20mm', '6mm'))
+        bt1 = Button(text= get_display(arabic_reshaper.reshape('خیر')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(.5, None), size=('20mm', '6mm'))
+        bt2 = Button(text= get_display(arabic_reshaper.reshape('بلی')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(.5, None), size=('20mm', '6mm'))
         #self.ids['bt2'] = bt2
         content.add_widget(bt1)
         content.add_widget(bt2)
 
-        pop = Popup(title= get_display(arabic_reshaper.reshape('آیا از حذف کامل مشخصات اطمینان دارید؟')), content= content,
+        pop = Popup(title= get_display(arabic_reshaper.reshape('آیا از حذف کامل مشخصات اطمینان دارید؟')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
         title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
         bt1.bind(on_press= pop.dismiss)
         bt2.bind(on_press= self.delete_Personal_Information_OK)
@@ -605,13 +617,13 @@ class MainScreen(ScreenManager):
         # Checking the registration for the next step of the order
         if os.path.isfile('Personal_Information.xls'):
             content = Label(text= get_display(arabic_reshaper.reshape('با شما تماس گرفته خواهد شد')), size_hint=(1, None), size=('20mm', '6mm'))
-            pop = Popup(title= get_display(arabic_reshaper.reshape('سفارش با موفقیت ثبت شد')), content= content,
+            pop = Popup(title= get_display(arabic_reshaper.reshape('سفارش با موفقیت ثبت شد')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
             title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 5)
             pop.open()
 
         else:
-            content = Button(text= get_display(arabic_reshaper.reshape('ثبت نام')), size_hint=(1, None), size=('20mm', '6mm'))
-            pop = Popup(title= get_display(arabic_reshaper.reshape('لطفاٌ ابتدا ثبت نام کنید')), content= content,
+            content = Button(text= get_display(arabic_reshaper.reshape('ثبت نام')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(arabic_reshaper.reshape('لطفاٌ ابتدا ثبت نام کنید')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
             title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
             content.bind(on_press=self.change_screen_signup)
             content.bind(on_release=pop.dismiss)

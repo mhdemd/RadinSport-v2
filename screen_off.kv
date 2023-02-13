@@ -28,7 +28,7 @@
         MDLabel:
             font_size:'13sp'
             text: root.title1 #get_display(arabic_reshaper.reshape('کلاه نایک اعلا'))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
             halign: "center"
             size_hint: 1, 0.1
         BoxLayout:
@@ -39,7 +39,7 @@
         MDLabel:
             font_size:'10sp'
             text: '%s \n %s'%(root.detail_3_1, root.detail_4_1)  #%(get_display(arabic_reshaper.reshape('کلاه نایک ساخت چین')), get_display(arabic_reshaper.reshape('دارای ضمانت ۶ ماهه رادین کالا')))
-            #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
             halign: "center"
             size_hint: 1, 0.2
         GridLayout:
@@ -50,7 +50,7 @@
             MDLabel:
                 font_size:'13sp'
                 text: '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), root.price_off1) if root.off1 != '0' else '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), root.price1)
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 halign: "center"
             MDLabel:
                 canvas.before:
@@ -62,7 +62,7 @@
                         radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
                 font_size:'12sp'
                 text: get_display(arabic_reshaper.reshape('%s٪'%(root.off1))) if root.off1 != '0' else ''
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 halign: "center"
             MDLabel:
                 canvas.after:
@@ -73,12 +73,12 @@
                         width: 1 if root.off1 != '0' else 0.0000001
                 font_size:'12sp'
                 text: root.price1 if root.off1 != '0' else ''
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 halign: "center"
         #MDRoundFlatButton:
         #    size_hint:  0.7, 0.05
         #    text: get_display(arabic_reshaper.reshape('سفارش کالا'))
-        #    #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+        #    font_name: 'font/IRANSansXFaNum-Medium.ttf'
         #    line_color: 238/255,70/255,87/255,1
         #    pos_hint:{"center_x": .5}
         #    on_press:
@@ -102,7 +102,7 @@
                 size_hint_x: .9     
                 halign: "right"
                 text: root.title 
-                #font_name: 'font/XB Niloofar.ttf'#irsans.ttf'
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
             FloatLayout:
                 size_hint_x: .1     
                 pos_hint: {'top': .5}

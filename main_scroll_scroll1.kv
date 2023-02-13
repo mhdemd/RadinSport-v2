@@ -67,7 +67,7 @@
         font_size:'12sp'
         bold: True
         text: get_display(arabic_reshaper.reshape('%s'%(app.root.mgr1.mgr3.mgr2.text_title))) 
-        #font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        font_name: 'font/IRANSansXFaNum-Medium.ttf'
         halign: "center"
         text_size: self.width, None
         size_hint: 1, None
@@ -84,7 +84,7 @@
     MDLabel:
         font_size:'10sp'
         text: '%s \n %s'%(get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr2.detail_1)), get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr2.detail_2)))
-        #font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        font_name: 'font/IRANSansXFaNum-Medium.ttf'
         halign: "center"
         size_hint: 1, 0.2
     GridLayout:
@@ -94,7 +94,7 @@
         MDLabel: 
             font_size:'12sp'
             text: get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr2.price_off))
-            #font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
             halign: "center"
         MDLabel:
             canvas.before:
@@ -106,7 +106,7 @@
                     radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
             font_size:'12sp'
             text: '%s٪'%(get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr2.off)))
-            #font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
             halign: "center"
         MDLabel:
             canvas.after:
@@ -117,5 +117,5 @@
                     width: 1
             font_size:'10sp'
             text: get_display(arabic_reshaper.reshape(app.root.mgr1.mgr3.mgr2.price))
-            #font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
             halign: "center"

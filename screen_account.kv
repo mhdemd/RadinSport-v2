@@ -6,7 +6,6 @@
         orientation: 'vertical'
         padding: 0, 0, 0, 0
 
-
         BoxLayout:
             orientation: 'vertical'
             size_hint:(1, 11/13)
@@ -21,10 +20,12 @@
                     MDLabel:
                         halign: 'center'
                         text: ''
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         font_size:'12sp'
                     MDLabel:
                         halign: 'center'
                         text: '%s %s'%( get_display(arabic_reshaper.reshape('عزیز خوش آمدید')), root.text1) if root.text1 != '-' else '' 
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         font_size:'12sp'
                         theme_text_color: "Custom"
                         text_color: "blue"
@@ -35,9 +36,11 @@
                     MDLabel:
                         halign: 'center'
                         text: get_display(arabic_reshaper.reshape('جهت تسهیل در فرایند خرید لطفا ثبت نام کنید.')) if root.text1 == '-' else ''
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         font_size:'12sp'
                     MDFillRoundFlatButton:
                         text: get_display(arabic_reshaper.reshape('ثبت نام')) if root.text1 == '-' else  get_display(arabic_reshaper.reshape('تغییر مشخصات فردی')) 
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         md_bg_color: "red"
                         pos_hint: {'center_x': .5}
                         on_press:
@@ -48,6 +51,7 @@
 
                     MDFillRoundFlatIconButton:
                         text: get_display(arabic_reshaper.reshape('خروج از حساب کاربری')) 
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         md_bg_color: "red"
                         pos_hint: {'center_x': .5} if root.text1 != '-' else {'center_x': -5000}
                         icon: 'exit-to-app'  

@@ -36,7 +36,7 @@
             height: sp(10)
             font_size: sp(10) 
             text: get_display(arabic_reshaper.reshape('%s/%s'%(root.slide_num, root.slide_len)))
-            #font_name: 'font/XB Niloofar.ttf'
+            font_name: 'font/IRANSansXFaNum-Medium.ttf' 
             
         Widget:
             size_hint_y: None
@@ -54,7 +54,7 @@
             size_hint_y: None
             height: dp(32)        
             text: get_display(arabic_reshaper.reshape(root.parent.parent.title)) 
-            #font_name: 'font/XB Niloofar.ttf'
+            font_name: 'font/IRANSansXFaNum-Medium.ttf' 
         Widget:
             size_hint_y: None
             height: dp(1)
@@ -75,13 +75,13 @@
                 size_hint: .9, None
                 height: dp(26)        
                 text: root.color
-                #font_name: 'font/XB Niloofar.ttf'
+                font_name: 'font/IRANSansXFaNum-Medium.ttf' 
             MDLabel:
                 halign: 'right'
                 size_hint: .1, None
                 height: dp(26)       
                 text:  get_display(arabic_reshaper.reshape('رنگ:')) if root.sizee == '-' else get_display(arabic_reshaper.reshape('سایز:'))
-                #font_name: 'font/XB Niloofar.ttf'
+                font_name: 'font/IRANSansXFaNum-Medium.ttf' 
         ScrollView4:
             id: _color_palets
             effect_cls: 'ScrollEffect'
@@ -117,7 +117,7 @@
                 #height: dp(30)
                 font_size: '14sp'       
                 text: get_display(arabic_reshaper.reshape('گارانتی اصالت و سلامت فیزیکی کالا'))
-                #font_name: 'font/XB Niloofar.ttf'
+                font_name: 'font/IRANSansXFaNum-Medium.ttf' 
             
             MDIconButton:
                 icon: "shield-check-outline"
@@ -143,7 +143,7 @@
                 #height: dp(30)
                 font_size: '14sp'       
                 text: get_display(arabic_reshaper.reshape('موجود در انبار فروشگاه'))
-                #font_name: 'font/XB Niloofar.ttf'
+                font_name: 'font/IRANSansXFaNum-Medium.ttf' 
             
             MDIconButton:
                 icon: "storefront-check-outline"
@@ -178,12 +178,12 @@
                         halign: 'right'
                         font_size: '16sp'       
                         text: get_display(arabic_reshaper.reshape('ارسال رایگان'))
-                        #font_name: 'font/XB Niloofar.ttf'
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     MDLabel:
                         halign: 'right'
                         font_size: '10sp'       
                         text: get_display(arabic_reshaper.reshape('برای سفارش بالای ۵۰۰ هزار تومان'))
-                        #font_name: 'font/XB Niloofar.ttf'
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
         
         MDLabel:
             markup: True
@@ -191,7 +191,7 @@
             halign: 'right'
             size_hint_y: None
             height: dp(150)
-            #font_name: 'font/XB Niloofar.ttf'
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
             text: 
                 '%s\n\n[color=808080]%s[/color]\n\
                 [color=808080]%s[/color]\n\
@@ -217,7 +217,7 @@
             halign: 'right'
             size_hint_y: None
             height: dp(130)
-            #font_name: 'font/XB Niloofar.ttf'
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
             text: 
                 '%s\n\n[color=808080]%s[/color]\n\
                 [color=808080]%s[/color]\n'%(\
@@ -240,7 +240,7 @@
             halign: 'right'
             size_hint_y: None
             height: dp(32)
-            #font_name: 'font/XB Niloofar.ttf'
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
             text: get_display(arabic_reshaper.reshape('محصولات مشابه'))
         ScrollView5:
             id: _ScrollView5
@@ -262,8 +262,8 @@
     title: ''
     ic_color: ''
     text: get_display(arabic_reshaper.reshape(root.title))
-    #font_name: 'font/XB Niloofar.ttf'
-    icon: "circle"
+    font_name: 'font/IRANSansXFaNum-Medium.ttf' 
+    icon: "circle" if root.ic_color != 'white' else ''
     icon_color: root.ic_color
     on_press:
         for i in range(app.root.number_of_color): app.root.mgr5.mgr1.ids._color_scroll.children[i].line_width = 1 

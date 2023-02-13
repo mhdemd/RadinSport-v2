@@ -13,7 +13,8 @@ package.domain = org.test
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,ttf,xls,zip,json
+source.include_exts = py,png,jpg,kv,atlas,ttf,xls,zip
+#,json
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*.txt,assets/*.json,assets/*.kv,data/*.png
@@ -44,8 +45,7 @@ requirements = python3,kivy,arabic_reshaper,python-bidi,pillow,kivymd,openpyxl==
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-#presplash.filename = img/loveandjoy.gif
-#img/splash.png
+presplash.filename = img/splash.png
 
 # (str) Icon of the application
 #icon.filename = %(source.dir)s/data/icon.png
@@ -88,7 +88,7 @@ fullscreen = 0
 # for general documentation.
 # Lottie files can be created using various tools, like Adobe After Effect or Synfig.
 #android.presplash_lottie = "path/to/lottie/file.json"
-android.presplash_lottie = "img/42369-weather-wind.json"
+#android.presplash_lottie = "img/42369-weather-wind.json"
 
 
 # (str) Adaptive icon of the application (used if Android API level is 26+ at runtime)

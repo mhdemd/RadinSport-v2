@@ -17,6 +17,7 @@
                 halign: 'center'
                 font_size: sp(14)
                 text: get_display(arabic_reshaper.reshape('فرم ثبت مشخصات'))
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 size_hint_y: None
                 height: mm(6)
             Widget:
@@ -38,6 +39,7 @@
                         halign: 'right'
                         font_size: sp(12)
                         text: get_display(arabic_reshaper.reshape('نام خانوادگی:(الزامی*)'))
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         size_hint_y: None
                         height: mm(6)
 
@@ -46,6 +48,7 @@
                         base_direction: 'rtl'
                         multiline: False
                         font_size: sp(12)
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         size_hint: 1, None
                         height: mm(6)                        
                         helper_text_mode: "on_error"
@@ -56,6 +59,7 @@
                         halign: 'right'
                         font_size: sp(12)
                         text: get_display(arabic_reshaper.reshape('نام:(الزامی*)'))
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         size_hint_y: None
                         height: mm(6)
 
@@ -64,6 +68,7 @@
                         base_direction: 'rtl'
                         multiline: False
                         font_size: sp(12)
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         helper_text_mode: "on_error"
                         helper_text: "Enter text"
                         size_hint: 1, None
@@ -78,6 +83,7 @@
                         halign: 'right'
                         font_size: sp(12)
                         text: get_display(arabic_reshaper.reshape('شماره تلفن همراه:(الزامی*)'))
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         size_hint_y: None
                         height: mm(6)
 
@@ -86,6 +92,7 @@
                         base_direction: 'rtl'
                         multiline: False
                         font_size: sp(12)
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         helper_text_mode: "on_error"
                         helper_text: "Enter text"
                         size_hint: 1, None
@@ -96,6 +103,7 @@
                         halign: 'right'
                         font_size: sp(12)
                         text: get_display(arabic_reshaper.reshape('شماره تلفن ثابت:'))
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         size_hint_y: None
                         height: mm(6)
 
@@ -104,19 +112,22 @@
                         base_direction: 'rtl'
                         multiline: False
                         font_size: sp(12)
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         size_hint: 1, None
                         height: mm(6)
             MDLabel:
                 halign: 'right'
                 font_size: sp(12)
                 text: get_display(arabic_reshaper.reshape('آدرس:(الزامی*)'))
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 size_hint_y: None
                 height: mm(6)
 
             MDTextFieldPersianrect:
                 id: _address
                 base_direction: 'rtl'
-                font_size: sp(12)            
+                font_size: sp(12)  
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'          
                 helper_text_mode: "on_error"
                 helper_text: "Enter text"
                 size_hint: 1, None
@@ -129,6 +140,7 @@
                 halign: 'right'
                 font_size: sp(12)
                 text: get_display(arabic_reshaper.reshape('کد پستی:(الزامی*)'))
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 size_hint_y: None
                 height: mm(6)
 
@@ -137,6 +149,7 @@
                 base_direction: 'rtl'
                 multiline: False
                 font_size: sp(12)
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 helper_text_mode: "on_error"
                 helper_text: "Enter text"
                 size_hint: 1, None
@@ -148,6 +161,7 @@
                 halign: 'right'
                 font_size: sp(12)
                 text: get_display(arabic_reshaper.reshape('ایمیل:'))
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 size_hint_y: None
                 height: mm(6)
 
@@ -156,6 +170,7 @@
                 base_direction: 'rtl'
                 multiline: False
                 font_size: sp(12)
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 size_hint: 1, None
                 height: mm(6)
             Label:
@@ -169,6 +184,7 @@
 
             MDFillRoundFlatButton:
                 text: get_display(arabic_reshaper.reshape('تایید')) 
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 md_bg_color: "red"
                 pos_hint: {'center_x': .5}
                 on_press:
