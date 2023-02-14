@@ -45,7 +45,7 @@ requirements = python3,kivy,arabic_reshaper,python-bidi,pillow,kivymd,openpyxl==
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-presplash.filename = img/splash.png
+#presplash.filename = img/splash.png
 
 # (str) Icon of the application
 #icon.filename = %(source.dir)s/data/icon.png

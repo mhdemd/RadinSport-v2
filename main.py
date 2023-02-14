@@ -171,58 +171,75 @@ class RV_Order(RecycleView):
         self.data = [item for item in items_in_order_screen]
 
     def add_to_order(self):
-        items_in_order_screen.append(
-            {"DKP": '%s'%(self.dkp),
-             'image': 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(self.dkp, self.dkp), 
-             'title': self.title, 
-             'price_off': str(self.price_off), 
-             'price': str(self.price), 
-             'color_en': self.icon_color, 
-             'color_fa': get_display(arabic_reshaper.reshape(self.color_fa)),
-             'stock': str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['stock'].tolist()[0]) if self.icon_color != 'white' else str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['stock'].tolist()[0]),
-             'p_code': str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['code'].tolist()[0]) if self.icon_color != 'white' else str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['stock'].tolist()[0]),
-             'num_order': '1',          
-             'Total': int(self.price.replace(",","")) if  int(self.price_off.replace(",","")) == 0 else int(self.price_off.replace(",",""))  
-             }
-        )
-        self.total = 0
-        for i in range(len(items_in_order_screen)):
-            self.total += items_in_order_screen[i]['Total'] 
-        total = self.total
-        self.total = f'{total:,}'
-        self.data = [item for item in items_in_order_screen]
-        
-    def remove_from_order(self, instance, DKP, p_code):
-        for i in items_in_order_screen: 
-            if i['DKP'] == DKP and i['p_code'] == color_en:
-                items_in_order_screen.remove(i)
-                self.data = [item for item in items_in_order_screen]
+        p_code = 0
 
-        self.total = 0
-        for i in range(len(items_in_order_screen)):
-            self.total += int(items_in_order_screen[i]['price_off'].replace(",","")) if items_in_order_screen[i]['price_off'] != '0' else int(items_in_order_screen[i]['price'].replace(",","")) 
-        total = self.total
-        self.total = f'{total:,}'
-        self.mgr3.remove_widget(instance.parent.parent)
+        # Get the code
+        p_code = dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['code'].tolist()[0] if self.icon_color != 'white' else dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['code'].tolist()[0]
+
+        # Get the stock
+        stock = dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['stock'].tolist()[0] if self.icon_color != 'white' else dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['stock'].tolist()[0]
+        
+        # Forming a list to determine if it is available or not in the orders
+        a = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == p_code, items_in_order_screen))
+
+        if len(a) == 0:
+            items_in_order_screen.append(
+                {"DKP": '%s'%(self.dkp),
+                'image': 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(self.dkp, self.dkp), 
+                'title': self.title, 
+                'price_off': str(self.price_off), 
+                'price': str(self.price), 
+                'color_en': self.icon_color, 
+                'color_fa': get_display(arabic_reshaper.reshape(self.color_fa)),
+                'stock': str(stock),
+                'p_code': str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['code'].tolist()[0]) if self.icon_color != 'white' else str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['stock'].tolist()[0]),
+                'num_order': '1',          
+                'Total': int(self.price.replace(",","")) if  int(self.price_off.replace(",","")) == 0 else int(self.price_off.replace(",",""))  
+                }
+            )
+            # Subtract from the data frame
+            cond = (dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color) if self.icon_color != 'white' else (dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)
+            dataframe_products.loc[cond,'stock'] = stock - 1
+            
+            self.total = 0
+            for i in range(len(items_in_order_screen)):
+                self.total += items_in_order_screen[i]['Total'] * int(items_in_order_screen[i]['num_order']) 
+            total = self.total
+            self.total = f'{total:,}'
+            self.data = [item for item in items_in_order_screen]
+        else:
+            if stock > 0:
+                self.add_remove_count('temp' ,'+', p_code)   
 
     def add_remove_count(self, *arg):
         a = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == arg[2], items_in_order_screen))
         if arg[1] == '+':
+
+            # Increasing the number of orders if it does not exceed the stock
             b = int(a[0]['num_order']) + 1 if int(a[0]['num_order']) < int(a[0]['stock']) else int(a[0]['num_order'])
             a[0]['num_order'] = str(b)
 
-
+            # Subtract from the data frame
+            cond = dataframe_products['code'] == arg[2] 
+            dataframe_products.loc[cond,'stock'] -= 1 if int(dataframe_products.loc[cond,'stock']) > 0 else 0 
+            
         elif arg[1] == '-':
             if int(a[0]['num_order']) > 1:
+
+                # Decreasing the number of orders if it does not exceed the stock
                 b = int(a[0]['num_order']) - 1 
                 a[0]['num_order'] = str(b)
+
             else:
                 index = (next((i for i, item in enumerate(items_in_order_screen) if item["p_code"] == arg[2]), None))
                 del items_in_order_screen[index]
 
+            # Add to the data frame
+            cond = dataframe_products['code'] == arg[2] 
+            dataframe_products.loc[cond,'stock'] += 1
+
         self.total = 0
         for i in range(len(items_in_order_screen)):
-            print(int(items_in_order_screen[i]['num_order']) )
             self.total += items_in_order_screen[i]['Total'] * int(items_in_order_screen[i]['num_order']) 
         total = self.total
         self.total = f'{total:,}'
@@ -308,87 +325,101 @@ class MainScreen(ScreenManager):
             DKP = int(DKP.split('/')[4])
         except:
             pass
-        self.mgr5.mgr1.mgr2.scroll_x = 1
-        self.mgr5.mgr1.scroll_y = 1
-        self.mgr5.mgr1.mgr3.scroll_x = 1
-        self.mgr5.dkp = DKP
-        self.mgr7.mgr2.dkp = DKP
-        self.mgr5.mgr1.sizee = dataframe_products[(dataframe_products['DKP'] == DKP) ]['size'].values[0]
-        self.mgr5.icon = "cards-heart-outline"
-        # Delete all carousel's children
-        try:
-            self.mgr5.mgr1.ids._carousel_.clear_widgets()
-        except:
-            pass
-        # Add title
-        self.mgr5.title = dataframe_products[(dataframe_products['DKP'] == DKP) ]['title'].values[0]
-        self.mgr7.mgr2.title = self.mgr5.title
-        # Calculate the number of photos
-        No_of_files = len(f.list('/my_upload/%s'%(DKP))) - 3
-        # Add photos to carousel
-        self.mgr5.mgr1.slide_len = No_of_files
-        self.mgr5.mgr1.slide_num = '1'
-        self.mgr5.mgr1.ids._carousel_.temp = 1
-        for i in range(No_of_files):
-            self.mgr5.mgr1.ids._carousel_.add_widget(AsyncImage(source= 'http://mahdiemadi.ir/Products/%s/%s-%s.jpg'%(DKP, DKP, i), size_hint= (1, 1), allow_stretch= True ))
-        self.mgr5.mgr1.ids._carousel_.load_slide((self.mgr5.mgr1.ids._carousel_.slides)[0])
-        # Creating a list of colors in Farsi and English
-        list_colors = dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['stock'] != 0) ]['color'].tolist()
-        list_colors_fa = dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['stock'] != 0) ]['color-fa'].tolist()
-        # Calculate the number of colors in stock
-        self.mgr5.mgr1.mgr1.cols= len(list_colors)
-        self.number_of_color= len(list_colors)
-        # Delete all color_scrollview's children
-        try:
-            self.mgr5.mgr1.mgr1.clear_widgets()
-        except: 
-            pass
-        # Add colors button to scrollview3
-        for i in range(len(list_colors)):
-            self.mgr5.mgr1.mgr1.add_widget(Factory.color_buttom(title= str(list_colors_fa[i]), ic_color= list_colors[i]))#(int(a[0]), int(a[2]), int(a[4]), int(a[6]))))#(list_colors[i])))
-        # Add the first color label
-        self.mgr5.mgr1.color= get_display(arabic_reshaper.reshape(str(list_colors_fa[len(list_colors_fa) - 1]))) 
-        self.mgr7.mgr2.color_fa = self.mgr5.mgr1.color
-        # Add material, country of manufacture and product type & details
-        self.mgr5.mgr1.material= dataframe_products[(dataframe_products['DKP'] == DKP) ]['material'].values[0]
-        self.mgr5.mgr1.made_in= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['made_in'].values[0]
-        self.mgr5.mgr1.type= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['type'].values[0]
-        self.mgr5.mgr1.detail_1= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['detail_1'].values[0]
-        self.mgr5.mgr1.detail_2= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['detail_2'].values[0]
-        # Add first price & price_off & off
-        self.mgr5.icon_color = list_colors[len(list_colors) - 1]
-        a = self.mgr5.icon_color
-        self.mgr7.mgr2.icon_color = a
-        price = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['price'].values[0])
-        self.mgr5.price = f'{price:,}'
-        price_off = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['price_off'].values[0])
-        self.mgr5.price_off = f'{price_off:,}'
-        self.mgr7.mgr2.price_off = self.mgr5.price_off
-        self.mgr7.mgr2.price = self.mgr5.price
-        self.mgr5.off = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['off'].values[0])
-        # Add similar product
-        ## Drop all children
-        try:
-            self.mgr5.mgr1.mgr2.ids._GridLayout.clear_widgets()
-        except:
-            pass
-    ## Get categories
-        cat = dataframe_products[(dataframe_products['DKP'] == DKP) ]['cat'].values[0]   
-        ## Create list of DKPs in our category without repeat
-        list_cat = dataframe_products[(dataframe_products['cat'] == cat) & (dataframe_products['stock'] != 0) ]['DKP'].drop_duplicates().tolist()
-        ## Drop current category
-        list_cat = [ele for ele in list_cat if ele != DKP]
-        ## Select 5 category randomly
-        List_similar_product = random.sample(list_cat, 5 if len(list_cat) >= 5 else len(list_cat))
-        for i in range(len(List_similar_product)):
-            self.mgr5.mgr1.mgr2.ids._GridLayout.add_widget(Factory.Button_scroll5(image_source= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(List_similar_product[i], List_similar_product[i]) ))
-        # Set current screen
-        self.current= "product"
-        try:
+
+        stock = dataframe_products[dataframe_products['DKP'] == DKP]['stock'].tolist()
+
+        if sum(stock) > 0:
+            self.mgr5.mgr1.mgr2.scroll_x = 1
+            self.mgr5.mgr1.scroll_y = 1
+            self.mgr5.mgr1.mgr3.scroll_x = 1
+            self.mgr5.dkp = DKP
+            self.mgr7.mgr2.dkp = DKP
+            self.mgr5.mgr1.sizee = dataframe_products[(dataframe_products['DKP'] == DKP) ]['size'].values[0]
+            self.mgr5.icon = "cards-heart-outline"
+            # Delete all carousel's children
+            try:
+                self.mgr5.mgr1.ids._carousel_.clear_widgets()
+            except:
+                pass
+            # Add title
+            self.mgr5.title = dataframe_products[(dataframe_products['DKP'] == DKP) ]['title'].values[0]
+            self.mgr7.mgr2.title = self.mgr5.title
+            # Calculate the number of photos
+            No_of_files = len(f.list('/my_upload/%s'%(DKP))) - 3
+            # Add photos to carousel
+            self.mgr5.mgr1.slide_len = No_of_files
+            self.mgr5.mgr1.slide_num = '1'
+            self.mgr5.mgr1.ids._carousel_.temp = 1
+            for i in range(No_of_files):
+                self.mgr5.mgr1.ids._carousel_.add_widget(AsyncImage(source= 'http://mahdiemadi.ir/Products/%s/%s-%s.jpg'%(DKP, DKP, i), size_hint= (1, 1), allow_stretch= True ))
+            self.mgr5.mgr1.ids._carousel_.load_slide((self.mgr5.mgr1.ids._carousel_.slides)[0])
+            # Creating a list of colors in Farsi and English
+            list_colors = dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['stock'] != 0) ]['color'].tolist()
+            list_colors_fa = dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['stock'] != 0) ]['color-fa'].tolist()
+            # Calculate the number of colors in stock
+            self.mgr5.mgr1.mgr1.cols= len(list_colors)
+            self.number_of_color= len(list_colors)
+            # Delete all color_scrollview's children
+            try:
+                self.mgr5.mgr1.mgr1.clear_widgets()
+            except: 
+                pass
+            # Add colors button to scrollview3
+            for i in range(len(list_colors)):
+                self.mgr5.mgr1.mgr1.add_widget(Factory.color_buttom(title= str(list_colors_fa[i]), ic_color= list_colors[i]))#(int(a[0]), int(a[2]), int(a[4]), int(a[6]))))#(list_colors[i])))
+            # Add the first color label
+            self.mgr5.mgr1.color= get_display(arabic_reshaper.reshape(str(list_colors_fa[len(list_colors_fa) - 1]))) 
+            self.mgr7.mgr2.color_fa = self.mgr5.mgr1.color
+            # Add material, country of manufacture and product type & details
+            self.mgr5.mgr1.material= dataframe_products[(dataframe_products['DKP'] == DKP) ]['material'].values[0]
+            self.mgr5.mgr1.made_in= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['made_in'].values[0]
+            self.mgr5.mgr1.type= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['type'].values[0]
+            self.mgr5.mgr1.detail_1= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['detail_1'].values[0]
+            self.mgr5.mgr1.detail_2= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['detail_2'].values[0]
+            # Add first price & price_off & off
+            self.mgr5.icon_color = list_colors[len(list_colors) - 1]
+            a = self.mgr5.icon_color
+            self.mgr7.mgr2.icon_color = a
+            price = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['price'].values[0])
+            self.mgr5.price = f'{price:,}'
+            price_off = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['price_off'].values[0])
+            self.mgr5.price_off = f'{price_off:,}'
+            self.mgr7.mgr2.price_off = self.mgr5.price_off
+            self.mgr7.mgr2.price = self.mgr5.price
+            self.mgr5.off = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['off'].values[0])
+            # Add similar product
+            ## Drop all children
+            try:
+                self.mgr5.mgr1.mgr2.ids._GridLayout.clear_widgets()
+            except:
+                pass
+        ## Get categories
+            cat = dataframe_products[(dataframe_products['DKP'] == DKP) ]['cat'].values[0]   
+            ## Create list of DKPs in our category without repeat
+            list_cat = dataframe_products[(dataframe_products['cat'] == cat) & (dataframe_products['stock'] != 0) ]['DKP'].drop_duplicates().tolist()
+            ## Drop current category
+            list_cat = [ele for ele in list_cat if ele != DKP]
+            ## Select 5 category randomly
+            List_similar_product = random.sample(list_cat, 5 if len(list_cat) >= 5 else len(list_cat))
+            for i in range(len(List_similar_product)):
+                self.mgr5.mgr1.mgr2.ids._GridLayout.add_widget(Factory.Button_scroll5(image_source= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(List_similar_product[i], List_similar_product[i]) ))
+            # Set current screen
+            self.current= "product"
+            try:
+                if self.pop_up:
+                    self.pop_up.dismiss()
+            except: 
+                pass
+        else:
             if self.pop_up:
                 self.pop_up.dismiss()
-        except: 
-            pass
+            # create content and add to the popup
+            content = Button(text= get_display(arabic_reshaper.reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(arabic_reshaper.reshape('موجودی کالا به اتمام رسیده است.')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+            title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
+            # bind the on_press event of the button to the dismiss function
+            content.bind(on_press=pop.dismiss)
+            pop.open()
 
     def Price_change_with_variety_change(self, icon_color, color_fa):
         price = int(dataframe_products[(dataframe_products['DKP'] == self.mgr5.dkp) & (dataframe_products['color'] == icon_color) ]['price'].values[0])
