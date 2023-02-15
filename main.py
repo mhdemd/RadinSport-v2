@@ -172,10 +172,8 @@ class RV_Order(RecycleView):
 
     def add_to_order(self):
         p_code = 0
-
         # Get the code
         p_code = dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['code'].tolist()[0] if self.icon_color != 'white' else dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['code'].tolist()[0]
-
         # Get the stock
         stock = dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['stock'].tolist()[0] if self.icon_color != 'white' else dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['stock'].tolist()[0]
         
@@ -192,7 +190,7 @@ class RV_Order(RecycleView):
                 'color_en': self.icon_color, 
                 'color_fa': get_display(arabic_reshaper.reshape(self.color_fa)),
                 'stock': str(stock),
-                'p_code': str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['code'].tolist()[0]) if self.icon_color != 'white' else str(dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['stock'].tolist()[0]),
+                'p_code': str(p_code),
                 'num_order': '1',          
                 'Total': int(self.price.replace(",","")) if  int(self.price_off.replace(",","")) == 0 else int(self.price_off.replace(",",""))  
                 }
@@ -221,7 +219,8 @@ class RV_Order(RecycleView):
 
             # Subtract from the data frame
             cond = dataframe_products['code'] == arg[2] 
-            dataframe_products.loc[cond,'stock'] -= 1 if int(dataframe_products.loc[cond,'stock']) > 0 else 0 
+            print(type(dataframe_products.loc[cond,'stock'].tolist()[0]))
+            dataframe_products.loc[cond,'stock'] -= 1 if int(dataframe_products.loc[cond,'stock'].tolist()[0]) > 0 else 0 
             
         elif arg[1] == '-':
             if int(a[0]['num_order']) > 1:
