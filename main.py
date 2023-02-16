@@ -33,14 +33,19 @@ import webbrowser
 from ftpretty import ftpretty
 
 f = ftpretty('31.7.73.165', 'mahdiem3', '2(v3Hj(6InRxG9')
-#f.get('/domains/mahdiemadi.ir/public_html/excel/products.xls', 'products.xls')
+f.get('/domains/mahdiemadi.ir/public_html/excel/products.xls', 'products.xls')
 
 dataframe_products = pd.read_excel (r'products.xls')
 dataframe_products = dataframe_products.astype({"price_off": int})
 dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
 
+global error_list
+
 items_in_order_screen = []
 items_in_category_screen = []
+error_list = []
+
+
 
 #Window.size = (350, 610)
 
@@ -164,6 +169,8 @@ class RV_Order(RecycleView):
     total = ObjectProperty()
     stock = ObjectProperty()
     num_order = ObjectProperty()
+    error_text_height = ObjectProperty()
+    error_text = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(RV_Order, self).__init__(**kwargs)
@@ -192,7 +199,8 @@ class RV_Order(RecycleView):
                 'stock': str(stock),
                 'p_code': str(p_code),
                 'num_order': '1',          
-                'Total': int(self.price.replace(",","")) if  int(self.price_off.replace(",","")) == 0 else int(self.price_off.replace(",",""))  
+                'Total': int(self.price.replace(",","")) if  int(self.price_off.replace(",","")) == 0 else int(self.price_off.replace(",","")),  
+                'error_text': ''
                 }
             )
             # Subtract from the data frame
@@ -210,21 +218,25 @@ class RV_Order(RecycleView):
                 self.add_remove_count('temp' ,'+', p_code)   
 
     def add_remove_count(self, *arg):
-        a = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == arg[2], items_in_order_screen))
+        a = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == arg[2], items_in_order_screen)) if arg[0] != '*' else 0
         if arg[1] == '+':
+            # Increasing the number of orders if it does not exceed the stock and it does not zero 
+            if int(a[0]['num_order']) < int(a[0]['stock']):
+                if int(a[0]['num_order']) != 0:
+                    b = int(a[0]['num_order']) + 1
+                else: 
+                    b = 0
+            else:
+                b = int(a[0]['num_order'])
 
-            # Increasing the number of orders if it does not exceed the stock
-            b = int(a[0]['num_order']) + 1 if int(a[0]['num_order']) < int(a[0]['stock']) else int(a[0]['num_order'])
             a[0]['num_order'] = str(b)
 
             # Subtract from the data frame
             cond = dataframe_products['code'] == arg[2] 
-            print(type(dataframe_products.loc[cond,'stock'].tolist()[0]))
             dataframe_products.loc[cond,'stock'] -= 1 if int(dataframe_products.loc[cond,'stock'].tolist()[0]) > 0 else 0 
             
         elif arg[1] == '-':
             if int(a[0]['num_order']) > 1:
-
                 # Decreasing the number of orders if it does not exceed the stock
                 b = int(a[0]['num_order']) - 1 
                 a[0]['num_order'] = str(b)
@@ -237,6 +249,10 @@ class RV_Order(RecycleView):
             cond = dataframe_products['code'] == arg[2] 
             dataframe_products.loc[cond,'stock'] += 1
 
+        elif arg[1] == '*':
+            if error_list == []:
+                items_in_order_screen.clear()
+            
         self.total = 0
         for i in range(len(items_in_order_screen)):
             self.total += items_in_order_screen[i]['Total'] * int(items_in_order_screen[i]['num_order']) 
@@ -245,7 +261,7 @@ class RV_Order(RecycleView):
 
         self.data = [item for item in items_in_order_screen]
         self.refresh_from_data()
-
+               
 class RV_Category(RecycleView):
     #ObjectProperty()
 
@@ -644,20 +660,55 @@ class MainScreen(ScreenManager):
         self.mgr10.ids._email.text = ''
 
     def check_registration(self):
-        # Checking the registration for the next step of the order
-        if os.path.isfile('Personal_Information.xls'):
-            content = Label(text= get_display(arabic_reshaper.reshape('با شما تماس گرفته خواهد شد')), size_hint=(1, None), size=('20mm', '6mm'))
-            pop = Popup(title= get_display(arabic_reshaper.reshape('سفارش با موفقیت ثبت شد')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
-            title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 5)
-            pop.open()
-
-        else:
-            content = Button(text= get_display(arabic_reshaper.reshape('ثبت نام')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
-            pop = Popup(title= get_display(arabic_reshaper.reshape('لطفاٌ ابتدا ثبت نام کنید')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+        # Check if the cart is empty or not
+        if len(items_in_order_screen) == 0:
+            content = Button(text= get_display(arabic_reshaper.reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(arabic_reshaper.reshape('سبد خالی است!')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
             title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
-            content.bind(on_press=self.change_screen_signup)
             content.bind(on_release=pop.dismiss)
             pop.open()
+        else:
+            # Checking the registration for the next step of the order
+            if os.path.isfile('Personal_Information.xls'):
+                # Checking if the host has stock or not
+                f.get('/domains/mahdiemadi.ir/public_html/excel/products.xls', 'products.xls')
+                dataframe_products = pd.read_excel (r'products.xls')
+                dataframe_products = dataframe_products.astype({"price_off": int})
+                for i in range(len(items_in_order_screen)):
+                    if int(items_in_order_screen[i]['num_order']) <= dataframe_products[dataframe_products['code'] == items_in_order_screen[i]['p_code']]['stock'].tolist()[0]:
+                        pass
+                    else:
+                        error_list.append([items_in_order_screen[i]['p_code'], dataframe_products[dataframe_products['code'] == items_in_order_screen[i]['p_code']]['stock'].tolist()[0]])
+                if error_list == []:
+                    content = Label(text= get_display(arabic_reshaper.reshape('با شما تماس گرفته خواهد شد')), size_hint=(1, None), size=('20mm', '6mm'), font_name='font/IRANSansXFaNum-Medium.ttf')
+                    pop = Popup(title= get_display(arabic_reshaper.reshape('سفارش با موفقیت ثبت شد')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+                    title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 5)
+                    pop.open()
+
+                    # Subtract from the host data frame & upload to host
+                    for i in range(len(items_in_order_screen)):                        
+                        cond = dataframe_products['code'] == items_in_order_screen[i]['p_code']
+                        dataframe_products.loc[cond,'stock'] = dataframe_products.loc[cond,'stock'] - int(items_in_order_screen[i]['num_order'])
+                    dataframe_products.to_excel('products.xls')
+                    f.put('products.xls', '/domains/mahdiemadi.ir/public_html/excel/products.xls')
+
+                else:
+                    for i in range(len(error_list)):
+                        filter_list = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == error_list[i][0], items_in_order_screen))
+                        filter_list[0]['num_order'] = str(error_list[i][1])
+                        filter_list[0]['error_text'] = get_display(arabic_reshaper.reshape('موجودی ندارد')) if error_list[i][1] == 0 else get_display(arabic_reshaper.reshape('حداکثر موجودی تغییر کرده است'))
+                        
+                    print(error_list)
+                dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
+
+
+            else:
+                content = Button(text= get_display(arabic_reshaper.reshape('ثبت نام')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
+                pop = Popup(title= get_display(arabic_reshaper.reshape('لطفاٌ ابتدا ثبت نام کنید')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+                title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
+                content.bind(on_press=self.change_screen_signup)
+                content.bind(on_release=pop.dismiss)
+                pop.open()
 
     def change_screen_signup(self,arg):
         # Opening the registration form if not registered

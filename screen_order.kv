@@ -2,7 +2,6 @@
     name: 'order'
     mgr1: _bot_nav
     mgr2: _RecycleView_order
-    
     BoxLayout:
         orientation: 'vertical'
         MDLabel:
@@ -72,7 +71,7 @@
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 on_press: 
                     app.root.check_registration()
-                    
+                    app.root.mgr7.mgr2.add_remove_count('*', '*')
         BottomNavigation:
             id: _bot_nav
             #size_hint:(1, 1/13)
@@ -92,6 +91,9 @@
     height: dp(250)
     p_code: ''
     num_order: ''
+    error_text: ''
+    error_text_height: 20
+
     BoxLayout:
         orientation: 'horizontal'      
         BoxLayout:
@@ -221,6 +223,14 @@
             size_hint_x: 7/27
             AsyncImage:
                 source: root.image  
+    MDLabel:
+        text: root.error_text
+        font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        font_size: '12sp'
+        color: 'red'
+        halign: 'center'
+        size_hint_y: None
+        height: dp(root.error_text_height) if self.text != '' else dp(0)
     MDLabel:
         size_hint_y: None
         height: dp(5)
