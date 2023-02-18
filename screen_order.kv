@@ -70,8 +70,11 @@
                 text: get_display(arabic_reshaper.reshape('ادامه فرایند خرید'))
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 on_press: 
-                    app.root.check_registration()
-                    app.root.mgr7.mgr2.add_remove_count('*', '*')
+                    app.root.show_popup('')
+                on_release:                   
+                    Clock.schedule_once(app.root.check_registration, 0.75)
+                    Clock.schedule_once(partial(app.root.mgr7.mgr2.add_remove_count, '*', '*'), 0.75)
+
         BottomNavigation:
             id: _bot_nav
             #size_hint:(1, 1/13)

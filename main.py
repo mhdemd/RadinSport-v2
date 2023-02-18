@@ -31,6 +31,7 @@ from kivymd.uix.button import MDRoundFlatIconButton
 import random
 import webbrowser
 from ftpretty import ftpretty
+from time import gmtime, strftime
 
 f = ftpretty('31.7.73.165', 'mahdiem3', '2(v3Hj(6InRxG9')
 f.get('/domains/mahdiemadi.ir/public_html/excel/products.xls', 'products.xls')
@@ -40,6 +41,7 @@ dataframe_products = dataframe_products.astype({"price_off": int})
 dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
 
 global error_list
+global items_in_order_screen
 
 items_in_order_screen = []
 items_in_category_screen = []
@@ -252,6 +254,8 @@ class RV_Order(RecycleView):
         elif arg[1] == '*':
             if error_list == []:
                 items_in_order_screen.clear()
+            else: 
+                error_list.clear()
             
         self.total = 0
         for i in range(len(items_in_order_screen)):
@@ -659,9 +663,10 @@ class MainScreen(ScreenManager):
         self.mgr10.ids._email.str = ''
         self.mgr10.ids._email.text = ''
 
-    def check_registration(self):
+    def check_registration(self, *arg):
         # Check if the cart is empty or not
         if len(items_in_order_screen) == 0:
+            self.pop_up.dismiss()
             content = Button(text= get_display(arabic_reshaper.reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
             pop = Popup(title= get_display(arabic_reshaper.reshape('سبد خالی است!')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
             title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
@@ -680,25 +685,64 @@ class MainScreen(ScreenManager):
                     else:
                         error_list.append([items_in_order_screen[i]['p_code'], dataframe_products[dataframe_products['code'] == items_in_order_screen[i]['p_code']]['stock'].tolist()[0]])
                 if error_list == []:
+                    self.pop_up.dismiss()
                     content = Label(text= get_display(arabic_reshaper.reshape('با شما تماس گرفته خواهد شد')), size_hint=(1, None), size=('20mm', '6mm'), font_name='font/IRANSansXFaNum-Medium.ttf')
                     pop = Popup(title= get_display(arabic_reshaper.reshape('سفارش با موفقیت ثبت شد')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
                     title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 5)
                     pop.open()
 
-                    # Subtract from the host data frame & upload to host
-                    for i in range(len(items_in_order_screen)):                        
+                    # Subtract from the main data frame & Save orders in order ata frame
+                    df_personal = pd.read_excel (r'Personal_Information.xls')
+                    try:
+                        df_order = pd.read_excel (r'orders.xls')
+                        del df_order['Unnamed: 0']
+                    except:
+                        d = {                           
+                            'code': [],
+                            'num_order': [],
+                            'date&time': [],
+                            'Name': [],
+                            'Last name': [],
+                            'Mobile number': [],
+                            'Home number': [],
+                            'Address': [],
+                            'Postal code': [],
+                            'Email': [],
+                            }
+                        df_order = pd.DataFrame(data=d)
+                    
+                    for i in range(len(items_in_order_screen)): 
+                        # Change the values in the main data frame                       
                         cond = dataframe_products['code'] == items_in_order_screen[i]['p_code']
                         dataframe_products.loc[cond,'stock'] = dataframe_products.loc[cond,'stock'] - int(items_in_order_screen[i]['num_order'])
-                    dataframe_products.to_excel('products.xls')
-                    f.put('products.xls', '/domains/mahdiemadi.ir/public_html/excel/products.xls')
+                        # Add orders to the orders data frame
+                        df_order.loc[len(df_order.index)] = [
+                            items_in_order_screen[i]['p_code'],
+                            items_in_order_screen[i]['num_order'],
+                            strftime("%Y-%m-%d_%H:%M:%S", gmtime()), 
+                            df_personal.tail(1)['Name'].tolist()[0],
+                            df_personal.tail(1)['Last name'].tolist()[0],
+                            df_personal.tail(1)['Mobile number'].tolist()[0],
+                            df_personal.tail(1)['Home number'].tolist()[0],
+                            df_personal.tail(1)['Address'].tolist()[0],
+                            df_personal.tail(1)['Postal code'].tolist()[0],
+                            df_personal.tail(1)['Email'].tolist()[0],
+                          ]
 
+                    # Save main data frame & order data frame  to excel files 
+                    dataframe_products.to_excel('products.xls')
+                    df_order.to_excel('orders.xls')
+                    
+                    # Save Excel products on the host
+                    f.put('products.xls', '/domains/mahdiemadi.ir/public_html/excel/products.xls')
+                    f.put('orders.xls', '/domains/mahdiemadi.ir/public_html/Orders/%s.xls'%(df_order.tail(1)['date&time'].tolist()[0]))
                 else:
                     for i in range(len(error_list)):
                         filter_list = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == error_list[i][0], items_in_order_screen))
                         filter_list[0]['num_order'] = str(error_list[i][1])
                         filter_list[0]['error_text'] = get_display(arabic_reshaper.reshape('موجودی ندارد')) if error_list[i][1] == 0 else get_display(arabic_reshaper.reshape('حداکثر موجودی تغییر کرده است'))
-                        
-                    print(error_list)
+                    self.pop_up.dismiss()
+                    
                 dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
 
 
