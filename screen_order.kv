@@ -70,10 +70,12 @@
                 text: get_display(arabic_reshaper.reshape('ادامه فرایند خرید'))
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 on_press: 
-                    app.root.show_popup('')
+                    app.root.mgr7.mgr2.show_popup('')
                 on_release:                   
-                    Clock.schedule_once(app.root.check_registration, 0.75)
-                    Clock.schedule_once(partial(app.root.mgr7.mgr2.add_remove_count, '*', '*'), 0.75)
+                    Clock.schedule_once(app.root.mgr7.mgr2.check_registration, 0.75)
+                    #Clock.schedule_once(app.root.mgr7.mgr2.refresh_from_data, 0.85)
+
+                    #Clock.schedule_once(partial(app.root.mgr7.mgr2.add_remove_count, app.root.order_on, '*'), 3)
 
         BottomNavigation:
             id: _bot_nav
@@ -224,8 +226,11 @@
         BoxLayout:
             orientation: 'vertical'
             size_hint_x: 7/27
-            AsyncImage:
+            ImageButton:
                 source: root.image  
+                on_press:
+                    app.root.open_product_screen(root.image, '')
+
     MDLabel:
         text: root.error_text
         font_name: 'font/IRANSansXFaNum-Medium.ttf'
