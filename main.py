@@ -29,23 +29,10 @@ from ftpretty import ftpretty
 from time import gmtime, strftime
 from functools import partial
 
-err_conection = False
-try:
-    f = ftpretty('31.7.73.165', 'mahdiem3', '2(v3Hj(6InRxG9')
-    f.get('/domains/mahdiemadi.ir/public_html/excel/products.xlsx', 'products.xlsx')
-
-    dataframe_products = pd.read_excel (r'products.xlsx', engine='openpyxl')
-
-    version = 1.0
-    last_version = dataframe_products['version'].tolist()[0]
-
-    dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
-
-except:
-    err_conection = True
 
 global error_list
 global items_in_order_screen
+
 
 items_in_order_screen = []
 items_in_category_screen = []
@@ -234,7 +221,7 @@ class RV_Order(RecycleView):
         a = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == arg[2], items_in_order_screen)) if arg[1] != '*' else 0
         if arg[1] == '+':
             # Increasing the number of orders if it does not exceed the stock and it does not zero 
-            if int(a[0]['num_order']) < int(a[0]['stock']):
+            if int(a[0]['num_order']) < int(a[0]['stock'].split('.')[0]):
                 if int(a[0]['num_order']) != 0:
                     b = int(a[0]['num_order']) + 1
                 else: 
@@ -634,7 +621,7 @@ class MainScreen(ScreenManager):
         elif name == 'kalands':
             open('https://www.kalands.ir/seller/aygzu/')
         elif name == 'bazar':
-            open('https://cafebazaar.ir/app/com.radinafzar.radinsport')
+            open('https://cafebazaar.ir/app/com.radinsport.radinsport')
 
     def changeـheartـicon(self):
         self.mgr5.icon = 'cards-heart'
@@ -923,11 +910,10 @@ class MainScreen(ScreenManager):
                         %(address1[1], address1[0], address2[0], str(df_order['Postal code'].tolist()[-1])))),
             total= f'{tot:,}', 
         )
-        
         for i in range(len(df_order[df_order['Orderـnumber'] == int(order_number)].index)):
             price = df_order[df_order['Orderـnumber'] == int(order_number)]['Total'].tolist()[i]      
             det_order_box_box = Det_order_box_box(
-                title= df_order['title'].tolist()[i],
+                title= df_order[df_order['Orderـnumber'] == int(order_number)]['title'].tolist()[i],
                 image= df_order[df_order['Orderـnumber'] == int(order_number)]['image'].tolist()[i],
                 total= f'{price:,}',
                 num_order= str(df_order[df_order['Orderـnumber'] == int(order_number)]['num_order'].tolist()[i]),
@@ -964,14 +950,30 @@ class DigiApp(MDApp):
         return MainScreen()
 
     def on_start(self): 
-        if err_conection == True:
-            self.root.current = 'SplashScreen' 
-        else:
+        self.root.current = 'SplashScreen' 
+        Clock.schedule_once(self.after_start, 0.01)
+
+    def after_start(self, arg):
+        global f
+        global dataframe_products
+
+        try:
+            f = ftpretty('31.7.73.165', 'mahdiem3', '2(v3Hj(6InRxG9')
+            f.get('/domains/mahdiemadi.ir/public_html/excel/products.xlsx', 'products.xlsx')
+
+            dataframe_products = pd.read_excel (r'products.xlsx', engine='openpyxl')
+
+            self.version = 1.2
+            self.last_version = dataframe_products['version'].tolist()[0]
+
+            dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
             Clock.schedule_once(self.change_screen, 0.01)
-          
+        except:
+            self.root.current = 'Err_connection'
+
     def change_screen(self, arg):
         # Check for update
-        if last_version != version:           
+        if self.last_version != self.version:           
             content = BoxLayout(orientation= 'horizontal')
             bt1 = Button(text= get_display(reshape('خیر')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(.5, None), size=('20mm', '6mm'))
             bt1callback = partial(self.update, 'No')
@@ -985,7 +987,6 @@ class DigiApp(MDApp):
             bt2.bind(on_press= bt2callback)
             self.pop.open()
 
-        self.root.current = 'main'
         # Access the carousel.
         carousel = self.root.mgr1.mgr3.mgr1.ids._carousel_
         # Schedule after every 3 seconds.
@@ -1032,12 +1033,13 @@ class DigiApp(MDApp):
             self.root.mgr1.mgr3.mgr3.price_off= f'{price_off:,}'
             self.root.mgr1.mgr3.mgr3.mgr1.add_widget(Factory.BoxLayout_mainscroll_scroll2())
 
+        self.root.current = 'main'
+
     def update(self, *arg):
         self.pop.dismiss()
         if arg[0] == 'Yes':
             MainScreen.main_scroll_gridLayout1_items('', 'bazar')
             self.root.current = 'SplashScreen'
-
 
 if __name__== "__main__":
     DigiApp().run()

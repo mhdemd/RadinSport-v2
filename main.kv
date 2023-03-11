@@ -18,6 +18,7 @@
     mgr12: _det_order
     mgr13: _privacy
 
+
     Splash:
         id: _splash
 	Main:
@@ -40,20 +41,26 @@
         id: _det_order
     Privacy:
         id: _privacy
+    Err_connection:
+        id: _err_connection
 
-
-<Splash@Screen>:
+<Err_connection@Screen>:
     # Set sc screen name
-    name: "SplashScreen"
+    name: "Err_connection"
     # Start the progress bar animation when the screen is active
-    on_enter: self.ids.progress.start()
+    #on_enter: self.ids.progress.start()
 
     FloatLayout:
         orientation: 'vertical'
         Image:
             source:'img/err_int.png'
-            #size_hint: (1, 1)
+            #center: self.parent.center
+            #size: 500, 500
             allow_stretch: True
+            anim_delay: 0
+            mipmap: True
+            #anim_loop: 100
+
         MDFillRoundFlatIconButton:
             size_hint: None, None
             y: mm(10)
@@ -65,27 +72,35 @@
             md_bg_color: "red"
             on_press:
                 app.root.stop()
-<Main@Screen>:
-    name: "main"
-    mgr3: _scroll_main
-    mgr4: _bot_nav
-    mgr5:_search_bar
-    #mgr5: _spinner
-    FloatLayout:
+
+<Splash@Screen>:
+    # Set sc screen name
+    name: "SplashScreen"
+    # Start the progress bar animation when the screen is active
+    on_enter: self.ids.progress.start()
+
+    BoxLayout:#FloatLayout:
         orientation: 'vertical'
-        ScrollMain:
-            id: _scroll_main
-            pos_hint: {'top': 0.96}
-        SearchBar:
-            id: _search_bar
-            pos_hint: {'top': 1}
-            #size_hint:(1, 1/13)
-            size_hint_y: None
-            height: (140 / 1080) * self.width 
-        BottomNavigation:
-            id: _bot_nav
-            size_hint_y: None
-            height: (140 / 1080) * self.width 
+        Image:
+            source:'img/start.png'
+            #center: self.parent.center
+            #size: 500, 500
+            allow_stretch: True
+            anim_delay: 0
+            mipmap: True
+            #anim_loop: 100
+
+        #MDFillRoundFlatIconButton:
+        #    size_hint: None, None
+        #    y: mm(10)
+        #    center_x: root.width / 2
+        #    font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        #    #halign: "center"
+        #    text: get_display(arabic_reshaper.reshape('خروج'))
+        #    icon: 'exit-to-app'
+        #    md_bg_color: "red"
+        #    on_press:
+        #        app.root.stop()
 
 <PopupBox>:
     size_hint: .55, .15
@@ -112,3 +127,24 @@
         Label:
             text:''
 
+<Main@Screen>:
+    name: "main"
+    mgr3: _scroll_main
+    mgr4: _bot_nav
+    mgr5:_search_bar
+    #mgr5: _spinner
+    FloatLayout:
+        orientation: 'vertical'
+        ScrollMain:
+            id: _scroll_main
+            pos_hint: {'top': 0.96}
+        SearchBar:
+            id: _search_bar
+            pos_hint: {'top': 1}
+            #size_hint:(1, 1/13)
+            size_hint_y: None
+            height: (140 / 1080) * self.width 
+        BottomNavigation:
+            id: _bot_nav
+            size_hint_y: None
+            height: (140 / 1080) * self.width 
