@@ -1,12 +1,13 @@
 <Category_boxlayout>:
-    cat: 'asdsdsd'
+    cat: ''
+    title_text: ''
     orientation:'vertical'
     BoxLayout:
         orientation:'horizontal'
         size_hint_y: None
         height: mm(8)
         MDTextButton:
-            text: get_display(arabic_reshaper.reshape('مشاهده همه'))
+            text: root.title_text
             font_name: 'font/IRANSansXFaNum-Medium.ttf'
             font_size: '12sp'
             theme_text_color: "Custom"
@@ -16,13 +17,13 @@
             on_press:
                 app.root.show_popup('')
             on_release:
-                Clock.schedule_once(partial(app.root.open_category, root.cat), 0.75)
+                Clock.schedule_once(partial(app.root.open_category, root.cat), 0.75) #if app.root.grouping_type == 'grouping' else Clock.schedule_once(partial(app.root.p, root.cat), 0.75) 
         BoxLayout:
             orientation:'vertical'
             MDLabel:
             MDLabel:
                 font_size: '14sp'
-                text: get_display(arabic_reshaper.reshape(root.cat))
+                text: root.cat
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 halign: "right"
                 valign: 'bottom'

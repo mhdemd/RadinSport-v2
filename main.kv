@@ -15,6 +15,8 @@
     mgr9: _account
     mgr10: _signup 
     mgr11: _splash
+    mgr12: _det_order
+    mgr13: _privacy
 
     Splash:
         id: _splash
@@ -34,23 +36,35 @@
         id: _account
     Sign_up:
         id: _signup
-        
+    Det_order: 
+        id: _det_order
+    Privacy:
+        id: _privacy
+
+
 <Splash@Screen>:
     # Set sc screen name
     name: "SplashScreen"
     # Start the progress bar animation when the screen is active
     on_enter: self.ids.progress.start()
-    MDBoxLayout:
-        # Add float layout
-        #MDFloatLayout:
-            # Add Gif image
-        Image:
-            source:'img/loveandjoy.gif'
-            allow_stretch: True
-            anim_delay: 0
-            # anim_loop: 1
-            anim_reset: True
 
+    FloatLayout:
+        orientation: 'vertical'
+        Image:
+            source:'img/err_int.png'
+            #size_hint: (1, 1)
+            allow_stretch: True
+        MDFillRoundFlatIconButton:
+            size_hint: None, None
+            y: mm(10)
+            center_x: root.width / 2
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            #halign: "center"
+            text: get_display(arabic_reshaper.reshape('خروج'))
+            icon: 'exit-to-app'
+            md_bg_color: "red"
+            on_press:
+                app.root.stop()
 <Main@Screen>:
     name: "main"
     mgr3: _scroll_main

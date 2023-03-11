@@ -8,7 +8,7 @@
             size_hint_y: 1/13
             halign: 'center'
             size_hint_y: None
-            height: mm(9)      
+            height: mm(5)      
             text: get_display(arabic_reshaper.reshape('سبد خرید'))
             font_name: 'font/IRANSansXFaNum-Medium.ttf'
         Widget:
@@ -82,6 +82,274 @@
             #size_hint:(1, 1/13)
             size_hint_y: None
             height: (140 / 1080) * self.width 
+
+<Det_order@Screen>:
+    name: 'det_order'
+    mgr1: _sc_det
+    ScrollView:
+        id: _sc_det
+
+<Det_order_boxLayout>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+    padding: dp(10), dp(0), dp(10), dp(0)
+    order_num: ''
+    receiver: ''
+    tel: ''
+    address: ''
+    total: ''
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: mm(9)
+        MDLabel:
+            halign: 'center'
+            text: get_display(arabic_reshaper.reshape('جزییات سفارش     '))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            font_size: '14sp'
+        MDIconButton:
+            icon: "arrow-right"
+            icon_size: "20sp"
+            on_press:          
+                root.source= '' 
+                app.root.current= app.root.active_page
+    Widget:
+        size_hint_y: None
+        height: dp(1)
+        canvas:
+            Color:
+                rgba: 128/255, 128/255, 128/255, .1
+            Rectangle:
+                pos: dp(20), self.y
+                size: self.width - dp(40), self.height
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: mm(5)
+        MDLabel:
+            size_hint_y: None
+            halign: 'left'
+            height: mm(5)      
+            text: get_display(arabic_reshaper.reshape(root.order_num))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            font_size: '12sp'
+        MDLabel:
+            size_hint_y: None
+            halign: 'right'
+            height: mm(5)      
+            text: get_display(arabic_reshaper.reshape('شماره سفارش:'))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            theme_text_color: "Custom"
+            text_color: 128/255, 128/255, 128/255, 1
+            font_size: '12sp'
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: mm(5)
+        MDLabel:
+            size_hint_y: None
+            halign: 'left'
+            height: mm(5)      
+            text: get_display(arabic_reshaper.reshape('202%s/%s/%s'%(root.order_num[0:1], root.order_num[1:3], root.order_num[3:5])))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            font_size: '12sp'
+        MDLabel:
+            size_hint_y: None
+            halign: 'right'
+            height: mm(5)      
+            text: get_display(arabic_reshaper.reshape('تاریخ سفارش:'))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            theme_text_color: "Custom"
+            text_color: 128/255, 128/255, 128/255, 1
+            font_size: '12sp'
+    MDLabel:
+        size_hint_y: None
+        height: mm(2) 
+    Widget1:
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: mm(5)
+        MDLabel:
+            size_hint_y: None
+            halign: 'left'
+            height: mm(5)      
+            text: get_display(arabic_reshaper.reshape(root.receiver))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            font_size: '12sp'
+        MDLabel:
+            size_hint_y: None
+            halign: 'right'
+            height: mm(5)      
+            text: get_display(arabic_reshaper.reshape('تحویل گیرنده:'))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            theme_text_color: "Custom"
+            text_color: 128/255, 128/255, 128/255, 1
+            font_size: '12sp'
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: mm(5)
+        MDLabel:
+            size_hint_y: None
+            halign: 'left'
+            height: mm(5)      
+            text: get_display(arabic_reshaper.reshape('0%s'%(str(root.tel))))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            font_size: '12sp'
+        MDLabel:
+            size_hint_y: None
+            halign: 'right'
+            height: mm(5)      
+            text: get_display(arabic_reshaper.reshape('شماره تماس:'))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            theme_text_color: "Custom"
+            text_color: 128/255, 128/255, 128/255, 1
+            font_size: '12sp'
+    MDLabel:
+        size_hint_y: None
+        height: mm(2) 
+    Widget1:
+    MDLabel:
+        size_hint_y: None
+        halign: 'right'
+        height: mm(5)      
+        text: get_display(arabic_reshaper.reshape('ارسال به:'))
+        font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        theme_text_color: "Custom"
+        text_color: 128/255, 128/255, 128/255, 1
+        font_size: '12sp'
+    MDLabel:
+        size_hint_y: None
+        halign: 'right'
+        height: mm(10)      
+        text: get_display(arabic_reshaper.reshape(root.address))
+        font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        font_size: '12sp'
+    MDLabel:
+        size_hint_y: None
+        height: mm(2) 
+    Widget1:
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: mm(5)
+        MDLabel:
+            size_hint_y: None
+            halign: 'left'
+            height: mm(5)      
+            text: get_display(arabic_reshaper.reshape(root.total))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            font_size: '12sp'
+        MDLabel:
+            size_hint_y: None
+            halign: 'right'
+            height: mm(5)      
+            text: get_display(arabic_reshaper.reshape('جمع کل:'))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            theme_text_color: "Custom"
+            text_color: 128/255, 128/255, 128/255, 1
+            font_size: '12sp'
+    MDLabel:
+        size_hint_y: None
+        height: mm(2) 
+    Widget1:
+
+<Det_order_box_box>:
+    title: ''
+    image: ''
+    total: ''
+    num_order: ''
+    color_en: ''
+    color_fa: ''
+
+    orientation: 'horizontal' 
+    size_hint_y: None
+    height: mm(35)     
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_x: 20/27
+        spacing: dp(5)
+        MDLabel:
+            size_hint_y: 1.3/5
+            halign: 'right'
+            font_size: '14sp'       
+            text: get_display(arabic_reshaper.reshape(root.title)) if len(root.title) < 30 else get_display(arabic_reshaper.reshape('%s...'%(root.title[:27]))) 
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        GridLayout:             
+            cols: 2
+            size_hint_y: .8/5
+            MDLabel:
+                halign: 'right'
+                font_size: '10sp'       
+                text: get_display(arabic_reshaper.reshape('گارانتی اصالت و سلامت فیزیکی کالا'))
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                theme_text_color: "Custom"
+                text_color: 128/255, 128/255, 128/255, 1
+
+            MDIconButton:
+                icon: "shield-check-outline"
+                theme_text_color: "Custom"
+                icon_color: 128/255, 128/255, 128/255, 1
+                icon_size: '14sp'
+        GridLayout:
+            cols: 2
+            size_hint_y: .8/5
+            MDLabel:
+                halign: 'right'
+                font_size: '10sp'       
+                text: get_display(arabic_reshaper.reshape('موجود در انبار فروشگاه'))
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                theme_text_color: "Custom"
+                text_color: 128/255, 128/255, 128/255, 1
+
+            MDIconButton:
+                icon: "storefront-check-outline"
+                theme_text_color: "Custom"
+                icon_color: 128/255, 128/255, 128/255, 1
+                icon_size: '14sp'
+        GridLayout:   
+            cols: 2
+            size_hint_y: .8/5
+            MDLabel:
+                halign: 'right'
+                font_size: '10sp'       
+                text: get_display(arabic_reshaper.reshape(root.color_fa))
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                theme_text_color: "Custom"
+                text_color: 128/255, 128/255, 128/255, 1
+
+            MDIconButton:
+                icon: "circle"
+                theme_icon_color: "Custom"
+                icon_color: root.color_en
+                theme_text_color: "Custom"
+                icon_size: '14sp'
+
+        GridLayout:   
+            cols: 2
+            size_hint_y: 1.3/5
+            MDLabel:
+                halign: 'left'
+                font_size: '12sp'       
+                text: get_display(arabic_reshaper.reshape('قیمت: %s'%(root.total)))
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+
+            MDLabel:
+                halign: 'right'
+                font_size: '12sp'       
+                text: get_display(arabic_reshaper.reshape('تعداد سفارش: %s'%(root.num_order)))
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_x: 7/27
+        ImageButton:
+            source: root.image  
+            on_press:
+                app.root.open_product_screen(root.image, '')
 
 <MyButton@BoxLayout>:
     image: ''

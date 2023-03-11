@@ -39,7 +39,7 @@
                         font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         font_size:'12sp'
                     MDFillRoundFlatButton:
-                        text: get_display(arabic_reshaper.reshape('ثبت نام')) if root.text1 == '-' else  get_display(arabic_reshaper.reshape('تغییر مشخصات فردی')) 
+                        text: get_display(arabic_reshaper.reshape('ثبت نام')) if root.text1 == '-' else  get_display(arabic_reshaper.reshape('اصلاح مشخصات')) 
                         font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         md_bg_color: "red"
                         pos_hint: {'center_x': .5}
@@ -48,6 +48,15 @@
                             app.root.open_account_xls()
                             app.root.load_account_data() if root.text1 != '-' else app.root.clear_account_data()
                             app.root.mgr10.mgr1.scroll_y=1
+
+                    MDFillRoundFlatIconButton:
+                        text: get_display(arabic_reshaper.reshape('مشاهده سفارشات')) 
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                        md_bg_color: "red"
+                        pos_hint: {'center_x': .5} if root.text1 != '-' else {'center_x': -5000}
+                        icon: 'eye-outline'  
+                        on_press:
+                            app.root.see_orders()
 
                     MDFillRoundFlatIconButton:
                         text: get_display(arabic_reshaper.reshape('خروج از حساب کاربری')) 

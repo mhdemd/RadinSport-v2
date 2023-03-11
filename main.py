@@ -1,44 +1,48 @@
-#from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-#from kivy.uix.gridlayout import GridLayout
 from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.clock import Clock
-from kivy.core.window import Window
-#from kivy.uix.widget import Widget
 from kivy.factory import Factory
 from kivy.uix.recycleview import RecycleView
-#from kivy.utils import rgba
 from kivy.uix.popup import Popup
-#from kivy.uix.label import Label
 from kivy.uix.image import Image, AsyncImage
 from kivy.uix.carousel import Carousel
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.loader import Loader
-
-import os
+from kivy.core.window import Window
 from kivymd.app import MDApp
-import arabic_reshaper 
-from bidi.algorithm import get_display 
-#from kivymd.uix.behaviors.toggle_behavior import MDToggleButton
-import pandas as pd #openpyxl
 from kivymd.uix.swiper import MDSwiperItem
 from kivymd.uix.button import MDRoundFlatIconButton
-import random
-import webbrowser
+from kivy.animation import Animation
+
+import os
+from arabic_reshaper import reshape
+from bidi.algorithm import get_display 
+import pandas as pd 
+from random import sample
+from webbrowser import open
 from ftpretty import ftpretty
 from time import gmtime, strftime
+from functools import partial
 
-f = ftpretty('31.7.73.165', 'mahdiem3', '2(v3Hj(6InRxG9')
-f.get('/domains/mahdiemadi.ir/public_html/excel/products.xls', 'products.xls')
+err_conection = False
+try:
+    f = ftpretty('31.7.73.165', 'mahdiem3', '2(v3Hj(6InRxG9')
+    f.get('/domains/mahdiemadi.ir/public_html/excel/products.xlsx', 'products.xlsx')
 
-dataframe_products = pd.read_excel (r'products.xls')
-dataframe_products = dataframe_products.astype({"price_off": int})
-dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
+    dataframe_products = pd.read_excel (r'products.xlsx', engine='openpyxl')
+
+    version = 1.0
+    last_version = dataframe_products['version'].tolist()[0]
+
+    dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
+
+except:
+    err_conection = True
 
 global error_list
 global items_in_order_screen
@@ -46,8 +50,6 @@ global items_in_order_screen
 items_in_order_screen = []
 items_in_category_screen = []
 error_list = []
-
-
 
 #Window.size = (350, 610)
 
@@ -70,6 +72,7 @@ Builder.load_file('screen_order.kv')
 Builder.load_file('screen_grouping.kv')
 Builder.load_file('screen_account.kv')
 Builder.load_file('screen_account_sign_up.kv')
+
 
 class ScrollMain(ScrollView):
     mgr1 = ObjectProperty()
@@ -160,6 +163,7 @@ class Cat(ScrollView):
 
 class Category_boxlayout(BoxLayout):
     cat = ObjectProperty()
+    title_text = ObjectProperty()
 
 class RV_Order(RecycleView):
     dkp = ObjectProperty()
@@ -180,7 +184,7 @@ class RV_Order(RecycleView):
         self.data = [item for item in items_in_order_screen]
 
     def show_popup(self, args):
-        reshaped_loading = arabic_reshaper.reshape("لطفاً شکیبا باشید")
+        reshaped_loading = reshape("لطفاً شکیبا باشید")
         bidi_loading = get_display(reshaped_loading)
         self.pop_up = Factory.PopupBox()
         self.pop_up.update_pop_up_text(bidi_loading)
@@ -204,7 +208,7 @@ class RV_Order(RecycleView):
                 'price_off': str(self.price_off), 
                 'price': str(self.price), 
                 'color_en': self.icon_color, 
-                'color_fa': get_display(arabic_reshaper.reshape(self.color_fa)),
+                'color_fa': get_display(reshape(self.color_fa)),
                 'stock': str(stock),
                 'p_code': str(p_code),
                 'num_order': '1',          
@@ -274,21 +278,22 @@ class RV_Order(RecycleView):
         self.refresh_from_data()
 
     def check_registration(self, *arg):
+        Orderـnumber = strftime("%Y%m%d%H%M%S", gmtime())[3:]
         # Check if the cart is empty or not
         if len(items_in_order_screen) == 0:
             self.pop_up.dismiss()
-            content = Button(text= get_display(arabic_reshaper.reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
-            pop = Popup(title= get_display(arabic_reshaper.reshape('سبد خالی است!')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+            content = Button(text= get_display(reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(reshape('سبد خالی است!')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
             title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
             content.bind(on_release=pop.dismiss)
             pop.open()
         else:
             # Checking the registration for the next step of the order
-            if os.path.isfile('Personal_Information.xls'):
+            if os.path.isfile('Personal_Information.xlsx'):
                 # Checking if the host has stock or not
-                f.get('/domains/mahdiemadi.ir/public_html/excel/products.xls', 'products.xls')
-                dataframe_products = pd.read_excel (r'products.xls')
-                dataframe_products = dataframe_products.astype({"price_off": int})
+                f.get('/domains/mahdiemadi.ir/public_html/excel/products.xlsx', 'products.xlsx')
+                dataframe_products = pd.read_excel (r'products.xlsx', engine='openpyxl')
+                #dataframe_products = dataframe_products.astype({"price_off": int})
                 for i in range(len(items_in_order_screen)):
                     if int(items_in_order_screen[i]['num_order']) <= dataframe_products[dataframe_products['code'] == items_in_order_screen[i]['p_code']]['stock'].tolist()[0]:
                         pass
@@ -296,21 +301,33 @@ class RV_Order(RecycleView):
                         error_list.append([items_in_order_screen[i]['p_code'], dataframe_products[dataframe_products['code'] == items_in_order_screen[i]['p_code']]['stock'].tolist()[0]])
                 if error_list == []:
                     self.pop_up.dismiss()
-                    content = Label(text= get_display(arabic_reshaper.reshape('با شما تماس گرفته خواهد شد')), size_hint=(1, None), size=('20mm', '6mm'), font_name='font/IRANSansXFaNum-Medium.ttf')
-                    pop = Popup(title= get_display(arabic_reshaper.reshape('سفارش با موفقیت ثبت شد')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
-                    title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 5)
+                    l = BoxLayout(orientation= 'vertical')
+                    l.add_widget(Label(text= get_display(reshape('شماره سفارش:  %s'%(Orderـnumber))), size_hint_y= None, height= '6mm', halign= 'right', font_name='font/IRANSansXFaNum-Medium.ttf'))
+                    l.add_widget(Label(text= get_display(reshape('مشاهده سفارش ها در بخش \'فروشگاه من\'\n ')), size_hint_y= None, height= '12mm', font_name='font/IRANSansXFaNum-Medium.ttf'))
+                    l.add_widget(Label(text= get_display(reshape('با شما تماس گرفته خواهد شد')), size_hint_y= None, height= '6mm', font_name='font/IRANSansXFaNum-Medium.ttf'))
+                    content = l
+                    content.opacity = 0
+                    pop = Popup(title= get_display(reshape('از حسن انتخاب شما سپاسگزاریم')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+                    title_align= 'center', size_hint=(None, None), size=(self.width , '40mm'),separator_height= 5)
                     pop.open()
-
+                    Animation(opacity = 1, duration = 1).start(content)
                     # Subtract from the main data frame & Save orders in order ata frame
-                    df_personal = pd.read_excel (r'Personal_Information.xls')
+                    df_personal = pd.read_excel (r'Personal_Information.xlsx', engine='openpyxl')
                     try:
-                        df_order = pd.read_excel (r'orders.xls')
+                        df_order = pd.read_excel (r'orders.xlsx', engine='openpyxl')
                         del df_order['Unnamed: 0']
                     except:
-                        d = {                           
+                        d = {  
+                            'Orderـnumber': [],                         
                             'code': [],
                             'num_order': [],
                             'date&time': [],
+                            'image': [],
+                            'title': [],
+                            'Total': [],
+                            'color_en': [],
+                            'color_fa': [],
+                            'color_fa': [],
                             'Name': [],
                             'Last name': [],
                             'Mobile number': [],
@@ -318,41 +335,50 @@ class RV_Order(RecycleView):
                             'Address': [],
                             'Postal code': [],
                             'Email': [],
+                            'total_price': [],
                             }
                         df_order = pd.DataFrame(data=d)
-                    
+                    total_price = 0
                     for i in range(len(items_in_order_screen)): 
+                        total_price += items_in_order_screen[i]['Total'] * int(items_in_order_screen[i]['num_order'])
                         # Change the values in the main data frame                       
                         cond = dataframe_products['code'] == items_in_order_screen[i]['p_code']
                         dataframe_products.loc[cond,'stock'] = dataframe_products.loc[cond,'stock'] - int(items_in_order_screen[i]['num_order'])
-                        # Add orders to the orders data frame
-                        df_order.loc[len(df_order.index)] = [
-                            items_in_order_screen[i]['p_code'],
-                            items_in_order_screen[i]['num_order'],
-                            strftime("%Y-%m-%d_%H:%M:%S", gmtime()), 
-                            df_personal.tail(1)['Name'].tolist()[0],
-                            df_personal.tail(1)['Last name'].tolist()[0],
-                            df_personal.tail(1)['Mobile number'].tolist()[0],
-                            df_personal.tail(1)['Home number'].tolist()[0],
-                            df_personal.tail(1)['Address'].tolist()[0],
-                            df_personal.tail(1)['Postal code'].tolist()[0],
-                            df_personal.tail(1)['Email'].tolist()[0],
-                          ]
-
+                        # Add orders to the orders data frame                        
+                        df_order.loc[len(df_order.index)] = {
+                            'Orderـnumber': Orderـnumber, 
+                            'code': items_in_order_screen[i]['p_code'],
+                            'num_order': items_in_order_screen[i]['num_order'],
+                            'date&time': strftime("%Y/%m/%d_%H%M%S", gmtime()), 
+                            'image': items_in_order_screen[i]['image'], 
+                            'title': items_in_order_screen[i]['title'], 
+                            'Total': items_in_order_screen[i]['Total'], 
+                            'color_en': items_in_order_screen[i]['color_en'], 
+                            'color_fa': items_in_order_screen[i]['color_fa'],
+                            'color_fa': items_in_order_screen[i]['color_fa'],
+                            'Name': df_personal.tail(1)['Name'].tolist()[0],
+                            'Last name': df_personal.tail(1)['Last name'].tolist()[0],
+                            'Mobile number': df_personal.tail(1)['Mobile number'].tolist()[0],
+                            'Home number': df_personal.tail(1)['Home number'].tolist()[0],
+                            'Address': df_personal.tail(1)['Address'].tolist()[0],
+                            'Postal code': df_personal.tail(1)['Postal code'].tolist()[0],
+                            'Email': df_personal.tail(1)['Email'].tolist()[0],
+                            'total_price': total_price
+                            }
                     # Save main data frame & order data frame  to excel files 
-                    dataframe_products.to_excel('products.xls')
-                    df_order.to_excel('orders.xls')
+                    dataframe_products.to_excel('products.xlsx')
+                    df_order.to_excel('orders.xlsx')
                     
                     # Save Excel products on the host
-                    f.put('products.xls', '/domains/mahdiemadi.ir/public_html/excel/products.xls')
-                    f.put('orders.xls', '/domains/mahdiemadi.ir/public_html/Orders/%s.xls'%(df_order.tail(1)['date&time'].tolist()[0]))
+                    f.put('products.xlsx', '/domains/mahdiemadi.ir/public_html/excel/products.xlsx')
+                    f.put('orders.xlsx', '/domains/mahdiemadi.ir/public_html/Orders/%s.xlsx'%(df_order.tail(1)['date&time'].tolist()[0]))
                     
                 else:
                     for i in range(len(error_list)):
                         filter_list = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == error_list[i][0], items_in_order_screen))
                         filter_list[0]['num_order'] = str(error_list[i][1])
                         filter_list[0]['stock'] = str(error_list[i][1])
-                        filter_list[0]['error_text'] = get_display(arabic_reshaper.reshape('موجودی ندارد')) if error_list[i][1] == 0 else get_display(arabic_reshaper.reshape('حداکثر موجودی تغییر کرده است'))
+                        filter_list[0]['error_text'] = get_display(reshape('موجودی ندارد')) if error_list[i][1] == 0 else get_display(reshape('حداکثر موجودی تغییر کرده است'))
                     self.pop_up.dismiss()
 
                 self.add_remove_count('*', '*', '*', '*')
@@ -360,8 +386,8 @@ class RV_Order(RecycleView):
 
             else:
                 self.pop_up.dismiss()
-                content = Button(text= get_display(arabic_reshaper.reshape('ثبت نام')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
-                pop = Popup(title= get_display(arabic_reshaper.reshape('لطفاٌ ابتدا ثبت نام کنید')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+                content = Button(text= get_display(reshape('ثبت نام')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
+                pop = Popup(title= get_display(reshape('لطفاٌ ابتدا ثبت نام کنید')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
                 title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
                 content.bind(on_press=self.change_screen_signup)
                 content.bind(on_release=pop.dismiss)
@@ -372,6 +398,22 @@ class RV_Order(RecycleView):
         DigiApp.get_running_app().root.mgr9.mgr1.canvas.after.get_group('a')[0].source='img/App/nav1.jpg'
         DigiApp.get_running_app().root.mgr9.text1 = '-'
         DigiApp.get_running_app().root.current= 'signup' 
+
+class Det_order_boxLayout(BoxLayout):
+    order_num = ObjectProperty()
+    receiver = ObjectProperty()
+    tel = ObjectProperty()
+    address = ObjectProperty()
+    total = ObjectProperty()
+
+class Det_order_box_box(BoxLayout):
+    title = ObjectProperty()
+    image = ObjectProperty()
+    total = ObjectProperty()
+    color_en = ObjectProperty()
+    color_fa = ObjectProperty()
+    num_order = ObjectProperty()
+    num_order = ObjectProperty()
 
 class ImageButton(ButtonBehavior, AsyncImage):
     def __init__(self, **kwargs):
@@ -429,8 +471,18 @@ class PopupBox(Popup):
         self.title = p_message
         self.title_font = 'font/IRANSansXFaNum-Medium.ttf'
 
+class WrappedLabel(Label):
+    # Based on Tshirtman's answer
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.bind(
+            width=lambda *x:
+            self.setter('text_size')(self, (self.width, None)),
+            texture_size=lambda *x: self.setter('height')(self, self.texture_size[1]))
+
 class MainScreen(ScreenManager):
     category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش', 'R': 'طناب', 'PI': 'پیلاتس و بدنسازی'}
+    grouping_type = ''
     # Deine back bottom in android
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
@@ -438,25 +490,32 @@ class MainScreen(ScreenManager):
 
     def on_key(self, window, key, *args):
         if key == 27:  # the esc key
-            if self.current_screen.name == "product" or  self.current_screen.name == 'search' or  self.current_screen.name == 'signup':
+            if self.current_screen.name == "product" or  self.current_screen.name == 'search' or  self.current_screen.name == 'signup' or  self.current_screen.name == 'det_order':
                 self.current = self.active_page
                 self.mgr2.source= ''
                 return True  # exit the app from this page
-            elif self.current_screen.name == "order" or self.current_screen.name == "grouping" or self.current_screen.name == "off" or self.current_screen.name == "account":
+            elif self.current_screen.name == "order" or self.current_screen.name == "off" or self.current_screen.name == "account":
                 self.current = 'main'
+                return True
+            elif self.current_screen.name == "grouping" or self.current_screen.name == 'privacy':
+                if self.active_page == 'account':
+                    self.current = 'account'
+                else:
+                    self.current = 'main'
                 return True
             elif self.current_screen.name == "mian":
                 DigiApp.get_running_app().root_window.minimize()
                 return True
 
     def open_product_screen(self, DKP, arg): 
+        
         try:
             DKP = int(DKP.split('/')[4])
         except:
-            pass
-
+            if type(DKP) == float:
+                DKP = int(DKP)
+            
         stock = dataframe_products[dataframe_products['DKP'] == DKP]['stock'].tolist()
-
         if sum(stock) > 0:
             self.mgr5.mgr1.mgr2.scroll_x = 1
             self.mgr5.mgr1.scroll_y = 1
@@ -497,7 +556,7 @@ class MainScreen(ScreenManager):
             for i in range(len(list_colors)):
                 self.mgr5.mgr1.mgr1.add_widget(Factory.color_buttom(title= str(list_colors_fa[i]), ic_color= list_colors[i]))#(int(a[0]), int(a[2]), int(a[4]), int(a[6]))))#(list_colors[i])))
             # Add the first color label
-            self.mgr5.mgr1.color= get_display(arabic_reshaper.reshape(str(list_colors_fa[len(list_colors_fa) - 1]))) 
+            self.mgr5.mgr1.color= get_display(reshape(str(list_colors_fa[len(list_colors_fa) - 1]))) 
             self.mgr7.mgr2.color_fa = self.mgr5.mgr1.color
             # Add material, country of manufacture and product type & details
             self.mgr5.mgr1.material= dataframe_products[(dataframe_products['DKP'] == DKP) ]['material'].values[0]
@@ -529,9 +588,9 @@ class MainScreen(ScreenManager):
             ## Drop current category
             list_cat = [ele for ele in list_cat if ele != DKP]
             ## Select 5 category randomly
-            List_similar_product = random.sample(list_cat, 5 if len(list_cat) >= 5 else len(list_cat))
+            List_similar_product = sample(list_cat, 5 if len(list_cat) >= 5 else len(list_cat))
             for i in range(len(List_similar_product)):
-                self.mgr5.mgr1.mgr2.ids._GridLayout.add_widget(Factory.Button_scroll5(image_source= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(List_similar_product[i], List_similar_product[i]) ))
+                self.mgr5.mgr1.mgr2.ids._GridLayout.add_widget(Factory.Button_scroll5(image_source= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(List_similar_product[i])), str(int(List_similar_product[i]))) ))
             # Set current screen
             self.current= "product"
             try:
@@ -543,8 +602,8 @@ class MainScreen(ScreenManager):
             if self.pop_up:
                 self.pop_up.dismiss()
             # create content and add to the popup
-            content = Button(text= get_display(arabic_reshaper.reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
-            pop = Popup(title= get_display(arabic_reshaper.reshape('موجودی کالا به اتمام رسیده است.')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+            content = Button(text= get_display(reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(reshape('موجودی کالا به اتمام رسیده است.')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
             title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
             # bind the on_press event of the button to the dismiss function
             content.bind(on_press=pop.dismiss)
@@ -563,40 +622,46 @@ class MainScreen(ScreenManager):
 
     def main_scroll_gridLayout1_items(self,name):
         if name == 'instagram':
-            webbrowser.open('https://www.instagram.com/radin__sprt/')
+            open('https://www.instagram.com/radin__sprt/')
         elif name == 'digikala':
-            webbrowser.open('https://www.digikala.com/seller/aygzu/')
+            open('https://www.digikala.com/seller/aygzu/')
         elif name == 'digistal':
-            webbrowser.open('https://www.digistyle.com/')
+            open('https://www.digistyle.com/')
         elif name == 'weblog':
-            webbrowser.open('https://radinsport.blog.ir/')
+            open('https://radinsport.blog.ir/')
         elif name == 'contact_us':
-            webbrowser.open('https://www.digikala.com/seller/aygzu/')
+            open('https://www.digikala.com/seller/aygzu/')
         elif name == 'kalands':
-            webbrowser.open('https://www.kalands.ir/seller/aygzu/')
+            open('https://www.kalands.ir/seller/aygzu/')
         elif name == 'bazar':
-            webbrowser.open('https://cafebazaar.ir/app/com.radinafzar.radinsport')
+            open('https://cafebazaar.ir/app/com.radinafzar.radinsport')
 
     def changeـheartـicon(self):
         self.mgr5.icon = 'cards-heart'
 
     def open_category(self, cat, arg):
+        #print(self.grouping_type)
         self.mgr6.ids._RecycleView_category.scroll_y=1 
 
         self.items_in_category_screen = []
         try:
-            self.mgr6.title= get_display(arabic_reshaper.reshape(self.category_dict[cat]))
+            self.mgr6.title= get_display(reshape(self.category_dict[cat]))
         except:
             # list out keys and values separately
             key_list = list(self.category_dict.keys())
             val_list = list(self.category_dict.values())
 
             # get position of value 2 in second list
-            position = val_list.index(cat)
-
+            val_list = [reshape(i) for i in val_list]
+            # Checking whether the request came from the grouping page or from the orders report?
+            try:
+                position = val_list.index(get_display(reshape(cat)))
+            except:
+                self.see_order_detail(cat)
+                return
             # get key with position calculated above
             cat = key_list[position]
-            self.mgr6.title= get_display(arabic_reshaper.reshape(self.category_dict[cat]))
+            self.mgr6.title= get_display(reshape(self.category_dict[cat]))
 
         filtered_df = dataframe_products[(dataframe_products['stock'] != 0) & (dataframe_products['cat'] == cat)]
         filtered_df.drop_duplicates(subset="DKP",keep='first', inplace=True)
@@ -612,10 +677,10 @@ class MainScreen(ScreenManager):
             price = f'{price:,}'
 
             self.items_in_category_screen.append(
-                {'title1': get_display(arabic_reshaper.reshape(title)),
-                'source1': 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(filtered_df.iloc[i]['DKP'], filtered_df.iloc[i]['DKP']),
-                  'detail_3_1': get_display(arabic_reshaper.reshape(filtered_df.iloc[i]['detail_3'])),
-                    'detail_4_1': get_display(arabic_reshaper.reshape(filtered_df.iloc[i]['detail_4'])),
+                {'title1': get_display(reshape(title)),
+                'source1': 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(filtered_df.iloc[i]['DKP'])), str(int(filtered_df.iloc[i]['DKP']))),
+                  'detail_3_1': get_display(reshape(filtered_df.iloc[i]['detail_3'])),
+                    'detail_4_1': get_display(reshape(filtered_df.iloc[i]['detail_4'])),
                       'price1': price,
                         'off1': str(filtered_df.iloc[i]['off']),
                           'price_off1': price_off}
@@ -636,7 +701,7 @@ class MainScreen(ScreenManager):
         #if dataframe_products['titleـfa']:
         #    pass
         #else:
-        dataframe_products['titleـfa'] = dataframe_products.apply(lambda row : get_display(arabic_reshaper.reshape(row['title'])), axis = 1)
+        dataframe_products['titleـfa'] = dataframe_products.apply(lambda row : get_display(reshape(row['title'])), axis = 1)
         try:
             df = dataframe_products[dataframe_products['titleـfa'].str.contains('.*%s.*'%(word), regex=True)]['cat'].drop_duplicates()        
             self.open_category(df.values[0], '')
@@ -652,30 +717,32 @@ class MainScreen(ScreenManager):
         self.mgr2.ids._MDTextFieldPersian2.focus= True
     
     def open_grouping(self, arg):
-        
-        if self.mgr8.mgr2.children != []:
-            self.mgr8.ids._sc.scroll_y=1 
-        else:
-            # Forming a list of category dictionary keys
-            list_ = list(self.category_dict.keys())
-            for i in range(len(list_)):
-                
-                category_boxlayout = Category_boxlayout(size_hint_y= None, height= '25mm',
-                        cat= self.category_dict[list_[i]]
-                    )
-                cat_ = Cat()
+        self.grouping_type = 'grouping'
+        self.mgr8.mgr2.clear_widgets()
+        self.mgr8.ids._sc.scroll_y=1 
+        # Forming a list of category dictionary keys
+        list_ = list(self.category_dict.keys())
+        for i in range(len(list_)):
+            DKP_list = dataframe_products[dataframe_products['cat'] == list_[i]]['DKP'].drop_duplicates().to_list()
+            if DKP_list == []:
+                continue
 
-                DKP_list = dataframe_products[dataframe_products['cat'] == list_[i]]['DKP'].drop_duplicates().to_list()  
+            category_boxlayout = Category_boxlayout(size_hint_y= None, height= '27mm',
+                    cat= get_display(reshape(self.category_dict[list_[i]])), title_text= get_display(reshape('مشاهده همه'))
+                )
+            cat_ = Cat()
 
-                for j in range(len(DKP_list) if len(DKP_list) < 5 else 5):
-                    cat_.ids._grid.add_widget(AsyncImage(
-                    source= 'http://mahdiemadi.ir/Products/%s/%s-%s-v_200-h_200-q_90.jpg'%(DKP_list[j], DKP_list[j], 0),
-                    size_hint= (None, None), width= '17mm', height= '17mm', allow_stretch= True
-                        ))
+            for j in range(len(DKP_list) if len(DKP_list) < 5 else 5):
+                cat_.ids._grid.add_widget(AsyncImage(
+                source= 'http://mahdiemadi.ir/Products/%s/%s-%s-v_200-h_200-q_90.jpg'%(str(int(DKP_list[j])), str(int(DKP_list[j])), 0),
+                size_hint= (None, None), width= '15mm', height= '15mm', allow_stretch= True
+                    ))
 
-                category_boxlayout.add_widget(cat_)
+            category_boxlayout.add_widget(cat_)
+            category_boxlayout.add_widget(Factory.Widget1())
+            category_boxlayout.add_widget(Factory.Widget1())
 
-                self.mgr8.mgr2.add_widget(category_boxlayout)
+            self.mgr8.mgr2.add_widget(category_boxlayout)
         try:
             if self.pop_up:
                 self.pop_up.dismiss()
@@ -683,7 +750,7 @@ class MainScreen(ScreenManager):
             pass
 
     def show_popup(self, args):
-        reshaped_loading = arabic_reshaper.reshape("لطفاً شکیبا باشید")
+        reshaped_loading = reshape("لطفاً شکیبا باشید")
         bidi_loading = get_display(reshaped_loading)
         self.pop_up = Factory.PopupBox()
         self.pop_up.update_pop_up_text(bidi_loading)
@@ -691,21 +758,25 @@ class MainScreen(ScreenManager):
     
     def open_account_xls(self, *args):
         try:
-            self.df_account = pd.read_excel (r'Personal_Information.xls')
+            self.df_account = pd.read_excel (r'Personal_Information.xlsx', engine='openpyxl')
             self.mgr9.text1 = self.df_account['Name'][0]
         except:
             self.mgr9.text1 = '-'
 
     def sign_up(self):
+        
         if self.mgr10.ids._name.text == '' or \
         self.mgr10.ids._last_name.text == '' or \
         self.mgr10.ids._mobile_number.text == '' or \
         self.mgr10.ids._address.text == '' or \
+        self.mgr10.ids._address1.text == '' or \
+        self.mgr10.ids._address2.text == '' or \
+        self.mgr10.ids._address3.text == '' or \
         self.mgr10.ids._postal_code.text == '':
 
             # create content and add to the popup
-            content = Button(text= get_display(arabic_reshaper.reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
-            pop = Popup(title= get_display(arabic_reshaper.reshape('لطفاً موارد الزامی پر شود')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+            content = Button(text= get_display(reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(reshape('لطفاً موارد الزامی پر شود')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
             title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
             # bind the on_press event of the button to the dismiss function
             content.bind(on_press=pop.dismiss)
@@ -716,29 +787,31 @@ class MainScreen(ScreenManager):
             'Last name': [self.mgr10.ids._last_name.text],
             'Mobile number': [self.mgr10.ids._mobile_number.text],
             'Home number': [self.mgr10.ids._home_number.text],
-            'Address': [self.mgr10.ids._address.text],
+            'Address': ['%s, %s, %s, %s'%(
+                self.mgr10.ids._address.text,
+                self.mgr10.ids._address1.text,
+                self.mgr10.ids._address2.text,
+                self.mgr10.ids._address3.text,
+                )],
             'Postal code': [self.mgr10.ids._postal_code.text],
             'Email': [self.mgr10.ids._email.text],
             }
-            df = pd.DataFrame(data=d)
-            df.to_excel("Personal_Information.xls")
+            df = pd.DataFrame.from_dict(d)
+            df.to_excel("Personal_Information.xlsx")
             if len(items_in_order_screen) != 0:
-                print('yes')
                 self.current= 'order'
             else:
-                print('no')
                 self.current= 'account'
 
     def delete_Personal_Information(self):
         # create content and add to the popup
         content = BoxLayout(orientation= 'horizontal')
-        bt1 = Button(text= get_display(arabic_reshaper.reshape('خیر')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(.5, None), size=('20mm', '6mm'))
-        bt2 = Button(text= get_display(arabic_reshaper.reshape('بلی')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(.5, None), size=('20mm', '6mm'))
+        bt1 = Button(text= get_display(reshape('خیر')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(.5, None), size=('20mm', '6mm'))
+        bt2 = Button(text= get_display(reshape('بلی')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(.5, None), size=('20mm', '6mm'))
         #self.ids['bt2'] = bt2
         content.add_widget(bt1)
         content.add_widget(bt2)
-
-        pop = Popup(title= get_display(arabic_reshaper.reshape('آیا از حذف کامل مشخصات اطمینان دارید؟')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+        pop = Popup(title= get_display(reshape('آیا از حذف کامل مشخصات اطمینان دارید؟')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
         title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
         bt1.bind(on_press= pop.dismiss)
         bt2.bind(on_press= self.delete_Personal_Information_OK)
@@ -747,7 +820,11 @@ class MainScreen(ScreenManager):
         pop.open()
 
     def delete_Personal_Information_OK(self, *args):
-        os.remove("Personal_Information.xls")
+        os.remove("Personal_Information.xlsx")
+        try:
+            os.remove("orders.xlsx")
+        except:
+            None
         self.current= 'main'
 
     def load_account_data(self):
@@ -755,7 +832,10 @@ class MainScreen(ScreenManager):
         self.mgr10.ids._last_name.text = str(self.df_account['Last name'][0])
         self.mgr10.ids._mobile_number.text = str(self.df_account['Mobile number'][0])
         self.mgr10.ids._home_number.text = str(self.df_account['Home number'][0])
-        self.mgr10.ids._address.text = str(self.df_account['Address'][0])
+        self.mgr10.ids._address.text = str(self.df_account['Address'][0].split(', ')[0])
+        self.mgr10.ids._address1.text = str(self.df_account['Address'][0].split(', ')[1])
+        self.mgr10.ids._address2.text = str(self.df_account['Address'][0].split(', ')[2])
+        self.mgr10.ids._address3.text = str(self.df_account['Address'][0].split(', ')[3])  
         self.mgr10.ids._postal_code.text = str(self.df_account['Postal code'][0])
         self.mgr10.ids._email.text = str(self.df_account['Email'][0])
 
@@ -775,22 +855,105 @@ class MainScreen(ScreenManager):
         self.mgr10.ids._email.str = ''
         self.mgr10.ids._email.text = ''
 
-    def print(self):
-        self.pos_scroll_main = (self.height - self.mgr1.mgr5.height) / self.height 
-        print(self.pos_scroll_main, self.mgr1.mgr5.height)
-        print(self.category_dict)
-    def printt(self, arg):
-        print('OK')
-    def print1(self):
-        print('OK1')
-    def print2(self):
-        print('OK2')
-    def print3(self):
-        print('OK3')
-    def print4(self):
-        print('OK4')
+    def see_orders(self):
+        self.active_page = 'account'
+        self.mgr8.mgr2.clear_widgets()
+        self.mgr8.mgr1.canvas.after.get_group('a')[0].source='img/App/nav1.jpg'
+        
+        self.mgr8.ids._sc.scroll_y=1 
+
+        try:
+            df_order = pd.read_excel (r'orders.xlsx', engine='openpyxl')
+        except:
+            content = Button(text= get_display(reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(reshape('سفارشی ثبت نشده است!')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+            title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
+            content.bind(on_release=pop.dismiss)
+            pop.open()
+            return
+
+        # Forming a list of order_numbers
+        list_orders = df_order["Orderـnumber"].drop_duplicates().tolist()
+        for i in range(len(list_orders)):
+            category_boxlayout = Category_boxlayout(size_hint_y= None, height= '27mm',
+                    cat= get_display(reshape('شماره سفارش: %s'%(list_orders[i]))), title_text= get_display(reshape('جزییات سفارش'))
+                )
+            cat_ = Cat()
+
+            # Add images to orders
+            list_image = df_order[df_order['Orderـnumber'] == list_orders[i]]["image"].tolist()
+                
+            for j in range(len(list_image) if len(list_image) < 5 else 5):
+                cat_.ids._grid.add_widget(AsyncImage(
+                source= list_image[j],
+                size_hint= (None, None), width= '15mm', height= '15mm', allow_stretch= True
+                    ))
+
+            category_boxlayout.add_widget(cat_)
+            category_boxlayout.add_widget(Factory.Widget1())
+            category_boxlayout.add_widget(Factory.Widget1())
+
+            self.mgr8.mgr2.add_widget(category_boxlayout)
+
+        self.current = 'grouping' if os.path.isfile('orders.xlsx') else print('No')
+
+        try:
+            if self.pop_up:
+                self.pop_up.dismiss()
+        except: 
+            pass
+
+    def see_order_detail(self, *arg):
+        self.active_page = 'grouping'
+        self.mgr12.mgr1.clear_widgets()
+        order_number = arg[0].split(':')[0].strip()
+        df_order = pd.read_excel (r'orders.xlsx', engine='openpyxl')
+        address1 = df_order[df_order['Orderـnumber'] == int(order_number)]['Address'].tolist()[0].split(', ')[1:3]
+        address2 = df_order[df_order['Orderـnumber'] == int(order_number)]['Address'].tolist()[0].split(', ')[3:4] 
+        tot= df_order[df_order['Orderـnumber'] == int(order_number)]['total_price'].tolist()[-1]
+        
+        det_order_boxLayout = Det_order_boxLayout(
+            order_num='%s'%(order_number), 
+            receiver= '%s %s'%(
+                        get_display(reshape(df_order[df_order['Orderـnumber'] == int(order_number)]['Name'].tolist()[-1])),
+                        get_display(reshape(df_order[df_order['Orderـnumber'] == int(order_number)]['Last name'].tolist()[-1]))
+                        ), 
+            tel= df_order[df_order['Orderـnumber'] == int(order_number)]['Mobile number'].tolist()[-1],
+            address= get_display(reshape('%s, %s\n%s\n%s'
+                        %(address1[1], address1[0], address2[0], str(df_order['Postal code'].tolist()[-1])))),
+            total= f'{tot:,}', 
+        )
+        
+        for i in range(len(df_order[df_order['Orderـnumber'] == int(order_number)].index)):
+            price = df_order[df_order['Orderـnumber'] == int(order_number)]['Total'].tolist()[i]      
+            det_order_box_box = Det_order_box_box(
+                title= df_order['title'].tolist()[i],
+                image= df_order[df_order['Orderـnumber'] == int(order_number)]['image'].tolist()[i],
+                total= f'{price:,}',
+                num_order= str(df_order[df_order['Orderـnumber'] == int(order_number)]['num_order'].tolist()[i]),
+                color_en= str(df_order[df_order['Orderـnumber'] == int(order_number)]['color_en'].tolist()[i]),
+                color_fa= str(df_order[df_order['Orderـnumber'] == int(order_number)]['color_fa'].tolist()[i]),
+            )
+
+            det_order_boxLayout.add_widget(det_order_box_box)
+            det_order_boxLayout.add_widget(Factory.Widget1())
+
+        self.mgr12.mgr1.add_widget(det_order_boxLayout)
+
+        self.current = 'det_order'
+
+        try:
+            if self.pop_up:
+                self.pop_up.dismiss()
+        except: 
+            pass
+
+    def stop(self):
+        DigiApp.get_running_app().stop()
+        Window.close()
 
 class DigiApp(MDApp):
+
     def build(self):
         Loader.loading_image = 'img/loading1.zip'
         self.theme_cls.primary_palette = "Gray"
@@ -801,9 +964,27 @@ class DigiApp(MDApp):
         return MainScreen()
 
     def on_start(self): 
-        Clock.schedule_once(self.change_screen, .1)
-    
+        if err_conection == True:
+            self.root.current = 'SplashScreen' 
+        else:
+            Clock.schedule_once(self.change_screen, 0.01)
+          
     def change_screen(self, arg):
+        # Check for update
+        if last_version != version:           
+            content = BoxLayout(orientation= 'horizontal')
+            bt1 = Button(text= get_display(reshape('خیر')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(.5, None), size=('20mm', '6mm'))
+            bt1callback = partial(self.update, 'No')
+            bt2 = Button(text= get_display(reshape('بلی')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(.5, None), size=('20mm', '6mm'))
+            bt2callback = partial(self.update, 'Yes')
+            content.add_widget(bt1)
+            content.add_widget(bt2)
+            self.pop = Popup(title= get_display(reshape('آیا مایل به بروزرسانی نرم افزار هستید؟')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+            title_align= 'center', size_hint=(1, None), height= '20mm',separator_height= 0)
+            bt1.bind(on_press= bt1callback)
+            bt2.bind(on_press= bt2callback)
+            self.pop.open()
+
         self.root.current = 'main'
         # Access the carousel.
         carousel = self.root.mgr1.mgr3.mgr1.ids._carousel_
@@ -813,7 +994,7 @@ class DigiApp(MDApp):
         # Add widget to scrollview1 in main screen
         list_DKP = dataframe_products[(dataframe_products['off'] != 0) & (dataframe_products['cat'] == 'H')]['DKP'].drop_duplicates().to_list()  
         j = 6 #len(list_DKP)
-        for i in range(j):
+        for i in range(j if len(list_DKP) > j else len(list_DKP)):
             dkp = list_DKP[i]
             self.root.mgr1.mgr3.mgr2.dkp= dkp
             text_title = dataframe_products[(dataframe_products['DKP'] == dkp)]['title'].tolist()[0]
@@ -821,7 +1002,7 @@ class DigiApp(MDApp):
                 text_title = text_title[:17] + '...'
             self.root.mgr1.mgr3.mgr2.text_title= text_title
             # Add image from host  
-            self.root.mgr1.mgr3.mgr2.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(dkp, dkp)
+            self.root.mgr1.mgr3.mgr2.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(dkp)), str(int(dkp)))
             self.root.mgr1.mgr3.mgr2.detail_1= dataframe_products[(dataframe_products['DKP'] == dkp)]['detail_3'].tolist()[0]
             self.root.mgr1.mgr3.mgr2.detail_2= dataframe_products[(dataframe_products['DKP'] == dkp)]['detail_4'].tolist()[0]
             self.root.mgr1.mgr3.mgr2.off= str(dataframe_products[(dataframe_products['DKP'] == dkp)]['off'].tolist()[0])
@@ -833,7 +1014,7 @@ class DigiApp(MDApp):
         
         # Add widget to scrollview2 in main screen
         list_DKP_Gl = dataframe_products[(dataframe_products['off'] != 0) & (dataframe_products['cat'] == 'GL')]['DKP'].drop_duplicates().to_list()  
-        for i in range(j):
+        for i in range(j if len(list_DKP_Gl) > j else len(list_DKP_Gl)):
             dkp_Gl = list_DKP_Gl[i]
             self.root.mgr1.mgr3.mgr3.dkp_Gl= dkp_Gl
             text_title = dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['title'].tolist()[0]
@@ -841,7 +1022,7 @@ class DigiApp(MDApp):
                 text_title = text_title[:17] + '...'
             self.root.mgr1.mgr3.mgr3.text_title= text_title
             # Add image from host
-            self.root.mgr1.mgr3.mgr3.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(dkp_Gl, dkp_Gl)
+            self.root.mgr1.mgr3.mgr3.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(dkp_Gl)), str(int(dkp_Gl)))
             self.root.mgr1.mgr3.mgr3.detail_1= dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['detail_3'].tolist()[0]
             self.root.mgr1.mgr3.mgr3.detail_2= dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['detail_4'].tolist()[0]
             self.root.mgr1.mgr3.mgr3.off= str(dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['off'].tolist()[0])
@@ -850,7 +1031,14 @@ class DigiApp(MDApp):
             price_off = dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['price_off'].tolist()[0]
             self.root.mgr1.mgr3.mgr3.price_off= f'{price_off:,}'
             self.root.mgr1.mgr3.mgr3.mgr1.add_widget(Factory.BoxLayout_mainscroll_scroll2())
-        
+
+    def update(self, *arg):
+        self.pop.dismiss()
+        if arg[0] == 'Yes':
+            MainScreen.main_scroll_gridLayout1_items('', 'bazar')
+            self.root.current = 'SplashScreen'
+
+
 if __name__== "__main__":
     DigiApp().run()
  
