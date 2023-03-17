@@ -1,55 +1,53 @@
 #:import NoTransition kivy.uix.screenmanager.NoTransition
+#:import MDTextFieldPersian persianuix.MDTextFieldPersian
+#:import arabic_reshaper arabic_reshaper
+#:import get_display bidi.algorithm.get_display
+#:import MDTextFieldPersian persianuix.MDTextFieldPersian
+#:import Window kivy.core.window
+#:import Clock kivy.clock.Clock
+#:import partial functools.partial 
+
+########## Screens
 <MainScreen>:
+    a: 0
     order_on: 'ghjgjgj'
     source: 'img/Products/2465152.jpg' 
     transition: NoTransition()
     # Can be used to return to the previous page
     active_page: 'main' 
 
-    mgr1: _main
-    mgr2: _search
-    mgr5: _product
-    mgr6: _off
-    mgr7: _order
-    mgr8: _grouping
-    mgr9: _account
-    mgr10: _signup 
-    mgr11: _splash
-    mgr12: _det_order
-    mgr13: _privacy
-
-
     Splash:
-        id: _splash
 	Main:
-        id: _main
-	Search:
-        id: _search
-    Product:
-        id: _product
-    Off:
-        id: _off
-    Order:
-        id: _order
-    Grouping:
-        id: _grouping
-    Account:
-        id: _account
-    Sign_up:
-        id: _signup
-    Det_order: 
-        id: _det_order
-    Privacy:
-        id: _privacy
+    #Search:
     Err_connection:
-        id: _err_connection
+
+<Main@Screen>:
+    name: "main"
+    mgr1: _bot_nav
+    mgr3: _scroll_main
+    mgr4: _bot_nav
+    mgr5:_search_bar
+    FloatLayout:
+        orientation: 'vertical'
+        ScrollMain:
+            id: _scroll_main
+            pos_hint: {'top': 0.96}
+        SearchBar:
+            id: _search_bar
+            pos_hint: {'top': 1}
+            #size_hint:(1, 1/13)
+            size_hint_y: None
+            height: (140 / 1080) * self.width 
+        BottomNavigation:
+            id: _bot_nav
+            size_hint_y: None
+            height: (140 / 1080) * self.width 
 
 <Err_connection@Screen>:
     # Set sc screen name
     name: "Err_connection"
     # Start the progress bar animation when the screen is active
     #on_enter: self.ids.progress.start()
-
     FloatLayout:
         orientation: 'vertical'
         Image:
@@ -78,30 +76,542 @@
     name: "SplashScreen"
     # Start the progress bar animation when the screen is active
     on_enter: self.ids.progress.start()
-
     BoxLayout:#FloatLayout:
         orientation: 'vertical'
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source:'img/start.png'
+        Label:
+            text:''
+            size_hint_y: 0.8
         Image:
-            source:'img/start.png'
-            #center: self.parent.center
-            #size: 500, 500
+            anim_delay: 0.03
+            keep_ratio: False
+            keep_data: True
+            source: 'img/loading1.zip'
+            size_hint_y: 0.2
+
+
+########## Widgets
+### Main
+## Search
+<SearchBar@BoxLayout>:
+    Button:
+        canvas.after:
+            Rectangle:
+                group: 'a'
+                pos: self.pos
+                size: self.size
+                source: 'img/App/search_bar.jpg'
+        pos_hint: {'top': 1}
+        on_press:
+            Clock.schedule_once(app.root.show_keyboard, 0.1)
+            app.root.active_page= app.root.current 
+            app.root.current='search'
+            app.root.get_screen('search').ids._MDTextFieldPersian2.str= ''
+            app.root.get_screen('search').ids._MDTextFieldPersian2.text= ''
+## ScrollMain
+<ScrollMain>:
+    id: _scroll_main
+    mgr1: _carousel
+    mgr2: _ScrollView1
+    mgr3: _ScrollView2
+    effect_cls: 'ScrollEffect'
+    do_scroll_x: False
+    scroll_distance: dp(1)
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: 1, None
+        height: self.minimum_height  
+        padding: 0, dp(20), 0, 0
+        Carousel1:
+            id: _carousel
+            size_hint: 1, None
+            height: (523 / 1080) * self.width 
+        GridLayout1:
+            cols: 4
+            size_hint: 1, None
+            height: (608 / 1080) * self.width 
+
+        ScrollView1:
+            id: _ScrollView1
+            size_hint: 1, None
+            
+        GridLayout2:
+            cols: 2
+            size_hint: 1, None
+            height: (843 / 1080) * self.width 
+
+        ScrollView2:
+            id: _ScrollView2
+            size_hint: 1, None
+
+        MDLabel:
+            bold: True
+            color: [0, 0, 0, 1]
+            font_size:'14sp'
+            text: get_display(arabic_reshaper.reshape('خرید بر اساس دسته بندی'))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            halign: "center"
+            size_hint: 1, None
+            height: dp(70)
+
+        GridLayout3:
+            cols: 3
+            size_hint: 1, None
+            height: (1026 / 1080) * self.width 
+        MDLabel:
+            size_hint: 1, None
+            height: dp(90)
+#
+<Carousel1@BoxLayout>:
+    orientation: 'horizontal'
+    #size_hint: None, 1
+    #height: (523 / 1080) * self.width 
+    width: self.minimum_width
+    Carousel:
+        id: _carousel_
+        size_hint: None, None
+        loop: True
+        size: root.width, (523 / 1080) * root.width 
+        ignore_perpendicular_swipes: False
+        min_move: 0.02
+        scroll_distance: dp(0.01)
+        #scroll_timeout: 0.50000
+        Image:
+            source: 'img/App/s1.jpg'
+        Image:
+            source: 'img/App/s2.jpg'
+        Image:
+            source: 'img/App/s3.jpg'
+        Image:
+            source: 'img/App/s4.jpg'
+        Image:
+            source: 'img/App/s5.jpg'
+        Image:
+            source: 'img/App/s6.jpg'
+#
+<GridLayout1@GridLayout>:
+    canvas.after:
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]   
+            source: 'img/App/gl1.jpg'
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('instagram')
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('digikala')
+
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('digistal')
+
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('weblog')
+
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('contact_us')
+
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.current='off'
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('kalands')
+    Button:
+        background_color: 0, 0, 0, 0
+        on_press:
+            app.root.main_scroll_gridLayout1_items('bazar')
+#
+<ScrollView1>:
+    mgr1: _GridLayout_scroll1
+    effect_cls: 'ScrollEffect'
+    scroll_type: ['content']
+    do_scroll_y: False
+    height: mm(66)#dp(390)
+    scroll_x: 1
+    scroll_distance: dp(1)
+    GridLayout:
+        id: _GridLayout_scroll1
+        canvas.before:
+            Color:
+                rgba: 208/255,29/255,56/255,1
+            RoundedRectangle:
+                size: self.size
+                radius: [(0, 0), (0, 0), (0, 0), (0, 0)]
+        cols: 10
+        orientation: 'rl-tb'
+        padding: dp(10), mm(4), dp(0), mm(4)
+        spacing: mm(1)
+        size_hint: None, 1
+        width: self.minimum_width                 
+        Button: 
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Line:
+                    width: 2
+                    rectangle: self.x, self.y, self.width, self.height
+            canvas.after:
+                #Color:
+                #    rgba: 208/255,29/255,56/255,1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    #radius: [(dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7))]
+                    source: 'img/App/off1.jpg'
+            text: ''
+            size_hint: None, 1
+            size: mm(27), 1
+<BoxLayout_mainscroll_scroll1>:
+    dkp: app.root.get_screen('main').mgr3.mgr2.dkp
+    canvas:
+        Color:
+            rgba: 1,1,1,1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [(dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7))]
+
+    padding: 0, dp(5), 0, dp(5)
+    spacing: dp(2)
+    orientation: 'vertical' 
+    size_hint: None, 1
+    size: mm(27), 1
+    on_press:   
+        app.root.show_popup('')
+        app.root.active_page= 'main'
+    on_release:
+        Clock.schedule_once(partial(app.root.open_product_screen, root.dkp), 0.75)
+        
+    MDLabel:
+        font_size:'12sp'
+        bold: True
+        text: get_display(arabic_reshaper.reshape('%s'%(app.root.get_screen('main').mgr3.mgr2.text_title))) 
+        font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        halign: "center"
+        text_size: self.width, None
+        size_hint: 1, None
+        height: self.texture_size[1]
+
+    BoxLayout:
+        id: _bxl
+        size_hint: 1, 0.45
+        AsyncImage:
+            source: app.root.get_screen('main').mgr3.mgr2.source_image
             allow_stretch: True
-            anim_delay: 0
-            mipmap: True
-            #anim_loop: 100
+            #anim_delay: .1
+            anim_loop: 1
+    MDLabel:
+        font_size:'10sp'
+        text: '%s \n %s'%(get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr2.detail_1)), get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr2.detail_2)))
+        font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        halign: "center"
+        size_hint: 1, 0.2
+    GridLayout:
+        padding: dp(5), 0, 0, dp(5)
+        size_hint: 1, 0.15
+        cols: 2
+        MDLabel: 
+            font_size:'12sp'
+            text: get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr2.price_off))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            halign: "center"
+        MDLabel:
+            canvas.before:
+                Color:
+                    rgba: 1, 0, 0, 1
+                RoundedRectangle:
+                    pos: self.center_x - dp(18), self.center_y  - dp(10)
+                    size: [self.width - dp(45), self.texture_size[1]] if self.text != "" else [.05, .05]
+                    radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
+            font_size:'12sp'
+            text: '%s٪'%(get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr2.off)))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            halign: "center"
+        MDLabel:
+            canvas.after:
+                Color:
+                    rgba: 1, 0, 0, 1
+                Line:
+                    points: [self.x + dp(10) , self.y + dp(5), self.x + self.width - dp(10), self.y + self.height - dp(5)]
+                    width: 1
+            font_size:'10sp'
+            text: get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr2.price))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            halign: "center"
 
-        #MDFillRoundFlatIconButton:
-        #    size_hint: None, None
-        #    y: mm(10)
-        #    center_x: root.width / 2
-        #    font_name: 'font/IRANSansXFaNum-Medium.ttf'
-        #    #halign: "center"
-        #    text: get_display(arabic_reshaper.reshape('خروج'))
-        #    icon: 'exit-to-app'
-        #    md_bg_color: "red"
-        #    on_press:
-        #        app.root.stop()
+#
+<GridLayout2@GridLayout>:
+    canvas.after:
+        RoundedRectangle:
+            group: 'a'
+            pos: self.pos
+            size: self.size
+            radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]   
+            source: 'img/App/gl2.jpg'
 
+    Button:
+        on_press:
+            app.root.show_popup('')
+            app.root.active_page= 'main'
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'H'), 0.75)
+    Button:
+        on_press:
+            app.root.show_popup('')
+            app.root.active_page= 'main'
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'GL'), 0.75)
+    Button:
+        on_press:
+            app.root.show_popup('')
+            app.root.active_page= 'main'
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'SH'), 0.75)
+    Button:
+        on_press:
+            app.root.show_popup('')
+            app.root.active_page= 'main'
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'SW'), 0.75)
+
+#
+<ScrollView2>:
+    mgr1: _GridLayout_scroll1
+    effect_cls: 'ScrollEffect'
+    scroll_type: ['content']
+    do_scroll_y: False
+    height: mm(66)#dp(390)
+    scroll_x: 1
+    scroll_distance: dp(1)
+    GridLayout:
+        id: _GridLayout_scroll1
+        canvas.before:
+            Color:
+                rgba: 134/255,191/255,60/255,1 
+            RoundedRectangle:
+                size: self.size
+                radius: [(0, 0), (0, 0), (0, 0), (0, 0)]
+        cols: 10
+        orientation: 'rl-tb'
+        padding: dp(10), mm(4), dp(0), mm(4)
+        spacing: mm(1)
+        size_hint: None, 1
+        width: self.minimum_width                 
+        Button: 
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Line:
+                    width: 2
+                    rectangle: self.x, self.y, self.width, self.height
+            canvas.after:
+                #Color:
+                #    rgba: 208/255,29/255,56/255,1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    #radius: [(dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7))]
+                    source: 'img/App/off2.jpg'
+            text: ''
+            size_hint: None, 1
+            size: mm(27), 1
+            on_press:
+                app.root.print()
+<BoxLayout_mainscroll_scroll2>:
+    dkp: app.root.get_screen('main').mgr3.mgr3.dkp_Gl
+    canvas:
+        Color:
+            rgba: 1,1,1,1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [(dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7)), (dp(7), dp(7))]
+
+    padding: 0, dp(5), 0, dp(5)
+    spacing: dp(2)
+    orientation: 'vertical' 
+    size_hint: None, 1
+    size: mm(27), 1
+    on_press:   
+        app.root.show_popup('')
+        app.root.active_page= 'main'
+    on_release:
+        Clock.schedule_once(partial(app.root.open_product_screen, root.dkp), 0.75)
+
+    MDLabel:
+        font_size:'12sp'
+        bold: True
+        text: get_display(arabic_reshaper.reshape('%s'%(app.root.get_screen('main').mgr3.mgr3.text_title))) 
+        font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        halign: "center"
+
+        text_size: self.width, None
+        size_hint: 1, None
+        height: self.texture_size[1]
+
+    BoxLayout:
+        size_hint: 1, 0.45
+        AsyncImage:
+            source: app.root.get_screen('main').mgr3.mgr3.source_image
+            allow_stretch: True
+            anim_delay: 1
+    MDLabel:
+        font_size:'10sp'
+        text: '%s \n %s'%(get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr3.detail_1)), get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr3.detail_2)))
+        font_name: 'font/IRANSansXFaNum-Medium.ttf'
+        halign: "center"
+        size_hint: 1, 0.2
+    GridLayout:
+        padding: dp(5), 0, 0, dp(5)
+        size_hint: 1, 0.15
+        cols: 2
+        MDLabel: 
+            font_size:'12sp'
+            text: get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr3.price_off))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            halign: "center"
+        MDLabel:
+            canvas.before:
+                Color:
+                    rgba: 1, 0, 0, 1
+                RoundedRectangle:
+                    pos: self.center_x - dp(18), self.center_y  - dp(10)
+                    size: [self.width - dp(45), self.texture_size[1]] if self.text != "" else [.05, .05]
+                    radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
+            font_size:'12sp'
+            text: '%s٪'%(get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr3.off)))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            halign: "center"
+        MDLabel:
+            canvas.after:
+                Color:
+                    rgba: 1, 0, 0, 1
+                Line:
+                    points: [self.x + dp(10) , self.y + dp(5), self.x + self.width - dp(10), self.y + self.height - dp(5)]
+                    width: 1
+            font_size:'10sp'
+            text: get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr3.price_off))
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            halign: "center"
+
+
+#
+<GridLayout3@GridLayout>:
+    canvas.after:
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]   
+            source: 'img/App/gl3.jpg'
+    Button:
+        on_press:
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'H'), 0.75)
+    Button:
+        on_press:
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'GL'), 0.75)
+    Button:
+        on_press:
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'SW'), 0.75)
+    Button:
+        on_press:
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'PI'), 0.75)
+    Button:
+        on_press:
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'SH'), 0.75)
+    Button:
+        on_press:
+            app.root.show_popup('')
+        on_release:
+            Clock.schedule_once(partial(app.root.open_category, 'R'), 0.75)
+
+
+## BottomNavigation
+<BottomNavigation@GridLayout>:
+    cols: 5
+    canvas.after:
+        Rectangle:
+            group: 'a'
+            pos: self.pos
+            size: self.size
+            source: 'img/App/nav5.jpg'
+    ToggleButton: 
+        group: "x"
+        on_press: 
+            app.root.change_screen('screen_account.kv', 'Factory.Account()', 'account')
+            app.root.active_page= 'account'
+            app.root.current='account'
+            root.nav_bot_source= 'img/App/nav1.jpg'
+        on_release:
+            app.root.get_screen('account').mgr1.canvas.after.get_group('a')[0].source='img/App/nav1.jpg'
+            app.root.open_account_xls()
+    ToggleButton: 
+        group: "x"
+        on_press: 
+            app.root.change_screen('screen_off.kv', 'Factory.Off()', 'off')
+            app.root.show_popup('')
+            app.root.active_page= 'off'
+            app.root.current='off'
+            root.nav_bot_source= 'img/App/nav2.jpg'
+        on_release:
+            app.root.get_screen('off').mgr1.canvas.after.get_group('a')[0].source='img/App/nav2.jpg'
+            Clock.schedule_once(partial(app.root.open_category, 'H'), 0.75)
+    ToggleButton: 
+        group: "x"
+        on_press: 
+            app.root.change_screen('screen_order.kv', 'Factory.Order()', 'order')
+            app.root.active_page= 'order'
+            app.root.current='order' 
+            root.nav_bot_source= 'img/App/nav3.jpg'
+        on_release:
+            app.root.get_screen('order').mgr1.canvas.after.get_group('a')[0].source='img/App/nav3.jpg'
+    ToggleButton: 
+        group: "x"
+        on_press: 
+            app.root.change_screen('screen_grouping.kv', 'Factory.Grouping()', 'grouping')
+            app.root.show_popup('')
+            app.root.active_page= 'grouping'
+            app.root.current='grouping'
+            root.nav_bot_source= 'img/App/nav4.jpg'
+            #app.root.open_grouping()
+        on_release:
+            app.root.get_screen('grouping').mgr1.canvas.after.get_group('a')[0].source='img/App/nav4.jpg'
+            Clock.schedule_once(partial(app.root.open_grouping), 0.75)
+
+    ToggleButton: 
+        group: "x"
+        on_press: 
+            app.root.active_page= 'main'
+            app.root.current='main'
+            root.nav_bot_source= 'img/App/nav5.jpg'
+        on_release:
+            app.root.get_screen('main').mgr1.canvas.after.get_group('a')[0].source='img/App/nav5.jpg'
+########## General Widget
 <PopupBox>:
     size_hint: .55, .15
     auto_dismiss: True
@@ -126,25 +636,12 @@
             pos_hint: {'center_x': .5, 'center_y': .5}
         Label:
             text:''
-
-<Main@Screen>:
-    name: "main"
-    mgr3: _scroll_main
-    mgr4: _bot_nav
-    mgr5:_search_bar
-    #mgr5: _spinner
-    FloatLayout:
-        orientation: 'vertical'
-        ScrollMain:
-            id: _scroll_main
-            pos_hint: {'top': 0.96}
-        SearchBar:
-            id: _search_bar
-            pos_hint: {'top': 1}
-            #size_hint:(1, 1/13)
-            size_hint_y: None
-            height: (140 / 1080) * self.width 
-        BottomNavigation:
-            id: _bot_nav
-            size_hint_y: None
-            height: (140 / 1080) * self.width 
+<Widget1@Widget>:
+    size_hint_y: None
+    height: dp(1)
+    canvas:
+        Color:
+            rgba: 128/255, 128/255, 128/255, .1
+        Rectangle:
+            pos: dp(0), self.y
+            size: root.width - dp(0), self.height

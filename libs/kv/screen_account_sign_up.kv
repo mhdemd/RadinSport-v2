@@ -187,19 +187,10 @@
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 pos_hint: {'center_x': .5}
                 on_press:
+                    app.root.change_screen('screen_account_sign_upـprivacy.kv', 'Factory.Privacy()', 'privacy')
                     app.root.current= 'privacy'
             Label:
                 size_hint_y: None
                 height: mm(40)
 
-<Privacy@Screen>:
-    name: "privacy"
-    Image:
-        source: 'img/App/privacy.png'
-    MDFlatButton:
-        text: get_display(arabic_reshaper.reshape('بازگشت')) 
-        font_size: sp(10)
-        font_name: 'font/IRANSansXFaNum-Medium.ttf'
-        pos_hint: {'center_x': .5, 'y': .05}
-        on_press:
-            app.root.current= 'signup'
+

@@ -8,10 +8,10 @@
     price_off1: ''
     on_press:   
         app.root.show_popup('')
-        app.root.mgr5.mgr1.scroll_y=1
     on_release:
         Clock.schedule_once(partial(app.root.open_product_screen, root.source1), 0.75)
-            
+        
+
     BoxLayout:
         canvas:
             Color:
@@ -75,17 +75,6 @@
                 text: root.price1 if root.off1 != '0' else ''
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 halign: "center"
-        #MDRoundFlatButton:
-        #    size_hint:  0.7, 0.05
-        #    text: get_display(arabic_reshaper.reshape('سفارش کالا'))
-        #    font_name: 'font/IRANSansXFaNum-Medium.ttf'
-        #    line_color: 238/255,70/255,87/255,1
-        #    pos_hint:{"center_x": .5}
-        #    on_press:
-        #        app.root.open_product_screen(root.source1) 
-        #        app.root.mgr5.mgr1.scroll_y=1
-
-
 
 <Off>:
     name: 'off'
@@ -111,7 +100,6 @@
                     pos_hint: {"center_x": .95, "top": 1}
                     on_press:
                         app.root.current= app.root.active_page
-                        print(app.root.active_page)
 
         Widget:
             size_hint_y: None

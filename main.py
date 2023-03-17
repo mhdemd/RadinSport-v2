@@ -1,3 +1,6 @@
+import time
+#start_time = time.time()
+
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -20,45 +23,32 @@ from kivymd.uix.button import MDRoundFlatIconButton
 from kivy.animation import Animation
 
 import os
+import sys
+from pathlib import Path
 from arabic_reshaper import reshape
 from bidi.algorithm import get_display 
 import pandas as pd 
 from random import sample
-from webbrowser import open
+import webbrowser
 from ftpretty import ftpretty
 from time import gmtime, strftime
 from functools import partial
 
+if getattr(sys, "frozen", False):  # bundle mode with PyInstaller
+    os.environ["RADIN_ROOT"] = sys._MEIPASS
+else:
+    os.environ["RADIN_ROOT"] = str(Path(__file__).parent)
 
 global error_list
 global items_in_order_screen
-
 
 items_in_order_screen = []
 items_in_category_screen = []
 error_list = []
 
-#Window.size = (350, 610)
+#Window.size = (300, 600)
 
 Builder.load_file('main.kv')
-Builder.load_file('main_searchbar.kv')
-Builder.load_file('main_searchbar_screen.kv')
-Builder.load_file('main_scroll.kv')
-Builder.load_file('main_scroll_scroll1.kv')
-Builder.load_file('main_scroll_gridLayout1.kv')
-Builder.load_file('main_scroll_carousel1.kv')
-Builder.load_file('main_scroll_gridLayout2.kv')
-Builder.load_file('main_scroll_scroll2.kv')
-Builder.load_file('main_scroll_gridLayout3.kv')
-Builder.load_file('main_bottom_navigation.kv')
-Builder.load_file('screen_product.kv')
-Builder.load_file('screen_product_scroll3.kv')
-Builder.load_file('screen_product_scroll3_scroll5.kv')
-Builder.load_file('screen_off.kv') 
-Builder.load_file('screen_order.kv')
-Builder.load_file('screen_grouping.kv')
-Builder.load_file('screen_account.kv')
-Builder.load_file('screen_account_sign_up.kv')
 
 
 class ScrollMain(ScrollView):
@@ -164,6 +154,7 @@ class RV_Order(RecycleView):
     num_order = ObjectProperty()
     error_text_height = ObjectProperty()
     error_text = ObjectProperty()
+    err = ''
 
     def __init__(self, **kwargs):
         super(RV_Order, self).__init__(**kwargs)
@@ -178,6 +169,11 @@ class RV_Order(RecycleView):
         self.pop_up.open()
 
     def add_to_order(self):
+        # If one color not select dont continue
+        if self.err == 'True':
+            return
+
+        DigiApp.get_running_app().root.current = 'order'
         p_code = 0
         # Get the code
         p_code = dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['code'].tolist()[0] if self.icon_color != 'white' else dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['code'].tolist()[0]
@@ -216,7 +212,7 @@ class RV_Order(RecycleView):
         else:
             if stock > 0:
                 self.add_remove_count('temp' ,'+', p_code)   
-
+        
     def add_remove_count(self, *arg):#arg[1]= +or-or*  agr[2] = code 
         a = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == arg[2], items_in_order_screen)) if arg[1] != '*' else 0
         if arg[1] == '+':
@@ -265,7 +261,7 @@ class RV_Order(RecycleView):
         self.refresh_from_data()
 
     def check_registration(self, *arg):
-        Orderـnumber = strftime("%Y%m%d%H%M%S", gmtime())[3:]
+        
         # Check if the cart is empty or not
         if len(items_in_order_screen) == 0:
             self.pop_up.dismiss()
@@ -280,13 +276,13 @@ class RV_Order(RecycleView):
                 # Checking if the host has stock or not
                 f.get('/domains/mahdiemadi.ir/public_html/excel/products.xlsx', 'products.xlsx')
                 dataframe_products = pd.read_excel (r'products.xlsx', engine='openpyxl')
-                #dataframe_products = dataframe_products.astype({"price_off": int})
                 for i in range(len(items_in_order_screen)):
                     if int(items_in_order_screen[i]['num_order']) <= dataframe_products[dataframe_products['code'] == items_in_order_screen[i]['p_code']]['stock'].tolist()[0]:
                         pass
                     else:
                         error_list.append([items_in_order_screen[i]['p_code'], dataframe_products[dataframe_products['code'] == items_in_order_screen[i]['p_code']]['stock'].tolist()[0]])
                 if error_list == []:
+                    Orderـnumber = strftime("%Y%m%d%H%M%S", gmtime())[3:]
                     self.pop_up.dismiss()
                     l = BoxLayout(orientation= 'vertical')
                     l.add_widget(Label(text= get_display(reshape('شماره سفارش:  %s'%(Orderـnumber))), size_hint_y= None, height= '6mm', halign= 'right', font_name='font/IRANSansXFaNum-Medium.ttf'))
@@ -381,9 +377,12 @@ class RV_Order(RecycleView):
                 pop.open()
 
     def change_screen_signup(self, *arg):
+        # load acount and signup kv file and add screen to screen manager
+        DigiApp.get_running_app().root.change_screen('screen_account_sign_up.kv', 'Factory.Sign_up()', 'signup')
+        DigiApp.get_running_app().root.change_screen('screen_account.kv', 'Factory.Account()', 'account')
         # Opening the registration form if not registered
-        DigiApp.get_running_app().root.mgr9.mgr1.canvas.after.get_group('a')[0].source='img/App/nav1.jpg'
-        DigiApp.get_running_app().root.mgr9.text1 = '-'
+        DigiApp.get_running_app().root.get_screen('account').mgr1.canvas.after.get_group('a')[0].source='img/App/nav1.jpg'
+        DigiApp.get_running_app().root.get_screen('account').text1 = '-'
         DigiApp.get_running_app().root.current= 'signup' 
 
 class Det_order_boxLayout(BoxLayout):
@@ -428,7 +427,7 @@ class Product(Screen):
     price_off = ObjectProperty()
     off = ObjectProperty()
     icon = ObjectProperty()
-
+    
 class Search(Screen):
     source = ObjectProperty()
 
@@ -467,9 +466,19 @@ class WrappedLabel(Label):
             self.setter('text_size')(self, (self.width, None)),
             texture_size=lambda *x: self.setter('height')(self, self.texture_size[1]))
 
+class Account(Screen):
+    name= ObjectProperty('account')
+    mgr1= ObjectProperty('_bot_nav')
+
+class Off(Screen):
+    pass
+
 class MainScreen(ScreenManager):
     category_dict = {'H': 'کلاه و نقاب', 'SH': 'قمقمه و شیکر', 'SW': 'لوازم شنا', 'GL': 'دستکش', 'R': 'طناب', 'PI': 'پیلاتس و بدنسازی'}
     grouping_type = ''
+    icon_color = ''
+    color_fa = ''
+    kv = []
     # Deine back bottom in android
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
@@ -479,7 +488,7 @@ class MainScreen(ScreenManager):
         if key == 27:  # the esc key
             if self.current_screen.name == "product" or  self.current_screen.name == 'search' or  self.current_screen.name == 'signup' or  self.current_screen.name == 'det_order':
                 self.current = self.active_page
-                self.mgr2.source= ''
+                self.get_screen('search').source= ''
                 return True  # exit the app from this page
             elif self.current_screen.name == "order" or self.current_screen.name == "off" or self.current_screen.name == "account":
                 self.current = 'main'
@@ -496,6 +505,10 @@ class MainScreen(ScreenManager):
 
     def open_product_screen(self, DKP, arg): 
         
+        self.change_screen('screen_product.kv', 'Factory.Product()', 'product')
+
+        self.get_screen('product').mgr1.scroll_y=1
+
         try:
             DKP = int(DKP.split('/')[4])
         except:
@@ -504,68 +517,62 @@ class MainScreen(ScreenManager):
             
         stock = dataframe_products[dataframe_products['DKP'] == DKP]['stock'].tolist()
         if sum(stock) > 0:
-            self.mgr5.mgr1.mgr2.scroll_x = 1
-            self.mgr5.mgr1.scroll_y = 1
-            self.mgr5.mgr1.mgr3.scroll_x = 1
-            self.mgr5.dkp = DKP
-            self.mgr7.mgr2.dkp = DKP
-            self.mgr5.mgr1.sizee = dataframe_products[(dataframe_products['DKP'] == DKP) ]['size'].values[0]
-            self.mgr5.icon = "cards-heart-outline"
+            self.get_screen('product').mgr1.mgr2.scroll_x = 1
+            self.get_screen('product').mgr1.scroll_y = 1
+            self.get_screen('product').mgr1.mgr3.scroll_x = 1
+            self.get_screen('product').dkp = DKP
+            self.get_screen('product').mgr1.sizee = dataframe_products[(dataframe_products['DKP'] == DKP) ]['size'].values[0]
+            self.get_screen('product').icon = "cards-heart-outline"
             # Delete all carousel's children
             try:
-                self.mgr5.mgr1.ids._carousel_.clear_widgets()
+                self.get_screen('product').mgr1.ids._carousel_.clear_widgets()
             except:
                 pass
             # Add title
-            self.mgr5.title = dataframe_products[(dataframe_products['DKP'] == DKP) ]['title'].values[0]
-            self.mgr7.mgr2.title = self.mgr5.title
+            self.get_screen('product').title = dataframe_products[(dataframe_products['DKP'] == DKP) ]['title'].values[0]
             # Calculate the number of photos
             No_of_files = len(f.list('/my_upload/%s'%(DKP))) - 3
             # Add photos to carousel
-            self.mgr5.mgr1.slide_len = No_of_files
-            self.mgr5.mgr1.slide_num = '1'
-            self.mgr5.mgr1.ids._carousel_.temp = 1
+            self.get_screen('product').mgr1.slide_len = No_of_files
+            self.get_screen('product').mgr1.slide_num = '1'
+            self.get_screen('product').mgr1.ids._carousel_.temp = 1
             for i in range(No_of_files):
-                self.mgr5.mgr1.ids._carousel_.add_widget(AsyncImage(source= 'http://mahdiemadi.ir/Products/%s/%s-%s.jpg'%(DKP, DKP, i), size_hint= (1, 1), allow_stretch= True ))
-            self.mgr5.mgr1.ids._carousel_.load_slide((self.mgr5.mgr1.ids._carousel_.slides)[0])
+                self.get_screen('product').mgr1.ids._carousel_.add_widget(AsyncImage(source= 'http://mahdiemadi.ir/Products/%s/%s-%s.jpg'%(DKP, DKP, i), size_hint= (1, 1), allow_stretch= True ))
+            self.get_screen('product').mgr1.ids._carousel_.load_slide((self.get_screen('product').mgr1.ids._carousel_.slides)[0])
             # Creating a list of colors in Farsi and English
             list_colors = dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['stock'] != 0) ]['color'].tolist()
             list_colors_fa = dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['stock'] != 0) ]['color-fa'].tolist()
             # Calculate the number of colors in stock
-            self.mgr5.mgr1.mgr1.cols= len(list_colors)
+            self.get_screen('product').mgr1.mgr1.cols= len(list_colors)
             self.number_of_color= len(list_colors)
             # Delete all color_scrollview's children
             try:
-                self.mgr5.mgr1.mgr1.clear_widgets()
+                self.get_screen('product').mgr1.mgr1.clear_widgets()
             except: 
                 pass
             # Add colors button to scrollview3
             for i in range(len(list_colors)):
-                self.mgr5.mgr1.mgr1.add_widget(Factory.color_buttom(title= str(list_colors_fa[i]), ic_color= list_colors[i]))#(int(a[0]), int(a[2]), int(a[4]), int(a[6]))))#(list_colors[i])))
+                self.get_screen('product').mgr1.mgr1.add_widget(Factory.color_buttom(title= str(list_colors_fa[i]), ic_color= list_colors[i]))#(int(a[0]), int(a[2]), int(a[4]), int(a[6]))))#(list_colors[i])))
             # Add the first color label
-            self.mgr5.mgr1.color= get_display(reshape(str(list_colors_fa[len(list_colors_fa) - 1]))) 
-            self.mgr7.mgr2.color_fa = self.mgr5.mgr1.color
+            self.get_screen('product').mgr1.color= ' - '#get_display(reshape(str(list_colors_fa[len(list_colors_fa) - 1]))) 
             # Add material, country of manufacture and product type & details
-            self.mgr5.mgr1.material= dataframe_products[(dataframe_products['DKP'] == DKP) ]['material'].values[0]
-            self.mgr5.mgr1.made_in= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['made_in'].values[0]
-            self.mgr5.mgr1.type= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['type'].values[0]
-            self.mgr5.mgr1.detail_1= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['detail_1'].values[0]
-            self.mgr5.mgr1.detail_2= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['detail_2'].values[0]
+            self.get_screen('product').mgr1.material= dataframe_products[(dataframe_products['DKP'] == DKP) ]['material'].values[0]
+            self.get_screen('product').mgr1.made_in= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['made_in'].values[0]
+            self.get_screen('product').mgr1.type= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['type'].values[0]
+            self.get_screen('product').mgr1.detail_1= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['detail_1'].values[0]
+            self.get_screen('product').mgr1.detail_2= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['detail_2'].values[0]
             # Add first price & price_off & off
-            self.mgr5.icon_color = list_colors[len(list_colors) - 1]
-            a = self.mgr5.icon_color
-            self.mgr7.mgr2.icon_color = a
+            self.get_screen('product').icon_color = list_colors[len(list_colors) - 1]
+            a = self.get_screen('product').icon_color
             price = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['price'].values[0])
-            self.mgr5.price = f'{price:,}'
+            self.get_screen('product').price = f'{price:,}'
             price_off = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['price_off'].values[0])
-            self.mgr5.price_off = f'{price_off:,}'
-            self.mgr7.mgr2.price_off = self.mgr5.price_off
-            self.mgr7.mgr2.price = self.mgr5.price
-            self.mgr5.off = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['off'].values[0])
+            self.get_screen('product').price_off = f'{price_off:,}'
+            self.get_screen('product').off = int(dataframe_products[(dataframe_products['DKP'] == DKP) & (dataframe_products['color'] == a) ]['off'].values[0])
             # Add similar product
             ## Drop all children
             try:
-                self.mgr5.mgr1.mgr2.ids._GridLayout.clear_widgets()
+                self.get_screen('product').mgr1.mgr2.ids._GridLayout.clear_widgets()
             except:
                 pass
         ## Get categories
@@ -577,7 +584,7 @@ class MainScreen(ScreenManager):
             ## Select 5 category randomly
             List_similar_product = sample(list_cat, 5 if len(list_cat) >= 5 else len(list_cat))
             for i in range(len(List_similar_product)):
-                self.mgr5.mgr1.mgr2.ids._GridLayout.add_widget(Factory.Button_scroll5(image_source= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(List_similar_product[i])), str(int(List_similar_product[i]))) ))
+                self.get_screen('product').mgr1.mgr2.ids._GridLayout.add_widget(Factory.Button_scroll5(image_source= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(List_similar_product[i])), str(int(List_similar_product[i]))) ))
             # Set current screen
             self.current= "product"
             try:
@@ -597,42 +604,64 @@ class MainScreen(ScreenManager):
             pop.open()
 
     def Price_change_with_variety_change(self, icon_color, color_fa):
-        price = int(dataframe_products[(dataframe_products['DKP'] == self.mgr5.dkp) & (dataframe_products['color'] == icon_color) ]['price'].values[0])
-        self.mgr5.price = f'{price:,}'
-        price_off = int(dataframe_products[(dataframe_products['DKP'] == self.mgr5.dkp) & (dataframe_products['color'] == icon_color) ]['price_off'].values[0])
-        self.mgr5.price_off = f'{price_off:,}'
-        self.mgr7.mgr2.price_off = self.mgr5.price_off
-        self.mgr7.mgr2.price = self.mgr5.price
-        self.mgr5.off = int(dataframe_products[(dataframe_products['DKP'] == self.mgr5.dkp) & (dataframe_products['color'] == icon_color) ]['off'].values[0])
-        self.mgr7.mgr2.icon_color = icon_color
-        self.mgr7.mgr2.color_fa = color_fa
+        RV_Order.err = ''
+        self.icon_color = icon_color
+        self.color_fa = color_fa
+        price = int(dataframe_products[(dataframe_products['DKP'] == self.get_screen('product').dkp) & (dataframe_products['color'] == icon_color) ]['price'].values[0])
+        self.get_screen('product').price = f'{price:,}'
+        price_off = int(dataframe_products[(dataframe_products['DKP'] == self.get_screen('product').dkp) & (dataframe_products['color'] == icon_color) ]['price_off'].values[0])
+        self.get_screen('product').price_off = f'{price_off:,}'
+        self.get_screen('product').off = int(dataframe_products[(dataframe_products['DKP'] == self.get_screen('product').dkp) & (dataframe_products['color'] == icon_color) ]['off'].values[0])
+
+    def Adding_values_to_the_order_screen(self):
+        self.get_screen('order').mgr2.dkp = self.get_screen('product').dkp
+        self.get_screen('order').mgr2.title = self.get_screen('product').title
+        self.get_screen('order').mgr2.color_fa = self.get_screen('product').mgr1.color
+        a = self.get_screen('product').icon_color
+        self.get_screen('order').mgr2.icon_color = a
+        self.get_screen('order').mgr2.price_off = self.get_screen('product').price_off
+        self.get_screen('order').mgr2.price = self.get_screen('product').price
+        self.get_screen('order').mgr2.price_off = self.get_screen('product').price_off
+        self.get_screen('order').mgr2.price = self.get_screen('product').price
+        self.get_screen('order').mgr2.icon_color = self.icon_color
+        self.get_screen('order').mgr2.color_fa = self.color_fa
+
+        if self.icon_color  == '':
+            RV_Order.err = 'True'
+            content = Button(text= get_display(reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
+            pop = Popup(title= get_display(reshape('لطفاً یک رنگ/سایز انتخاب نمایید')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+            title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
+            # bind the on_press event of the button to the dismiss function
+            content.bind(on_press=pop.dismiss)
+            pop.open()
+        self.icon_color = ''
 
     def main_scroll_gridLayout1_items(self,name):
         if name == 'instagram':
-            open('https://www.instagram.com/radin__sprt/')
+            webbrowser.open('https://www.instagram.com/radin__sprt/')
         elif name == 'digikala':
-            open('https://www.digikala.com/seller/aygzu/')
+            webbrowser.open('https://www.digikala.com/seller/aygzu/')
         elif name == 'digistal':
-            open('https://www.digistyle.com/')
+            webbrowser.open('https://www.digistyle.com/')
         elif name == 'weblog':
-            open('https://radinsport.blog.ir/')
+            webbrowser.open('https://radinsport.blog.ir/')
         elif name == 'contact_us':
-            open('https://www.digikala.com/seller/aygzu/')
+            webbrowser.open('https://www.digikala.com/seller/aygzu/')
         elif name == 'kalands':
-            open('https://www.kalands.ir/seller/aygzu/')
+            webbrowser.open('https://www.kalands.ir/seller/aygzu/')
         elif name == 'bazar':
-            open('https://cafebazaar.ir/app/com.radinsport.radinsport')
+            webbrowser.open('https://cafebazaar.ir/app/com.radinsport.radinsport')
 
     def changeـheartـicon(self):
-        self.mgr5.icon = 'cards-heart'
+        self.get_screen('product').icon = 'cards-heart'
 
     def open_category(self, cat, arg):
-        #print(self.grouping_type)
-        self.mgr6.ids._RecycleView_category.scroll_y=1 
+        self.change_screen('screen_off.kv', 'Factory.Off()', 'off')
+        self.get_screen('off').mgr2.scroll_y=1 
 
         self.items_in_category_screen = []
         try:
-            self.mgr6.title= get_display(reshape(self.category_dict[cat]))
+            self.get_screen('off').title= get_display(reshape(self.category_dict[cat]))
         except:
             # list out keys and values separately
             key_list = list(self.category_dict.keys())
@@ -648,7 +677,7 @@ class MainScreen(ScreenManager):
                 return
             # get key with position calculated above
             cat = key_list[position]
-            self.mgr6.title= get_display(reshape(self.category_dict[cat]))
+            self.get_screen('off').title= get_display(reshape(self.category_dict[cat]))
 
         filtered_df = dataframe_products[(dataframe_products['stock'] != 0) & (dataframe_products['cat'] == cat)]
         filtered_df.drop_duplicates(subset="DKP",keep='first', inplace=True)
@@ -658,9 +687,9 @@ class MainScreen(ScreenManager):
             title = filtered_df.iloc[i]['title']
             if len(title) > 20:
                 title = title[:17] + '...'
-            price_off = filtered_df.iloc[i]['price_off']
+            price_off = int(filtered_df.iloc[i]['price_off'])
             price_off = f'{price_off:,}'
-            price = filtered_df.iloc[i]['price']
+            price = int(filtered_df.iloc[i]['price'])
             price = f'{price:,}'
 
             self.items_in_category_screen.append(
@@ -669,11 +698,11 @@ class MainScreen(ScreenManager):
                   'detail_3_1': get_display(reshape(filtered_df.iloc[i]['detail_3'])),
                     'detail_4_1': get_display(reshape(filtered_df.iloc[i]['detail_4'])),
                       'price1': price,
-                        'off1': str(filtered_df.iloc[i]['off']),
+                        'off1': str(int(filtered_df.iloc[i]['off'])),
                           'price_off1': price_off}
             )
         RV_Category.data = [item for item in self.items_in_category_screen]
-        self.mgr6.mgr2.refresh_from_data()
+        self.get_screen('off').mgr2.refresh_from_data()
         self.current = "off"
         #self.active_page = 'off'
         self.active_page_variable = cat
@@ -685,15 +714,12 @@ class MainScreen(ScreenManager):
             pass
 
     def Search_in_search_bar(self, word, arg):
-        #if dataframe_products['titleـfa']:
-        #    pass
-        #else:
         dataframe_products['titleـfa'] = dataframe_products.apply(lambda row : get_display(reshape(row['title'])), axis = 1)
         try:
             df = dataframe_products[dataframe_products['titleـfa'].str.contains('.*%s.*'%(word), regex=True)]['cat'].drop_duplicates()        
             self.open_category(df.values[0], '')
         except:
-            self.mgr2.source= 'img/App/not_find.jpg'
+            self.get_screen('search').source= 'img/App/not_find.jpg'
             try:
                 if self.pop_up:
                     self.pop_up.dismiss()
@@ -701,12 +727,12 @@ class MainScreen(ScreenManager):
                 pass
 
     def show_keyboard(self, arg):
-        self.mgr2.ids._MDTextFieldPersian2.focus= True
+        self.get_screen('search').ids._MDTextFieldPersian2.focus= True
     
     def open_grouping(self, arg):
         self.grouping_type = 'grouping'
-        self.mgr8.mgr2.clear_widgets()
-        self.mgr8.ids._sc.scroll_y=1 
+        self.get_screen('grouping').mgr2.clear_widgets()
+        self.get_screen('grouping').ids._sc.scroll_y=1 
         # Forming a list of category dictionary keys
         list_ = list(self.category_dict.keys())
         for i in range(len(list_)):
@@ -729,7 +755,7 @@ class MainScreen(ScreenManager):
             category_boxlayout.add_widget(Factory.Widget1())
             category_boxlayout.add_widget(Factory.Widget1())
 
-            self.mgr8.mgr2.add_widget(category_boxlayout)
+            self.get_screen('grouping').mgr2.add_widget(category_boxlayout)
         try:
             if self.pop_up:
                 self.pop_up.dismiss()
@@ -746,20 +772,20 @@ class MainScreen(ScreenManager):
     def open_account_xls(self, *args):
         try:
             self.df_account = pd.read_excel (r'Personal_Information.xlsx', engine='openpyxl')
-            self.mgr9.text1 = self.df_account['Name'][0]
+            self.get_screen('account').text1 = self.df_account['Name'][0]
         except:
-            self.mgr9.text1 = '-'
+            self.get_screen('account').text1 = '-'
 
     def sign_up(self):
         
-        if self.mgr10.ids._name.text == '' or \
-        self.mgr10.ids._last_name.text == '' or \
-        self.mgr10.ids._mobile_number.text == '' or \
-        self.mgr10.ids._address.text == '' or \
-        self.mgr10.ids._address1.text == '' or \
-        self.mgr10.ids._address2.text == '' or \
-        self.mgr10.ids._address3.text == '' or \
-        self.mgr10.ids._postal_code.text == '':
+        if self.get_screen('signup').ids._name.text == '' or \
+        self.get_screen('signup').ids._last_name.text == '' or \
+        self.get_screen('signup').ids._mobile_number.text == '' or \
+        self.get_screen('signup').ids._address.text == '' or \
+        self.get_screen('signup').ids._address1.text == '' or \
+        self.get_screen('signup').ids._address2.text == '' or \
+        self.get_screen('signup').ids._address3.text == '' or \
+        self.get_screen('signup').ids._postal_code.text == '':
 
             # create content and add to the popup
             content = Button(text= get_display(reshape('بازگشت')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(1, None), size=('20mm', '6mm'))
@@ -770,18 +796,18 @@ class MainScreen(ScreenManager):
             pop.open()
 
         else:
-            d = {'Name': [self.mgr10.ids._name.text],
-            'Last name': [self.mgr10.ids._last_name.text],
-            'Mobile number': [self.mgr10.ids._mobile_number.text],
-            'Home number': [self.mgr10.ids._home_number.text],
+            d = {'Name': [self.get_screen('signup').ids._name.text],
+            'Last name': [self.get_screen('signup').ids._last_name.text],
+            'Mobile number': [self.get_screen('signup').ids._mobile_number.text],
+            'Home number': [self.get_screen('signup').ids._home_number.text],
             'Address': ['%s, %s, %s, %s'%(
-                self.mgr10.ids._address.text,
-                self.mgr10.ids._address1.text,
-                self.mgr10.ids._address2.text,
-                self.mgr10.ids._address3.text,
+                self.get_screen('signup').ids._address.text,
+                self.get_screen('signup').ids._address1.text,
+                self.get_screen('signup').ids._address2.text,
+                self.get_screen('signup').ids._address3.text,
                 )],
-            'Postal code': [self.mgr10.ids._postal_code.text],
-            'Email': [self.mgr10.ids._email.text],
+            'Postal code': [self.get_screen('signup').ids._postal_code.text],
+            'Email': [self.get_screen('signup').ids._email.text],
             }
             df = pd.DataFrame.from_dict(d)
             df.to_excel("Personal_Information.xlsx")
@@ -815,39 +841,39 @@ class MainScreen(ScreenManager):
         self.current= 'main'
 
     def load_account_data(self):
-        self.mgr10.ids._name.text = str(self.df_account['Name'][0])
-        self.mgr10.ids._last_name.text = str(self.df_account['Last name'][0])
-        self.mgr10.ids._mobile_number.text = str(self.df_account['Mobile number'][0])
-        self.mgr10.ids._home_number.text = str(self.df_account['Home number'][0])
-        self.mgr10.ids._address.text = str(self.df_account['Address'][0].split(', ')[0])
-        self.mgr10.ids._address1.text = str(self.df_account['Address'][0].split(', ')[1])
-        self.mgr10.ids._address2.text = str(self.df_account['Address'][0].split(', ')[2])
-        self.mgr10.ids._address3.text = str(self.df_account['Address'][0].split(', ')[3])  
-        self.mgr10.ids._postal_code.text = str(self.df_account['Postal code'][0])
-        self.mgr10.ids._email.text = str(self.df_account['Email'][0])
+        self.get_screen('signup').ids._name.text = str(self.df_account['Name'][0])
+        self.get_screen('signup').ids._last_name.text = str(self.df_account['Last name'][0])
+        self.get_screen('signup').ids._mobile_number.text = str(self.df_account['Mobile number'][0])
+        self.get_screen('signup').ids._home_number.text = str(self.df_account['Home number'][0])
+        self.get_screen('signup').ids._address.text = str(self.df_account['Address'][0].split(', ')[0])
+        self.get_screen('signup').ids._address1.text = str(self.df_account['Address'][0].split(', ')[1])
+        self.get_screen('signup').ids._address2.text = str(self.df_account['Address'][0].split(', ')[2])
+        self.get_screen('signup').ids._address3.text = str(self.df_account['Address'][0].split(', ')[3])  
+        self.get_screen('signup').ids._postal_code.text = str(self.df_account['Postal code'][0])
+        self.get_screen('signup').ids._email.text = str(self.df_account['Email'][0])
 
     def clear_account_data(self):
-        self.mgr10.ids._name.str = ''
-        self.mgr10.ids._name.text = ''
-        self.mgr10.ids._last_name.str = ''
-        self.mgr10.ids._last_name.text = ''
-        self.mgr10.ids._mobile_number.str = ''
-        self.mgr10.ids._mobile_number.text = ''
-        self.mgr10.ids._home_number.str = ''
-        self.mgr10.ids._home_number.text = ''
-        self.mgr10.ids._address.str = ''
-        self.mgr10.ids._address.text = ''
-        self.mgr10.ids._postal_code.str = ''
-        self.mgr10.ids._postal_code.text = ''
-        self.mgr10.ids._email.str = ''
-        self.mgr10.ids._email.text = ''
+        self.get_screen('signup').ids._name.str = ''
+        self.get_screen('signup').ids._name.text = ''
+        self.get_screen('signup').ids._last_name.str = ''
+        self.get_screen('signup').ids._last_name.text = ''
+        self.get_screen('signup').ids._mobile_number.str = ''
+        self.get_screen('signup').ids._mobile_number.text = ''
+        self.get_screen('signup').ids._home_number.str = ''
+        self.get_screen('signup').ids._home_number.text = ''
+        self.get_screen('signup').ids._address.str = ''
+        self.get_screen('signup').ids._address.text = ''
+        self.get_screen('signup').ids._postal_code.str = ''
+        self.get_screen('signup').ids._postal_code.text = ''
+        self.get_screen('signup').ids._email.str = ''
+        self.get_screen('signup').ids._email.text = ''
 
     def see_orders(self):
         self.active_page = 'account'
-        self.mgr8.mgr2.clear_widgets()
-        self.mgr8.mgr1.canvas.after.get_group('a')[0].source='img/App/nav1.jpg'
+        self.get_screen('grouping').mgr2.clear_widgets()
+        self.get_screen('grouping').mgr1.canvas.after.get_group('a')[0].source='img/App/nav1.jpg'
         
-        self.mgr8.ids._sc.scroll_y=1 
+        self.get_screen('grouping').ids._sc.scroll_y=1 
 
         try:
             df_order = pd.read_excel (r'orders.xlsx', engine='openpyxl')
@@ -880,9 +906,9 @@ class MainScreen(ScreenManager):
             category_boxlayout.add_widget(Factory.Widget1())
             category_boxlayout.add_widget(Factory.Widget1())
 
-            self.mgr8.mgr2.add_widget(category_boxlayout)
+            self.get_screen('grouping').mgr2.add_widget(category_boxlayout)
 
-        self.current = 'grouping' if os.path.isfile('orders.xlsx') else print('No')
+        self.current = 'grouping' if os.path.isfile('orders.xlsx') else None
 
         try:
             if self.pop_up:
@@ -892,7 +918,7 @@ class MainScreen(ScreenManager):
 
     def see_order_detail(self, *arg):
         self.active_page = 'grouping'
-        self.mgr12.mgr1.clear_widgets()
+        self.get_screen('det_order').mgr1.clear_widgets()
         order_number = arg[0].split(':')[0].strip()
         df_order = pd.read_excel (r'orders.xlsx', engine='openpyxl')
         address1 = df_order[df_order['Orderـnumber'] == int(order_number)]['Address'].tolist()[0].split(', ')[1:3]
@@ -924,7 +950,7 @@ class MainScreen(ScreenManager):
             det_order_boxLayout.add_widget(det_order_box_box)
             det_order_boxLayout.add_widget(Factory.Widget1())
 
-        self.mgr12.mgr1.add_widget(det_order_boxLayout)
+        self.get_screen('det_order').mgr1.add_widget(det_order_boxLayout)
 
         self.current = 'det_order'
 
@@ -937,6 +963,22 @@ class MainScreen(ScreenManager):
     def stop(self):
         DigiApp.get_running_app().stop()
         Window.close()
+
+    def change_screen(self, screen_kv, screen_Factory, screen_name, *arg):
+        if screen_kv not in self.kv:
+            if screen_name == 'product':
+                Builder.load_file(f"{os.environ['RADIN_ROOT']}/libs/kv/screen_product_scroll3_scroll5.kv")
+                Builder.load_file(f"{os.environ['RADIN_ROOT']}/libs/kv/screen_product_scroll3.kv")
+                Builder.load_file(f"{os.environ['RADIN_ROOT']}/libs/kv/screen_product.kv")
+                self.kv.append(screen_kv)
+                self.add_widget(eval(screen_Factory))
+                print('%s was loaded'%(screen_name))
+                
+            else:
+                Builder.load_file(f"{os.environ['RADIN_ROOT']}/libs/kv/{screen_kv}")                
+                self.kv.append(screen_kv)
+                self.add_widget(eval(screen_Factory))
+                print('%s was loaded'%(screen_name))
 
 class DigiApp(MDApp):
 
@@ -963,7 +1005,7 @@ class DigiApp(MDApp):
 
             dataframe_products = pd.read_excel (r'products.xlsx', engine='openpyxl')
 
-            self.version = 1.2
+            self.version = 1.3
             self.last_version = dataframe_products['version'].tolist()[0]
 
             dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
@@ -988,7 +1030,7 @@ class DigiApp(MDApp):
             self.pop.open()
 
         # Access the carousel.
-        carousel = self.root.mgr1.mgr3.mgr1.ids._carousel_
+        carousel = self.root.get_screen('main').mgr3.mgr1.ids._carousel_
         # Schedule after every 3 seconds.
         Clock.schedule_interval(carousel.load_next, 3.0)
 
@@ -997,42 +1039,53 @@ class DigiApp(MDApp):
         j = 6 #len(list_DKP)
         for i in range(j if len(list_DKP) > j else len(list_DKP)):
             dkp = list_DKP[i]
-            self.root.mgr1.mgr3.mgr2.dkp= dkp
+            self.root.get_screen('main').mgr3.mgr2.dkp= dkp
             text_title = dataframe_products[(dataframe_products['DKP'] == dkp)]['title'].tolist()[0]
             if len(text_title) > 20:
                 text_title = text_title[:17] + '...'
-            self.root.mgr1.mgr3.mgr2.text_title= text_title
+            self.root.get_screen('main').mgr3.mgr2.text_title= text_title
             # Add image from host  
-            self.root.mgr1.mgr3.mgr2.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(dkp)), str(int(dkp)))
-            self.root.mgr1.mgr3.mgr2.detail_1= dataframe_products[(dataframe_products['DKP'] == dkp)]['detail_3'].tolist()[0]
-            self.root.mgr1.mgr3.mgr2.detail_2= dataframe_products[(dataframe_products['DKP'] == dkp)]['detail_4'].tolist()[0]
-            self.root.mgr1.mgr3.mgr2.off= str(dataframe_products[(dataframe_products['DKP'] == dkp)]['off'].tolist()[0])
+            self.root.get_screen('main').mgr3.mgr2.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(dkp)), str(int(dkp)))
+            self.root.get_screen('main').mgr3.mgr2.detail_1= dataframe_products[(dataframe_products['DKP'] == dkp)]['detail_3'].tolist()[0]
+            self.root.get_screen('main').mgr3.mgr2.detail_2= dataframe_products[(dataframe_products['DKP'] == dkp)]['detail_4'].tolist()[0]
+            self.root.get_screen('main').mgr3.mgr2.off= str(int(dataframe_products[(dataframe_products['DKP'] == dkp)]['off'].tolist()[0]))
             price = int(dataframe_products[(dataframe_products['DKP'] == dkp)]['price'].tolist()[0])
-            self.root.mgr1.mgr3.mgr2.price= f'{price:,}'
-            price_off = dataframe_products[(dataframe_products['DKP'] == dkp)]['price_off'].tolist()[0]
-            self.root.mgr1.mgr3.mgr2.price_off= f'{price_off:,}'
-            self.root.mgr1.mgr3.mgr2.mgr1.add_widget(Factory.BoxLayout_mainscroll_scroll1())
+            self.root.get_screen('main').mgr3.mgr2.price= f'{price:,}'
+            price_off = int(dataframe_products[(dataframe_products['DKP'] == dkp)]['price_off'].tolist()[0])
+            self.root.get_screen('main').mgr3.mgr2.price_off= f'{price_off:,}'
+            self.root.get_screen('main').mgr3.mgr2.mgr1.add_widget(Factory.BoxLayout_mainscroll_scroll1())
         
         # Add widget to scrollview2 in main screen
         list_DKP_Gl = dataframe_products[(dataframe_products['off'] != 0) & (dataframe_products['cat'] == 'GL')]['DKP'].drop_duplicates().to_list()  
         for i in range(j if len(list_DKP_Gl) > j else len(list_DKP_Gl)):
             dkp_Gl = list_DKP_Gl[i]
-            self.root.mgr1.mgr3.mgr3.dkp_Gl= dkp_Gl
+            self.root.get_screen('main').mgr3.mgr3.dkp_Gl= dkp_Gl
             text_title = dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['title'].tolist()[0]
             if len(text_title) > 20:
                 text_title = text_title[:17] + '...'
-            self.root.mgr1.mgr3.mgr3.text_title= text_title
+            self.root.get_screen('main').mgr3.mgr3.text_title= text_title
             # Add image from host
-            self.root.mgr1.mgr3.mgr3.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(dkp_Gl)), str(int(dkp_Gl)))
-            self.root.mgr1.mgr3.mgr3.detail_1= dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['detail_3'].tolist()[0]
-            self.root.mgr1.mgr3.mgr3.detail_2= dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['detail_4'].tolist()[0]
-            self.root.mgr1.mgr3.mgr3.off= str(dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['off'].tolist()[0])
+            self.root.get_screen('main').mgr3.mgr3.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(dkp_Gl)), str(int(dkp_Gl)))
+            self.root.get_screen('main').mgr3.mgr3.detail_1= dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['detail_3'].tolist()[0]
+            self.root.get_screen('main').mgr3.mgr3.detail_2= dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['detail_4'].tolist()[0]
+            self.root.get_screen('main').mgr3.mgr3.off= str(int(dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['off'].tolist()[0]))
             price = int(dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['price'].tolist()[0])
-            self.root.mgr1.mgr3.mgr3.price= f'{price:,}'
-            price_off = dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['price_off'].tolist()[0]
-            self.root.mgr1.mgr3.mgr3.price_off= f'{price_off:,}'
-            self.root.mgr1.mgr3.mgr3.mgr1.add_widget(Factory.BoxLayout_mainscroll_scroll2())
+            self.root.get_screen('main').mgr3.mgr3.price= f'{price:,}'
+            price_off = int(dataframe_products[(dataframe_products['DKP'] == dkp_Gl)]['price_off'].tolist()[0])
+            self.root.get_screen('main').mgr3.mgr3.price_off= f'{price_off:,}'
+            self.root.get_screen('main').mgr3.mgr3.mgr1.add_widget(Factory.BoxLayout_mainscroll_scroll2())
 
+        #print("--- %s seconds ---" % (time.time() - start_time))
+        print(time.time())
+        Clock.schedule_once(partial(self.root.change_screen, 'screen_search.kv', 'Factory.Search()', 'search'), 1)
+        Clock.schedule_once(partial(self.root.change_screen, 'screen_product.kv', 'Factory.Product()', 'product'), 3)
+        Clock.schedule_once(partial(self.root.change_screen, 'screen_off.kv', 'Factory.Off()', 'off'), 15)
+        #Clock.schedule_once(partial(self.root.change_screen, 'screen_grouping.kv', 'Factory.Grouping()', 'grouping'), 11)
+        #Clock.schedule_once(partial(self.root.change_screen, 'screen_order.kv', 'Factory.Order()', 'order'), 11)
+        #Clock.schedule_once(partial(self.root.change_screen, 'screen_account.kv', 'Factory.Account()', 'account'), 13)
+        Clock.schedule_once(self.change_screen_to_main, 2.9)
+
+    def change_screen_to_main(self, *arg):
         self.root.current = 'main'
 
     def update(self, *arg):

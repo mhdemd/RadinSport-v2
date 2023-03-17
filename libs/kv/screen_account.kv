@@ -1,4 +1,5 @@
-<Account@Screen>:
+<Account>:
+    id: _account
     name: 'account'
     mgr1: _bot_nav
     text1: ''
@@ -44,25 +45,29 @@
                         md_bg_color: "red"
                         pos_hint: {'center_x': .5}
                         on_press:
-                            app.root.current= 'signup' if self.text == get_display(arabic_reshaper.reshape('ثبت نام')) else 'signup'
+                            app.root.change_screen('screen_account_sign_up.kv', 'Factory.Sign_up()', 'signup')
+                            app.root.current= 'signup' #if self.text == get_display(arabic_reshaper.reshape('ثبت نام')) else 'signup'
                             app.root.open_account_xls()
                             app.root.load_account_data() if root.text1 != '-' else app.root.clear_account_data()
-                            app.root.mgr10.mgr1.scroll_y=1
+                            app.root.get_screen('signup').mgr1.scroll_y=1
 
                     MDFillRoundFlatIconButton:
                         text: get_display(arabic_reshaper.reshape('مشاهده سفارشات')) 
                         font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         md_bg_color: "red"
-                        pos_hint: {'center_x': .5} if root.text1 != '-' else {'center_x': -5000}
+                        pos_hint: {'center_x': -5} if root.text1 == '-' else {'center_x': .5}
                         icon: 'eye-outline'  
                         on_press:
+                            app.root.change_screen('screen_grouping.kv', 'Factory.Grouping()', 'grouping')
+                            #app.root.change_screen('screen_order.kv', 'Factory.Det_order()', 'det_order')
+                            app.root.change_screen('screen_order_det_order.kv', 'Factory.Det_order()', 'det_order')
                             app.root.see_orders()
 
                     MDFillRoundFlatIconButton:
                         text: get_display(arabic_reshaper.reshape('خروج از حساب کاربری')) 
                         font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         md_bg_color: "red"
-                        pos_hint: {'center_x': .5} if root.text1 != '-' else {'center_x': -5000}
+                        pos_hint: {'center_x': -5} if root.text1 == '-' else {'center_x': .5}
                         icon: 'exit-to-app'  
                         on_press:
                             app.root.delete_Personal_Information()

@@ -16,6 +16,7 @@
             valign: 'bottom'
             on_press:
                 app.root.show_popup('')
+                app.root.change_screen('screen_off.kv', 'Factory.Off()', 'off')
             on_release:
                 Clock.schedule_once(partial(app.root.open_category, root.cat), 0.75) #if app.root.grouping_type == 'grouping' else Clock.schedule_once(partial(app.root.p, root.cat), 0.75) 
         BoxLayout:
