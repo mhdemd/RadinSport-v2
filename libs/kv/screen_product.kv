@@ -89,6 +89,7 @@
                     app.root.Adding_values_to_the_order_screen()
                     app.root.get_screen('order').mgr2.add_to_order()
                 on_release:
-                    app.root.get_screen('order').mgr2.refresh_from_data()
-                    app.root.get_screen('order').mgr1.canvas.after.get_group('a')[0].source='img/App/nav3.jpg'
-                    root.mgr1.color = ' - '
+                    app.root.get_screen('order').mgr2.refresh_from_data() if app.root.get_screen('order').mgr2.err != 'True' else None
+                    app.root.get_screen('order').mgr1.canvas.after.get_group('a')[0].source='img/App/nav3.jpg' if app.root.get_screen('order').mgr2.err != 'True' else None
+                    #root.mgr1.color = ' - '
+                    app.root.current = 'order' if app.root.get_screen('order').mgr2.err != 'True' else 'product'

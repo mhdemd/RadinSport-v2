@@ -564,12 +564,12 @@
         group: "x"
         on_press: 
             app.root.change_screen('screen_account.kv', 'Factory.Account()', 'account')
-            app.root.active_page= 'account'
-            app.root.current='account'
+            app.root.active_page= 'account'            
             root.nav_bot_source= 'img/App/nav1.jpg'
         on_release:
             app.root.get_screen('account').mgr1.canvas.after.get_group('a')[0].source='img/App/nav1.jpg'
             app.root.open_account_xls()
+            app.root.current='account'
     ToggleButton: 
         group: "x"
         on_press: 

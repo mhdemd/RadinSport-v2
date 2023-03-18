@@ -268,7 +268,7 @@
     on_press:
         for i in range(app.root.number_of_color): app.root.get_screen('product').mgr1.ids._color_scroll.children[i].line_width = 1 
         for i in range(app.root.number_of_color): app.root.get_screen('product').mgr1.ids._color_scroll.children[i].line_color = 'black' 
-        app.root.get_screen('product').mgr1.ids._color_label.text = self.text
+        app.root.get_screen('product').mgr1.color = self.text
         app.root.get_screen('product').icon_color = self.icon_color
         app.root.Price_change_with_variety_change(root.ic_color, self.text)
         self.line_width = 2.5

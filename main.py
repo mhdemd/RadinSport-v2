@@ -39,6 +39,7 @@ if getattr(sys, "frozen", False):  # bundle mode with PyInstaller
 else:
     os.environ["RADIN_ROOT"] = str(Path(__file__).parent)
 
+
 global error_list
 global items_in_order_screen
 
@@ -47,6 +48,7 @@ items_in_category_screen = []
 error_list = []
 
 #Window.size = (300, 600)
+Window.softinput_mode = "below_target"
 
 Builder.load_file('main.kv')
 
@@ -173,7 +175,6 @@ class RV_Order(RecycleView):
         if self.err == 'True':
             return
 
-        DigiApp.get_running_app().root.current = 'order'
         p_code = 0
         # Get the code
         p_code = dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color'] == self.icon_color)]['code'].tolist()[0] if self.icon_color != 'white' else dataframe_products[(dataframe_products['DKP'] == self.dkp) & (dataframe_products['color-fa'] == self.color_fa)]['code'].tolist()[0]
@@ -213,6 +214,8 @@ class RV_Order(RecycleView):
             if stock > 0:
                 self.add_remove_count('temp' ,'+', p_code)   
         
+        #DigiApp.get_running_app().root.current = 'order'
+
     def add_remove_count(self, *arg):#arg[1]= +or-or*  agr[2] = code 
         a = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == arg[2], items_in_order_screen)) if arg[1] != '*' else 0
         if arg[1] == '+':
@@ -499,9 +502,28 @@ class MainScreen(ScreenManager):
                 else:
                     self.current = 'main'
                 return True
-            elif self.current_screen.name == "mian":
-                DigiApp.get_running_app().root_window.minimize()
+            elif self.current_screen.name == "main":
+                # create content and add to the popup
+                content = BoxLayout(orientation= 'horizontal')
+                bt1 = Button(text= get_display(reshape('خیر')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(.5, None), size=('20mm', '6mm'))
+                bt2 = Button(text= get_display(reshape('بلی')), font_name= 'font/IRANSansXFaNum-Medium.ttf', size_hint=(.5, None), size=('20mm', '6mm'))
+                #self.ids['bt2'] = bt2
+                content.add_widget(bt1)
+                content.add_widget(bt2)
+                pop = Popup(title= get_display(reshape('آیا از خروج اطمینان دارید؟')), title_font = 'font/IRANSansXFaNum-Medium.ttf', content= content,
+                title_align= 'center', size_hint=(None, None), size=(self.width , '20mm'),separator_height= 0)
+                bt1.bind(on_press= pop.dismiss)
+                bt2.bind(on_press= pop.dismiss)
+                bt2.bind(on_press= self.exitt)
+                pop.open()
+ 
                 return True
+
+    def exitt(self, *arg):
+        #os._exit()
+        sys.exit(0)
+        #MDApp.get_running_app().stop()
+        #Window.close()
 
     def open_product_screen(self, DKP, arg): 
         
@@ -554,9 +576,11 @@ class MainScreen(ScreenManager):
             for i in range(len(list_colors)):
                 self.get_screen('product').mgr1.mgr1.add_widget(Factory.color_buttom(title= str(list_colors_fa[i]), ic_color= list_colors[i]))#(int(a[0]), int(a[2]), int(a[4]), int(a[6]))))#(list_colors[i])))
             # Add the first color label
-            self.get_screen('product').mgr1.color= ' - '#get_display(reshape(str(list_colors_fa[len(list_colors_fa) - 1]))) 
+            self.get_screen('product').mgr1.color= ''#get_display(reshape(str(list_colors_fa[len(list_colors_fa) - 1]))) 
+            print(self.get_screen('product').mgr1.color)
             # Add material, country of manufacture and product type & details
             self.get_screen('product').mgr1.material= dataframe_products[(dataframe_products['DKP'] == DKP) ]['material'].values[0]
+            print(self.get_screen('product').mgr1.material)
             self.get_screen('product').mgr1.made_in= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['made_in'].values[0]
             self.get_screen('product').mgr1.type= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['type'].values[0]
             self.get_screen('product').mgr1.detail_1= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['detail_1'].values[0]
@@ -1000,14 +1024,16 @@ class DigiApp(MDApp):
         global dataframe_products
 
         try:
+            #print('1')
             f = ftpretty('31.7.73.165', 'mahdiem3', '2(v3Hj(6InRxG9')
             f.get('/domains/mahdiemadi.ir/public_html/excel/products.xlsx', 'products.xlsx')
-
+            #print('2')
             dataframe_products = pd.read_excel (r'products.xlsx', engine='openpyxl')
-
-            self.version = 1.3
+            #print('3')
+            self.version = 1.4
+            #print('4')
             self.last_version = dataframe_products['version'].tolist()[0]
-
+            #print('5')
             dataframe_products = dataframe_products[dataframe_products['stock'] != 0]
             Clock.schedule_once(self.change_screen, 0.01)
         except:
@@ -1078,12 +1104,12 @@ class DigiApp(MDApp):
         #print("--- %s seconds ---" % (time.time() - start_time))
         print(time.time())
         Clock.schedule_once(partial(self.root.change_screen, 'screen_search.kv', 'Factory.Search()', 'search'), 1)
-        Clock.schedule_once(partial(self.root.change_screen, 'screen_product.kv', 'Factory.Product()', 'product'), 3)
-        Clock.schedule_once(partial(self.root.change_screen, 'screen_off.kv', 'Factory.Off()', 'off'), 15)
+        Clock.schedule_once(partial(self.root.change_screen, 'screen_product.kv', 'Factory.Product()', 'product'), 3.1)
+        Clock.schedule_once(partial(self.root.change_screen, 'screen_off.kv', 'Factory.Off()', 'off'), 3.1)
         #Clock.schedule_once(partial(self.root.change_screen, 'screen_grouping.kv', 'Factory.Grouping()', 'grouping'), 11)
         #Clock.schedule_once(partial(self.root.change_screen, 'screen_order.kv', 'Factory.Order()', 'order'), 11)
-        #Clock.schedule_once(partial(self.root.change_screen, 'screen_account.kv', 'Factory.Account()', 'account'), 13)
-        Clock.schedule_once(self.change_screen_to_main, 2.9)
+        Clock.schedule_once(partial(self.root.change_screen, 'screen_account.kv', 'Factory.Account()', 'account'), 3.1)
+        Clock.schedule_once(self.change_screen_to_main, 4)
 
     def change_screen_to_main(self, *arg):
         self.root.current = 'main'
