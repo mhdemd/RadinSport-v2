@@ -22,6 +22,7 @@ from kivymd.uix.swiper import MDSwiperItem
 from kivymd.uix.button import MDRoundFlatIconButton
 from kivy.animation import Animation
 
+
 import os
 import sys
 from pathlib import Path
@@ -48,7 +49,7 @@ items_in_category_screen = []
 error_list = []
 
 #Window.size = (300, 600)
-Window.softinput_mode = "below_target"
+#Window.softinput_mode = "below_target"
 
 Builder.load_file('main.kv')
 
@@ -577,10 +578,8 @@ class MainScreen(ScreenManager):
                 self.get_screen('product').mgr1.mgr1.add_widget(Factory.color_buttom(title= str(list_colors_fa[i]), ic_color= list_colors[i]))#(int(a[0]), int(a[2]), int(a[4]), int(a[6]))))#(list_colors[i])))
             # Add the first color label
             self.get_screen('product').mgr1.color= ''#get_display(reshape(str(list_colors_fa[len(list_colors_fa) - 1]))) 
-            print(self.get_screen('product').mgr1.color)
             # Add material, country of manufacture and product type & details
             self.get_screen('product').mgr1.material= dataframe_products[(dataframe_products['DKP'] == DKP) ]['material'].values[0]
-            print(self.get_screen('product').mgr1.material)
             self.get_screen('product').mgr1.made_in= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['made_in'].values[0]
             self.get_screen('product').mgr1.type= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['type'].values[0]
             self.get_screen('product').mgr1.detail_1= dataframe_products[(dataframe_products['DKP'] == DKP)  ]['detail_1'].values[0]
@@ -786,8 +785,9 @@ class MainScreen(ScreenManager):
         except: 
             pass
 
-    def show_popup(self, args):
-        reshaped_loading = reshape("لطفاً شکیبا باشید")
+    def show_popup(self, args):        
+        reshaped_loading = ''
+        #reshaped_loading = reshape("لطفاً شکیبا باشید")
         bidi_loading = get_display(reshaped_loading)
         self.pop_up = Factory.PopupBox()
         self.pop_up.update_pop_up_text(bidi_loading)
@@ -996,13 +996,13 @@ class MainScreen(ScreenManager):
                 Builder.load_file(f"{os.environ['RADIN_ROOT']}/libs/kv/screen_product.kv")
                 self.kv.append(screen_kv)
                 self.add_widget(eval(screen_Factory))
-                print('%s was loaded'%(screen_name))
+                #print('%s was loaded'%(screen_name))
                 
             else:
                 Builder.load_file(f"{os.environ['RADIN_ROOT']}/libs/kv/{screen_kv}")                
                 self.kv.append(screen_kv)
                 self.add_widget(eval(screen_Factory))
-                print('%s was loaded'%(screen_name))
+                #print('%s was loaded'%(screen_name))
 
 class DigiApp(MDApp):
 
@@ -1030,7 +1030,7 @@ class DigiApp(MDApp):
             #print('2')
             dataframe_products = pd.read_excel (r'products.xlsx', engine='openpyxl')
             #print('3')
-            self.version = 1.4
+            self.version = 1.5
             #print('4')
             self.last_version = dataframe_products['version'].tolist()[0]
             #print('5')
@@ -1102,14 +1102,14 @@ class DigiApp(MDApp):
             self.root.get_screen('main').mgr3.mgr3.mgr1.add_widget(Factory.BoxLayout_mainscroll_scroll2())
 
         #print("--- %s seconds ---" % (time.time() - start_time))
-        print(time.time())
-        Clock.schedule_once(partial(self.root.change_screen, 'screen_search.kv', 'Factory.Search()', 'search'), 1)
-        Clock.schedule_once(partial(self.root.change_screen, 'screen_product.kv', 'Factory.Product()', 'product'), 3.1)
-        Clock.schedule_once(partial(self.root.change_screen, 'screen_off.kv', 'Factory.Off()', 'off'), 3.1)
+        #print(time.time())
+        Clock.schedule_once(partial(self.root.change_screen, 'screen_search.kv', 'Factory.Search()', 'search'), .1)
+        Clock.schedule_once(partial(self.root.change_screen, 'screen_product.kv', 'Factory.Product()', 'product'), .1)
+        Clock.schedule_once(partial(self.root.change_screen, 'screen_off.kv', 'Factory.Off()', 'off'), .1)
         #Clock.schedule_once(partial(self.root.change_screen, 'screen_grouping.kv', 'Factory.Grouping()', 'grouping'), 11)
         #Clock.schedule_once(partial(self.root.change_screen, 'screen_order.kv', 'Factory.Order()', 'order'), 11)
-        Clock.schedule_once(partial(self.root.change_screen, 'screen_account.kv', 'Factory.Account()', 'account'), 3.1)
-        Clock.schedule_once(self.change_screen_to_main, 4)
+        Clock.schedule_once(partial(self.root.change_screen, 'screen_account.kv', 'Factory.Account()', 'account'), .1)
+        Clock.schedule_once(self.change_screen_to_main, .2)
 
     def change_screen_to_main(self, *arg):
         self.root.current = 'main'

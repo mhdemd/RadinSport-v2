@@ -1,3 +1,4 @@
+#:import SwapTransition kivy.uix.screenmanager.SwapTransition
 #:import NoTransition kivy.uix.screenmanager.NoTransition
 #:import MDTextFieldPersian persianuix.MDTextFieldPersian
 #:import arabic_reshaper arabic_reshaper
@@ -10,16 +11,19 @@
 ########## Screens
 <MainScreen>:
     a: 0
-    order_on: 'ghjgjgj'
+    order_on: ''
     source: 'img/Products/2465152.jpg' 
-    transition: NoTransition()
+    transition: SwapTransition() if self.current != 'product' else NoTransition()
+    #duration: 0.01
+    mode: 'push'
     # Can be used to return to the previous page
     active_page: 'main' 
 
     Splash:
 	Main:
-    #Search:
     Err_connection:
+
+
 
 <Main@Screen>:
     name: "main"
@@ -42,7 +46,6 @@
             id: _bot_nav
             size_hint_y: None
             height: (140 / 1080) * self.width 
-
 <Err_connection@Screen>:
     # Set sc screen name
     name: "Err_connection"
@@ -292,7 +295,7 @@
     orientation: 'vertical' 
     size_hint: None, 1
     size: mm(27), 1
-    on_press:   
+    on_press:  
         app.root.show_popup('')
         app.root.active_page= 'main'
     on_release:
@@ -613,16 +616,19 @@
             app.root.get_screen('main').mgr1.canvas.after.get_group('a')[0].source='img/App/nav5.jpg'
 ########## General Widget
 <PopupBox>:
-    size_hint: .55, .15
+    overlay_color: [1, 1, 1, 0.3]
+    background_color: [1, 1, 1, 0]
+    title_size: 0
+    #size_hint: None, None
+    #size: dp(65), dp(75)
     auto_dismiss: True
     title: ''
-    title_align: 'center'
     separator_height: 0
     #separator_color: 1, 0, 0, 0.5
     BoxLayout:
         orientation: "horizontal"
         size_hint: 1, None
-        size: dp(50), dp(50)
+        size: dp(60), dp(60)
         pos_hint: {'center_x': .5, 'center_y': .5}
         Label:
             text:''
@@ -632,7 +638,7 @@
             determinate: True
             active: True
             size_hint: None, None
-            size: dp(48), dp(48)
+            size: dp(40), dp(40)
             pos_hint: {'center_x': .5, 'center_y': .5}
         Label:
             text:''
