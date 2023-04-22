@@ -50,7 +50,7 @@
                 size_hint: .5, 1
                 MDLabel:
                     font_size:'12sp'
-                    text: '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(str(root.price_off)))) if root.off != 0 else '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(str(root.price))))
+                    text: '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(str(root.price_off)))) if root.off != '0' else '%s %s'%(get_display(arabic_reshaper.reshape('تومان')), get_display(arabic_reshaper.reshape(str(root.price))))
                     font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     halign: "center"
                 MDLabel:
@@ -59,9 +59,9 @@
                             rgba: 1, 0, 0, 1
                         Line:
                             points: [self.x + self.width / 3 , self.y + dp(5), self.x + self.width - self.width / 3, self.y + self.height - dp(5)]
-                            width: 1 if root.off != 0 else 0.0000001
+                            width: 1 if root.off != '0' else 0.0000001
                     font_size:'10sp'
-                    text: get_display(arabic_reshaper.reshape('%s'%(root.price))) if root.off != 0 else ''
+                    text: get_display(arabic_reshaper.reshape('%s'%(root.price))) if root.off != '0' else ''
                     font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     halign: "center"
             MDLabel:
@@ -71,10 +71,10 @@
                         rgba: 1, 0, 0, 1
                     RoundedRectangle:
                         pos: self.center_x - dp(18), self.center_y  - dp(10) 
-                        size: [mm(6), self.texture_size[1]] if root.off != 0 else [.05, .05]
+                        size: [mm(6), self.texture_size[1]] if root.off != '0' else [.05, .05]
                         radius: [(dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5)), (dp(5), dp(5))]
                 font_size:'10sp'
-                text: get_display(arabic_reshaper.reshape('%s٪'%(root.off))) if root.off != 0 else ''
+                text: get_display(arabic_reshaper.reshape('%s٪'%(root.off))) if root.off != '0' else ''
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 halign: "center"    
 
@@ -87,7 +87,7 @@
                 on_press:
                     app.root.change_screen('screen_order.kv', 'Factory.Order()', 'order')
                     app.root.Adding_values_to_the_order_screen()
-                    app.root.get_screen('order').mgr2.add_to_order()
+                    app.root.get_screen('order').mgr2.add_to_order() if app.root.previous_screen != 'product' else None
                 on_release:
                     app.root.get_screen('order').mgr2.refresh_from_data() if app.root.get_screen('order').mgr2.err != 'True' else None
                     app.root.get_screen('order').mgr1.canvas.after.get_group('a')[0].source='img/App/nav3.jpg' if app.root.get_screen('order').mgr2.err != 'True' else None

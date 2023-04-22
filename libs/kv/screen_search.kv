@@ -19,7 +19,10 @@
                 on_text_validate: 
                     app.root.show_popup('')
                 on_text_validate: 
-                    Clock.schedule_once(partial(app.root.Search_in_search_bar, self.text), 0.75)
+                    word_encoded = self.text
+                    Clock.schedule_once(partial(app.root.Search_in_search_bar, word_encoded), 0.75)
+
+                    #Clock.schedule_once(partial(app.root.Search_in_search_bar, self.text.encode('utf-8')), 0.75)
                     #app.root.Search_in_search_bar(self.text) 
             MDIconButton:
                 icon: "arrow-right"
@@ -36,3 +39,41 @@
             Image:
                 size_hint_y: .8
                 source: ''
+
+# General Widget of the app
+<PopupBox>:
+    overlay_color: [1, 1, 1, 0.3]
+    background_color: [1, 1, 1, 0]
+    title_size: 0
+    #size_hint: None, None
+    #size: dp(65), dp(75)
+    auto_dismiss: True
+    title: ''
+    separator_height: 0
+    #separator_color: 1, 0, 0, 0.5
+    BoxLayout:
+        orientation: "horizontal"
+        size_hint: 1, None
+        size: dp(60), dp(60)
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        Label:
+            text:''
+        MDSpinner:
+            id: _spinner
+            color: [1, 0, 0, 0]
+            determinate: True
+            active: True
+            size_hint: None, None
+            size: dp(40), dp(40)
+            pos_hint: {'center_x': .5, 'center_y': .5}
+        Label:
+            text:''
+<Widget1@Widget>:
+    size_hint_y: None
+    height: dp(1)
+    canvas:
+        Color:
+            rgba: 128/255, 128/255, 128/255, .1
+        Rectangle:
+            pos: dp(0), self.y
+            size: root.width - dp(0), self.height

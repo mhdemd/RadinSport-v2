@@ -105,7 +105,7 @@
                 size_hint_y: 1.15/5
                 halign: 'right'
                 font_size: '14sp'       
-                text: get_display(arabic_reshaper.reshape(root.title)) if len(root.title) < 30 else get_display(arabic_reshaper.reshape('%s...'%(root.title[:27]))) 
+                text: root.title if len(root.title) < 30 else '...%s'%(root.title[-27:])
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
             GridLayout:             
                 cols: 2

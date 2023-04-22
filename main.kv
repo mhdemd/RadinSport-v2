@@ -4,7 +4,6 @@
 #:import arabic_reshaper arabic_reshaper
 #:import get_display bidi.algorithm.get_display
 #:import MDTextFieldPersian persianuix.MDTextFieldPersian
-#:import Window kivy.core.window
 #:import Clock kivy.clock.Clock
 #:import partial functools.partial 
 
@@ -21,58 +20,6 @@
 
     Splash:
 	Main:
-    Err_connection:
-
-
-
-<Main@Screen>:
-    name: "main"
-    mgr1: _bot_nav
-    mgr3: _scroll_main
-    mgr4: _bot_nav
-    mgr5:_search_bar
-    FloatLayout:
-        orientation: 'vertical'
-        ScrollMain:
-            id: _scroll_main
-            pos_hint: {'top': 0.96}
-        SearchBar:
-            id: _search_bar
-            pos_hint: {'top': 1}
-            #size_hint:(1, 1/13)
-            size_hint_y: None
-            height: (140 / 1080) * self.width 
-        BottomNavigation:
-            id: _bot_nav
-            size_hint_y: None
-            height: (140 / 1080) * self.width 
-<Err_connection@Screen>:
-    # Set sc screen name
-    name: "Err_connection"
-    # Start the progress bar animation when the screen is active
-    #on_enter: self.ids.progress.start()
-    FloatLayout:
-        orientation: 'vertical'
-        Image:
-            source:'img/err_int.png'
-            #center: self.parent.center
-            #size: 500, 500
-            allow_stretch: True
-            anim_delay: 0
-            mipmap: True
-            #anim_loop: 100
-
-        MDFillRoundFlatIconButton:
-            size_hint: None, None
-            y: mm(10)
-            center_x: root.width / 2
-            font_name: 'font/IRANSansXFaNum-Medium.ttf'
-            #halign: "center"
-            text: get_display(arabic_reshaper.reshape('خروج'))
-            icon: 'exit-to-app'
-            md_bg_color: "red"
-            on_press:
-                app.root.stop()
 
 <Splash@Screen>:
     # Set sc screen name
@@ -95,6 +42,27 @@
             keep_data: True
             source: 'img/loading1.zip'
             size_hint_y: 0.2
+<Main@Screen>:
+    name: "main"
+    mgr1: _bot_nav
+    mgr3: _scroll_main
+    mgr4: _bot_nav
+    mgr5:_search_bar
+    FloatLayout:
+        orientation: 'vertical'
+        ScrollMain:
+            id: _scroll_main
+            pos_hint: {'top': 0.96}
+        SearchBar:
+            id: _search_bar
+            pos_hint: {'top': 1}
+            #size_hint:(1, 1/13)
+            size_hint_y: None
+            height: (140 / 1080) * self.width 
+        BottomNavigation:
+            id: _bot_nav
+            size_hint_y: None
+            height: (140 / 1080) * self.width 
 
 
 ########## Widgets
@@ -304,7 +272,7 @@
     MDLabel:
         font_size:'12sp'
         bold: True
-        text: get_display(arabic_reshaper.reshape('%s'%(app.root.get_screen('main').mgr3.mgr2.text_title))) 
+        text: '%s'%(app.root.get_screen('main').mgr3.mgr2.text_title)
         font_name: 'font/IRANSansXFaNum-Medium.ttf'
         halign: "center"
         text_size: self.width, None
@@ -460,7 +428,7 @@
     MDLabel:
         font_size:'12sp'
         bold: True
-        text: get_display(arabic_reshaper.reshape('%s'%(app.root.get_screen('main').mgr3.mgr3.text_title))) 
+        text: '%s'%(app.root.get_screen('main').mgr3.mgr3.text_title)
         font_name: 'font/IRANSansXFaNum-Medium.ttf'
         halign: "center"
 
@@ -509,7 +477,7 @@
                     points: [self.x + dp(10) , self.y + dp(5), self.x + self.width - dp(10), self.y + self.height - dp(5)]
                     width: 1
             font_size:'10sp'
-            text: get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr3.price_off))
+            text: get_display(arabic_reshaper.reshape(app.root.get_screen('main').mgr3.mgr3.price))
             font_name: 'font/IRANSansXFaNum-Medium.ttf'
             halign: "center"
 
@@ -614,40 +582,3 @@
             root.nav_bot_source= 'img/App/nav5.jpg'
         on_release:
             app.root.get_screen('main').mgr1.canvas.after.get_group('a')[0].source='img/App/nav5.jpg'
-########## General Widget
-<PopupBox>:
-    overlay_color: [1, 1, 1, 0.3]
-    background_color: [1, 1, 1, 0]
-    title_size: 0
-    #size_hint: None, None
-    #size: dp(65), dp(75)
-    auto_dismiss: True
-    title: ''
-    separator_height: 0
-    #separator_color: 1, 0, 0, 0.5
-    BoxLayout:
-        orientation: "horizontal"
-        size_hint: 1, None
-        size: dp(60), dp(60)
-        pos_hint: {'center_x': .5, 'center_y': .5}
-        Label:
-            text:''
-        MDSpinner:
-            id: _spinner
-            color: [1, 0, 0, 0]
-            determinate: True
-            active: True
-            size_hint: None, None
-            size: dp(40), dp(40)
-            pos_hint: {'center_x': .5, 'center_y': .5}
-        Label:
-            text:''
-<Widget1@Widget>:
-    size_hint_y: None
-    height: dp(1)
-    canvas:
-        Color:
-            rgba: 128/255, 128/255, 128/255, .1
-        Rectangle:
-            pos: dp(0), self.y
-            size: root.width - dp(0), self.height

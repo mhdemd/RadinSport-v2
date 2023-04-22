@@ -13,7 +13,7 @@ package.domain = com.radinsport
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,ttf,xls,zip,json,gif
+source.include_exts = py,png,jpg,kv,atlas,ttf,xls,zip,json,gif,txt
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*.txt,assets/*.json,assets/*.kv,data/*.png
@@ -37,7 +37,8 @@ version = 1.5
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3, kivy, kivymd, arabic_reshaper, python-bidi, et_xmlfile, xlrd, openpyxl==3.1.0, pandas, ftpretty,  pillow
+requirements = python3, kivy==master, https://github.com/kivymd/KivyMD/archive/master.zip, arabic_reshaper, python-bidi, ftpretty,  pillow, requests, python-dateutil, urllib3, charset-normalizer, chardet, idna 
+
 #, polars, typing_extensions, pydataframe, numpy, xlwt
 
 # (str) Custom source folders for requirements
@@ -88,7 +89,7 @@ fullscreen = 0
 # for general documentation.
 # Lottie files can be created using various tools, like Adobe After Effect or Synfig.
 #android.presplash_lottie = "path/to/lottie/file.json"
-android.presplash_lottie = "assets/128207-online-shoping-icon.json"
+android.presplash_lottie = assets/128207-online-shoping-icon.json
 
 
 # (str) Adaptive icon of the application (used if Android API level is 26+ at runtime)

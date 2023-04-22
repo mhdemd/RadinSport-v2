@@ -1,0 +1,27 @@
+<Err_connection@Screen>:
+    # Set sc screen name
+    name: "Err_connection"
+    # Start the progress bar animation when the screen is active
+    #on_enter: self.ids.progress.start()
+    FloatLayout:
+        orientation: 'vertical'
+        Image:
+            source:'img/err_int.png'
+            #center: self.parent.center
+            #size: 500, 500
+            allow_stretch: True
+            anim_delay: 0
+            mipmap: True
+            #anim_loop: 100
+
+        MDFillRoundFlatIconButton:
+            size_hint: None, None
+            y: mm(10)
+            center_x: root.width / 2
+            font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            #halign: "center"
+            text: get_display(arabic_reshaper.reshape('خروج'))
+            icon: 'exit-to-app'
+            md_bg_color: "red"
+            on_press:
+                app.root.exit_app()
