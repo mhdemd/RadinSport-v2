@@ -20,8 +20,8 @@
             center_x: root.width / 2
             font_name: 'font/IRANSansXFaNum-Medium.ttf'
             #halign: "center"
-            text: get_display(arabic_reshaper.reshape('خروج'))
-            icon: 'exit-to-app'
+            text: get_display(arabic_reshaper.reshape('تلاش مجدد'))
+            icon: 'refresh'#'exit-to-app'
             md_bg_color: "red"
             on_press:
-                app.root.exit_app()
+                app.root.reload()

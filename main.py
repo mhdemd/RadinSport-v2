@@ -20,15 +20,18 @@ from kivymd.uix.button import MDRoundFlatIconButton
 from kivy.animation import Animation
 
 
-import os
-import sys
-from pathlib import Path
-from ftpretty import ftpretty
-from functools import partial
+import os#
+import sys#
+from pathlib import Path#
+#import pandas as pd #
+#from ftpretty import ftpretty#
+from functools import partial#
 from arabic_reshaper import reshape
 from bidi.algorithm import get_display
 from time import gmtime, strftime
+#from random import sample
 import webbrowser
+#from mysql import connector
 import requests
 from threading import Thread
 
@@ -503,10 +506,10 @@ class MainScreen(ScreenManager):
 
     def exit_app(self, *arg):
         MDApp.get_running_app().stop()
-        #MDApp.stop()
         Window.close()
-        #os._exit()
-        #sys.exit(0)
+
+    def reload(self):
+        self.current = 'main'
 
     def open_product_screen(self, DKP, arg): 
 
@@ -525,7 +528,13 @@ class MainScreen(ScreenManager):
         try:
             response3 = requests.get(url3, params=params, timeout=2)            
         except:
+            self.change_screen('Err_connection.kv', 'Factory.Err_connection()', 'Err_connection.kv' )
             MDApp.get_running_app().Err_connection()
+            try:
+                if self.pop_up:
+                    self.pop_up.dismiss()
+            except: 
+                pass
             return
 
         result = response3.json()
@@ -551,8 +560,27 @@ class MainScreen(ScreenManager):
             self.get_screen('product').title = result[0][0]
             # Calculate the number of photos
             try:
-                f = ftpretty('31.7.73.165', 'mahdiem3', '2(v3Hj(6InRxG9', timeout=2)
-                No_of_files = len(f.list('/my_upload/%s'%(DKP))) - 3
+                # Get data from APIs 
+                url = 'http://mahdiemadi.ir/count_files' 
+
+                # Define the request parameters
+                params = {'variable': DKP}
+
+                try:
+                    response = requests.get(url, params=params, timeout=2)            
+                except:
+                    self.change_screen('Err_connection.kv', 'Factory.Err_connection()', 'Err_connection.kv' )
+                    MDApp.get_running_app().Err_connection()
+                    try:
+                        if self.pop_up:
+                            self.pop_up.dismiss()
+                    except: 
+                        pass
+                    return
+
+                No_of_files = response.json()
+                #f = ftpretty('ftp.mahdiemadi.ir', 'test@mahdiemadi.ir', 'C9{c%nJIm)El', timeout=2)
+                #No_of_files = len(f.list('/public_html/Products/%s'%(DKP))) - 3
             except:
                 Clock.schedule_once(partial(self.change_screen, 'screen_Err.kv', 'Factory.Err_connection()', 'Err_connection'), .5)
                 self.current = 'Err_connection'
@@ -616,7 +644,13 @@ class MainScreen(ScreenManager):
             try:
                 response3 = requests.get(url3, params=params, timeout=2)            
             except:
+                self.change_screen('Err_connection.kv', 'Factory.Err_connection()', 'Err_connection.kv' )
                 MDApp.get_running_app().Err_connection()
+                try:
+                    if self.pop_up:
+                        self.pop_up.dismiss()
+                except: 
+                    pass
                 return
 
             result = response3.json()
@@ -762,7 +796,13 @@ class MainScreen(ScreenManager):
         try:
             response3 = requests.get(url, params=params, timeout=2)            
         except:
+            self.change_screen('Err_connection.kv', 'Factory.Err_connection()', 'Err_connection.kv' )     
             MDApp.get_running_app().Err_connection()
+            try:
+                if self.pop_up:
+                    self.pop_up.dismiss()
+            except: 
+                pass
             return
 
         result = response3.json()
@@ -811,7 +851,13 @@ class MainScreen(ScreenManager):
         try:
             response3 = requests.get(url, params=params, timeout=2)            
         except:
+            self.change_screen('Err_connection.kv', 'Factory.Err_connection()', 'Err_connection.kv' )
             MDApp.get_running_app().Err_connection()
+            try:
+                if self.pop_up:
+                    self.pop_up.dismiss()
+            except: 
+                pass
             return
 
         result = response3.json()
@@ -847,7 +893,13 @@ class MainScreen(ScreenManager):
             try:
                 response3 = requests.get(url, params=params, timeout=2)            
             except:
+                self.change_screen('Err_connection.kv', 'Factory.Err_connection()', 'Err_connection.kv' ) 
                 MDApp.get_running_app().Err_connection()
+                try:
+                    if self.pop_up:
+                        self.pop_up.dismiss()
+                except: 
+                    pass
                 return
 
             DKP_list = response3.json()
@@ -923,7 +975,13 @@ class MainScreen(ScreenManager):
                 try:
                     response3 = requests.get(url, timeout=2)            
                 except:
+                    self.change_screen('Err_connection.kv', 'Factory.Err_connection()', 'Err_connection.kv' )         
                     MDApp.get_running_app().Err_connection()
+                    try:
+                        if self.pop_up:
+                            self.pop_up.dismiss()
+                    except: 
+                        pass
                     return
 
                 result = response3.json()
@@ -1011,7 +1069,13 @@ class MainScreen(ScreenManager):
         try:
             response3 = requests.get(url, params=params, timeout=2)            
         except:
+            self.change_screen('Err_connection.kv', 'Factory.Err_connection()', 'Err_connection.kv' )
             MDApp.get_running_app().Err_connection()
+            try:
+                if self.pop_up:
+                    self.pop_up.dismiss()
+            except: 
+                pass
             return
 
         result = response3.json()
@@ -1063,7 +1127,13 @@ class MainScreen(ScreenManager):
         try:
             response3 = requests.get(url, params=params, timeout=2)            
         except:
+            self.change_screen('Err_connection.kv', 'Factory.Err_connection()', 'Err_connection.kv' )
             MDApp.get_running_app().Err_connection()
+            try:
+                if self.pop_up:
+                    self.pop_up.dismiss()
+            except: 
+                pass
             return
 
         results = response3.json()
@@ -1124,7 +1194,13 @@ class MainScreen(ScreenManager):
         try:
             response3 = requests.get(url, params=params, timeout=2)            
         except:
+            self.change_screen('Err_connection.kv', 'Factory.Err_connection()', 'Err_connection.kv' )
             MDApp.get_running_app().Err_connection()
+            try:
+                if self.pop_up:
+                    self.pop_up.dismiss()
+            except: 
+                pass
             return
 
         results = response3.json()
@@ -1315,7 +1391,7 @@ class DigiApp(MDApp):
 
     def check_for_update(self, *arg):
         # Check for update
-        self.version = 1.6
+        self.version = 1.7
         self.last_version = self.list_version[0]
         if self.last_version != self.version:           
             content = BoxLayout(orientation= 'horizontal')

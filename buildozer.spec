@@ -29,7 +29,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,xls,zip,json,gif,txt
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 1.5
+version = 1.7
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -37,7 +37,7 @@ version = 1.5
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3, kivy==master, https://github.com/kivymd/KivyMD/archive/master.zip, arabic_reshaper, python-bidi, ftpretty,  pillow, requests, python-dateutil, urllib3, charset-normalizer, chardet, idna 
+requirements = python3, kivy==master, https://github.com/kivymd/KivyMD/archive/master.zip, arabic_reshaper, python-bidi,  pillow, requests, python-dateutil, urllib3, charset-normalizer, chardet, idna 
 
 #, polars, typing_extensions, pydataframe, numpy, xlwt
 
