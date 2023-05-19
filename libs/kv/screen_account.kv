@@ -3,6 +3,10 @@
     name: 'account'
     mgr1: _bot_nav
     text1: ''
+
+    FitImage:
+        source: "img/bg1.jpg"
+
     BoxLayout:
         orientation: 'vertical'
         padding: 0, 0, 0, 0
@@ -17,58 +21,85 @@
                     orientation:'vertical'
                     size_hint_y: None
                     height: self.minimum_height  
-                    spacing: mm(10)
+                    spacing: mm(5)
+                    Label:
+                        text:''
+                        size_hint: 1, None
+                        height: dp(40)
                     MDLabel:
                         halign: 'center'
-                        text: ''
-                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
-                        font_size:'12sp'
-                    MDLabel:
-                        halign: 'center'
-                        text: '%s %s'%( get_display(arabic_reshaper.reshape('عزیز خوش آمدید')), root.text1) if root.text1 != '-' else '' 
+                        text: '%s %s'%( get_display(arabic_reshaper.reshape('عزیز خوش آمدید')), root.text1) 
                         font_name: 'font/IRANSansXFaNum-Medium.ttf'
                         font_size:'12sp'
                         theme_text_color: "Custom"
-                        text_color: "blue"
-                    Image:
-                        size_hint_y: None    
-                        height: dp(200)
-                        source: 'img/App/rs.png'
+                        text_color: "black"
+                    Label:
+                        text:''
+                        size_hint: 1, None
+                        height: dp(60)
+                    MDLabel:
+                        text: "Radin [color=#D2042D]Sport[/color]"
+                        color: 0, 0, 0, 1
+                        bold: True
+                        markup: True
+                        pos_hint: {"center_y": .65}
+                        halign: "center"
+                        font_style: "H4"
+                    Label:
+                        text:''
+                        size_hint: 1, None
+                        height: dp(180)
+
                     MDLabel:
                         halign: 'center'
-                        text: get_display(arabic_reshaper.reshape('جهت تسهیل در فرایند خرید لطفا ثبت نام کنید.')) if root.text1 == '-' else ''
-                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                        text: ''#get_display(arabic_reshaper.reshape('جهت تسهیل در فرایند خرید لطفا ثبت نام کنید.')) if root.text1 == 'Not registered' else ''
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'                        
                         font_size:'12sp'
-                    MDFillRoundFlatButton:
-                        text: get_display(arabic_reshaper.reshape('ثبت نام')) if root.text1 == '-' else  get_display(arabic_reshaper.reshape('اصلاح مشخصات')) 
-                        font_name: 'font/IRANSansXFaNum-Medium.ttf'
-                        md_bg_color: "red"
+                    MDFillRoundFlatIconButton: 
+                        text: get_display(arabic_reshaper.reshape('اصلاح مشخصات')) 
+                        font_name: 'font/IRANSansXFaNum-Medium.ttf'                        
                         pos_hint: {'center_x': .5}
+                        icon: "pencil"       
+                        theme_text_color: "Custom"    
+                        md_bg_color: 1, 0, 0, .75           
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
                         on_press:
+                            app.root.show_popup('')
                             app.root.change_screen('screen_account_sign_up.kv', 'Factory.Sign_up()', 'signup')
-                            app.root.current= 'signup' #if self.text == get_display(arabic_reshaper.reshape('ثبت نام')) else 'signup'
-                            app.root.open_account_xls()
-                            app.root.load_account_data() if root.text1 != '-' else app.root.clear_account_data()
+                        on_release:
+                            Clock.schedule_once(partial(app.root.load_account_data), 0.75)
                             app.root.get_screen('signup').mgr1.scroll_y=1
+                            #app.root.current= 'signup' #if self.text == get_display(arabic_reshaper.reshape('ثبت نام')) else 'signup'
 
                     MDFillRoundFlatIconButton:
                         text: get_display(arabic_reshaper.reshape('مشاهده سفارشات')) 
                         font_name: 'font/IRANSansXFaNum-Medium.ttf'
-                        md_bg_color: "red"
-                        pos_hint: {'center_x': -5} if root.text1 == '-' else {'center_x': .5}
+                        pos_hint: {'center_x': -5} if root.text1 == 'Not registered' else {'center_x': .5}
                         icon: 'eye-outline'  
+                        theme_text_color: "Custom"    
+                        md_bg_color: 1, 0, 0, .75          
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
                         on_press:
-                            app.root.change_screen('screen_grouping.kv', 'Factory.Grouping()', 'grouping')
+                            app.root.show_popup('')
+                            #app.root.change_screen('screen_grouping.kv', 'Factory.Grouping()', 'grouping')
                             #app.root.change_screen('screen_order.kv', 'Factory.Det_order()', 'det_order')
                             app.root.change_screen('screen_order_det_order.kv', 'Factory.Det_order()', 'det_order')
-                            app.root.see_orders()
+                        on_release:
+                            #app.root.see_orders()
+                            Clock.schedule_once(partial(app.root.see_orders), 0.75)
 
                     MDFillRoundFlatIconButton:
                         text: get_display(arabic_reshaper.reshape('خروج از حساب کاربری')) 
                         font_name: 'font/IRANSansXFaNum-Medium.ttf'
-                        md_bg_color: "red"
-                        pos_hint: {'center_x': -5} if root.text1 == '-' else {'center_x': .5}
+                        pos_hint: {'center_x': -5} if root.text1 == 'Not registered' else {'center_x': .5}
                         icon: 'exit-to-app'  
+                        theme_text_color: "Custom"    
+                        md_bg_color: 1, 0, 0, .75         
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
+
                         on_press:
                             app.root.delete_Personal_Information()
         BottomNavigation:

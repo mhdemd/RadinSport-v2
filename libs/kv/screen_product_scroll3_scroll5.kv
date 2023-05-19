@@ -5,32 +5,43 @@
     effect_cls: 'ScrollEffect'
     scroll_type: ['content']
     scroll_distance: dp(10)
-    size_hint_y: None
+    height: dp(150)
     do_scroll_y: False
     scroll_x: 1
     bar_width: 0
+            
     GridLayout:
-        id: _GridLayout
+        #id: _GridLayout
         canvas.before:
             Color:
                 rgba: 128/255, 128/255, 128/255, .1
             RoundedRectangle:
                 size: self.size
                 radius: [(0, 0), (0, 0), (0, 0), (0, 0)]
-        cols: 8
+        cols: 5
         padding: dp(4), dp(0), dp(4), dp(0)
         spacing: dp(4)
         size_hint: None, 1
         width: self.minimum_width  
+
+        Button_scroll5:
+            source: root.image_source[0]
+        Button_scroll5:
+            source: root.image_source[1]
+        Button_scroll5:
+            source: root.image_source[2]
+        Button_scroll5:
+            source: root.image_source[3]
+        Button_scroll5:
+            source: root.image_source[4]
+
+
 <Button_scroll5>:
-    image_source: ''
-    source: root.image_source
     size_hint: None, None 
     size: (dp(150),dp(150))
     allow_stretch: True
     on_press:   
         app.root.show_popup('')
-        #app.root.get_screen('product').mgr1.scroll_y=1 
     on_release:
-        Clock.schedule_once(partial(app.root.open_product_screen, self.image_source), 0.75)
+        Clock.schedule_once(partial(app.root.open_product_screen, self.source), 0.75)
 

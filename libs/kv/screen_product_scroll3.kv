@@ -1,4 +1,4 @@
-#:import MDTextFieldPersian persianuix.MDTextFieldPersian
+#:import MDTextFieldPersian PYs.persianuix.MDTextFieldPersian
 #:import arabic_reshaper arabic_reshaper
 #:import get_display bidi.algorithm.get_display
 
@@ -17,7 +17,6 @@
     color: ''
     slide_num: ''
     slide_len: ''
-
     BoxLayout:
         orientation: 'vertical'
         size_hint_y: None
@@ -55,17 +54,6 @@
             height: dp(32)        
             text: (get_display(get_display(arabic_reshaper.reshape(root.parent.parent.title))))
             font_name: 'font/IRANSansXFaNum-Medium.ttf' 
-
-
-
-
-
-
-
-
-
-
-
 
         Widget:
             size_hint_y: None
@@ -204,6 +192,7 @@
             size_hint_y: None
             height: dp(150)
             font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            font_size: '14sp'
             text: 
                 '%s\n\n[color=808080]%s[/color]\n\
                 [color=808080]%s[/color]\n\
@@ -228,15 +217,12 @@
             pos_hint: {'right': 0.95}
             halign: 'right'
             size_hint_y: None
-            height: dp(130)
+            height: self.texture_size[1]
             font_name: 'font/IRANSansXFaNum-Medium.ttf'
+            font_size: '14sp'
             text: 
-                '%s\n\n[color=808080]%s[/color]\n\
-                [color=808080]%s[/color]\n'%(\
-                get_display(arabic_reshaper.reshape('جزئیات:')),\
-                get_display(arabic_reshaper.reshape('- %s'%(root.detail_1))),\
-                get_display(arabic_reshaper.reshape('- %s'%(root.detail_2)))\
-                )
+                '%s\n\n[color=808080]%s[/color]\n\n\
+                [color=808080]%s[/color]\n'%(get_display(arabic_reshaper.reshape('جزئیات:')), root.detail_1, root.detail_2)
         Widget:
             size_hint_y: None
             height: dp(7)

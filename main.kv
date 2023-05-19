@@ -1,9 +1,8 @@
 #:import SwapTransition kivy.uix.screenmanager.SwapTransition
 #:import NoTransition kivy.uix.screenmanager.NoTransition
-#:import MDTextFieldPersian persianuix.MDTextFieldPersian
+#:import MDTextFieldPersian PYs.persianuix.MDTextFieldPersian
 #:import arabic_reshaper arabic_reshaper
 #:import get_display bidi.algorithm.get_display
-#:import MDTextFieldPersian persianuix.MDTextFieldPersian
 #:import Clock kivy.clock.Clock
 #:import partial functools.partial 
 
@@ -63,7 +62,6 @@
             id: _bot_nav
             size_hint_y: None
             height: (140 / 1080) * self.width 
-
 
 ########## Widgets
 ### Main
@@ -534,31 +532,29 @@
     ToggleButton: 
         group: "x"
         on_press: 
-            app.root.change_screen('screen_account.kv', 'Factory.Account()', 'account')
-            app.root.active_page= 'account'            
-            root.nav_bot_source= 'img/App/nav1.jpg'
+            app.root.check_for_login()
         on_release:
             app.root.get_screen('account').mgr1.canvas.after.get_group('a')[0].source='img/App/nav1.jpg'
-            app.root.open_account_xls()
-            app.root.current='account'
+            app.root.current= 'account' if app.root.get_screen('account').text1 != 'Not registered' else 'login'
     ToggleButton: 
         group: "x"
         on_press: 
             app.root.change_screen('screen_off.kv', 'Factory.Off()', 'off')
             app.root.show_popup('')
             app.root.active_page= 'off'
-            app.root.current='off'
-            root.nav_bot_source= 'img/App/nav2.jpg'
+            #root.nav_bot_source= 'img/App/nav2.jpg'
         on_release:
             app.root.get_screen('off').mgr1.canvas.after.get_group('a')[0].source='img/App/nav2.jpg'
             Clock.schedule_once(partial(app.root.open_category, 'H'), 0.75)
+            app.root.current='off'
+
     ToggleButton: 
         group: "x"
         on_press: 
             app.root.change_screen('screen_order.kv', 'Factory.Order()', 'order')
             app.root.active_page= 'order'
             app.root.current='order' 
-            root.nav_bot_source= 'img/App/nav3.jpg'
+            #root.nav_bot_source= 'img/App/nav3.jpg'
         on_release:
             app.root.get_screen('order').mgr1.canvas.after.get_group('a')[0].source='img/App/nav3.jpg'
     ToggleButton: 
@@ -567,18 +563,17 @@
             app.root.change_screen('screen_grouping.kv', 'Factory.Grouping()', 'grouping')
             app.root.show_popup('')
             app.root.active_page= 'grouping'
-            app.root.current='grouping'
-            root.nav_bot_source= 'img/App/nav4.jpg'
-            #app.root.open_grouping()
+            #root.nav_bot_source= 'img/App/nav4.jpg'
         on_release:
             app.root.get_screen('grouping').mgr1.canvas.after.get_group('a')[0].source='img/App/nav4.jpg'
             Clock.schedule_once(partial(app.root.open_grouping), 0.75)
+            app.root.current='grouping'
 
     ToggleButton: 
         group: "x"
         on_press: 
             app.root.active_page= 'main'
             app.root.current='main'
-            root.nav_bot_source= 'img/App/nav5.jpg'
+            #root.nav_bot_source= 'img/App/nav5.jpg'
         on_release:
             app.root.get_screen('main').mgr1.canvas.after.get_group('a')[0].source='img/App/nav5.jpg'

@@ -1,7 +1,9 @@
-#:import MDTextFieldPersianrect persianuixrect.MDTextFieldPersianrect
+#:import MDTextFieldPersianrect PYs.persianuixrect.MDTextFieldPersianrect
 <Sign_up@Screen>:
     name: "signup"
     mgr1: _sc
+    FitImage:
+        source: "img/bg1.jpg"
     ScrollView:
         id: _sc
         effect_cls: 'ScrollEffect'
@@ -11,7 +13,6 @@
             size_hint_y: None
             height: self.minimum_height  
             padding:mm(2), 0, mm(2), mm(20)
-            spacing: 0
             MDLabel:
                 halign: 'center'
                 font_size: sp(14)
@@ -49,7 +50,7 @@
                     font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     size_hint: 1, None
                     height: mm(6)   
-                    hint_text:  get_display(arabic_reshaper.reshape('نام خانوادگی:(الزامی*)'))                   
+                    hint_text:  get_display(arabic_reshaper.reshape('نام خانوادگی: '))                   
 
                 MDTextFieldPersianrect:
                     id: _name
@@ -59,7 +60,7 @@
                     font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     size_hint: 1, None
                     height: mm(6)
-                    hint_text:  get_display(arabic_reshaper.reshape('نام:(الزامی*)'))
+                    hint_text:  get_display(arabic_reshaper.reshape('نام: '))
 
                 MDTextFieldPersianrect:
                     id: _mobile_number
@@ -69,7 +70,7 @@
                     font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     size_hint: 1, None
                     height: mm(6)
-                    hint_text:  get_display(arabic_reshaper.reshape('شماره تلفن همراه:(الزامی*)'))
+                    hint_text:  get_display(arabic_reshaper.reshape('شماره تلفن همراه: '))
                 MDTextFieldPersianrect:
                     id: _home_number
                     base_direction: 'rtl'
@@ -86,7 +87,7 @@
                 text: get_display(arabic_reshaper.reshape('آدرس:'))
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 size_hint_y: None
-                height: mm(8)
+                height: mm(6)
             BoxLayout:
                 orientation:'vertical'
                 size_hint_y: None
@@ -105,7 +106,7 @@
                         size_hint: 1, None
                         height: mm(6)
                         #multiline: True
-                        hint_text:  get_display(arabic_reshaper.reshape('شهر:(الزامی*)'))
+                        hint_text:  get_display(arabic_reshaper.reshape('شهر: '))
 
                     MDTextFieldPersianrect:
                         id: _address1
@@ -116,7 +117,7 @@
                         size_hint: 1, None
                         height: mm(6)
                         #multiline: True
-                        hint_text:  get_display(arabic_reshaper.reshape('استان:(الزامی*)'))
+                        hint_text:  get_display(arabic_reshaper.reshape('استان: '))
 
                 MDTextFieldPersianrect:
                     id: _address2
@@ -126,7 +127,7 @@
                     font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     size_hint: 1, None
                     height: mm(6)
-                    hint_text:  get_display(arabic_reshaper.reshape('محله/میدان/خیابان اصلی:(الزامی*)'))
+                    hint_text:  get_display(arabic_reshaper.reshape('محله/میدان/خیابان اصلی: '))
                 MDTextFieldPersianrect:
                     id: _address3
                     base_direction: 'rtl'
@@ -135,7 +136,7 @@
                     font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     size_hint: 1, None
                     height: mm(6)
-                    hint_text:  get_display(arabic_reshaper.reshape('کوچه فرعی/پلاک/واحد :(الزامی*)'))
+                    hint_text:  get_display(arabic_reshaper.reshape('کوچه فرعی/پلاک/واحد : '))
                 MDTextFieldPersianrect:
                     id: _postal_code
                     base_direction: 'rtl'
@@ -144,7 +145,7 @@
                     font_name: 'font/IRANSansXFaNum-Medium.ttf'
                     size_hint: 1, None
                     height: mm(6)
-                    hint_text:  get_display(arabic_reshaper.reshape('کد پستی:(الزامی*)'))
+                    hint_text:  get_display(arabic_reshaper.reshape('کد پستی: '))
             Label:
                 size_hint_y: None
                 height: dp(15)
@@ -156,17 +157,94 @@
                 size_hint_y: None
                 height: mm(6)
 
-            MDTextFieldPersianrect:
+            MDTextFieldRect:
                 id: _email
-                base_direction: 'rtl'
+                #base_direction: 'rtl'
                 multiline: False
                 font_size: sp(12)
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 size_hint: 1, None
                 height: mm(6)
+                hint_text:  'Email'
+                disabled: True if app.root.get_screen('account').text1 != 'Not registered' else False
+            MDLabel:
+                id: _err_email
+                halign: 'right'
+                font_size: sp(8)
+                text: ''
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                size_hint_y: None
+                height: mm(4)
+                theme_text_color: "Custom"
+                text_color: 139/255, 0, 0, 1
+
+            MDLabel:
+                id: _password_label
+                markup: True
+                halign: 'right'
+                font_size: sp(12)
+                text: get_display(arabic_reshaper.reshape(f"[size={'10sp'}]" + ':(شامل 8 کاراکتر انگلیسی)' + '[/size]' + 'رمز عبور '))
+              
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                size_hint_y: None
+                height: mm(6)
+                pos_hint: {'right': -1} if app.root.get_screen('account').text1 != 'Not registered' else {'center_x': .5}
+            MDTextFieldRect:
+                id: _password
+                #base_direction: 'rtl'
+                multiline: False
+                font_size: sp(12)
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                size_hint: 1, None
+                height: mm(6)
+                hint_text:  'Password'
+                pos_hint: {'right': -1} if app.root.get_screen('account').text1 != 'Not registered' else {'center_x': .5}
+            MDLabel:
+                id: _err_pass
+                halign: 'right'
+                font_size: sp(8)
+                text: ''
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                size_hint_y: None
+                height: mm(4)
+                theme_text_color: "Custom"
+                text_color: 139/255, 0, 0, 1
+             
+            MDLabel:
+                id: _re_password_label
+                halign: 'right'
+                font_size: sp(12)
+                text: get_display(arabic_reshaper.reshape('تکرار رمز عبور:'))
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                size_hint_y: None
+                height: mm(6)
+                pos_hint: {'right': -1} if app.root.get_screen('account').text1 != 'Not registered' else {'center_x': .5}
+            MDTextFieldRect:
+                id: _re_password
+                #base_direction: 'rtl'
+                multiline: False
+                font_size: sp(12)
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                size_hint: 1, None
+                height: mm(6)
+                hint_text:  'Repeat password'
+                pos_hint: {'right': -1} if app.root.get_screen('account').text1 != 'Not registered' else {'center_x': .5}
+
+            MDLabel:
+                id: _err_re_pass
+                halign: 'right'
+                font_size: sp(8)
+                text: ''
+                font_name: 'font/IRANSansXFaNum-Medium.ttf'
+                size_hint_y: None
+                height: mm(4)
+                theme_text_color: "Custom"
+                text_color: 139/255, 0, 0, 1
+
             Label:
                 size_hint_y: None
-                height: dp(15)
+                height: dp(5)
+
             MDLabel:
                 halign: 'right'
                 font_size: sp(12)
@@ -176,13 +254,14 @@
             MDFillRoundFlatButton:
                 text: get_display(arabic_reshaper.reshape('پذیرش شرایط و ثبت نام')) 
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
-                md_bg_color: "red"
+                md_bg_color: 1, 0, 0, .75           
                 pos_hint: {'center_x': .5}
                 on_press:
                     app.root.sign_up()
-                    app.root.open_account_xls()
+                    
             MDFlatButton:
-                text: get_display(arabic_reshaper.reshape('شرایط حریم خصوصی')) 
+                text: '[u]%s[/u]%s'%(get_display(arabic_reshaper.reshape(' شرایط حریم خصوصی')), get_display(arabic_reshaper.reshape('مشاهده')) )
+                markup: True
                 font_size: sp(10)
                 font_name: 'font/IRANSansXFaNum-Medium.ttf'
                 pos_hint: {'center_x': .5}
@@ -191,6 +270,6 @@
                     app.root.current= 'privacy'
             Label:
                 size_hint_y: None
-                height: mm(40)
+                height: mm(5)
 
 
