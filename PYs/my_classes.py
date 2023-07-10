@@ -172,7 +172,7 @@ class RV_Order(RecycleView):
         if len(a) == 0:
             items_in_order_screen.append(
                 {"DKP": '%s'%(self.dkp),
-                'image': 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(self.dkp, self.dkp), 
+                'image': 'https://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(self.dkp, self.dkp), 
                 'title': self.title, 
                 'price_off': str(self.price_off), 
                 'price': str(self.price), 
@@ -195,7 +195,7 @@ class RV_Order(RecycleView):
                 #'order_num': Orderـnumber, 
                 #'code': str(p_code),
                 #'num_order': 1,
-                #'image': 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(self.dkp, self.dkp), 
+                #'image': 'https://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(self.dkp, self.dkp), 
                 #'title': self.title,
                 #'total': int(self.price.replace(",","")) if  int(self.price_off.replace(",","")) == 0 else int(self.price_off.replace(",","")),  
                 #'color_en': self.icon_color, 
@@ -204,7 +204,7 @@ class RV_Order(RecycleView):
                 #'total_price': 0
                 #}
             # Update stock on database
-            url5 = 'http://mahdiemadi.ir/add_to_cart' 
+            url5 = 'https://mahdiemadi.ir/add_to_cart' 
             response = requests.post(url5, json=my_dict)
 
             self.total = 0
@@ -221,7 +221,7 @@ class RV_Order(RecycleView):
         a = list(filter(lambda items_in_order_screen: items_in_order_screen['p_code'] == arg[2], items_in_order_screen)) if arg[1] != '*' else 0
         if arg[1] == '+':
             # Grt new stock from database
-            url = 'http://mahdiemadi.ir/get_new_stock_to_add' 
+            url = 'https://mahdiemadi.ir/get_new_stock_to_add' 
             params = {
                 'variable': arg[2]
             }
@@ -241,7 +241,7 @@ class RV_Order(RecycleView):
             a[0]['num_order'] = str(b)
 
             # Update stock on database
-            url = 'http://mahdiemadi.ir/orders_balance_add' 
+            url = 'https://mahdiemadi.ir/orders_balance_add' 
             params = {
                 'variable1': arg[2],
             }
@@ -260,7 +260,7 @@ class RV_Order(RecycleView):
                 del items_in_order_screen[index]
 
             # Update stock on database
-            url = 'http://mahdiemadi.ir/orders_balance_remove' 
+            url = 'https://mahdiemadi.ir/orders_balance_remove' 
             params = {
                 'variable1': arg[2],
             }
@@ -295,7 +295,7 @@ class RV_Order(RecycleView):
             # Checking if the host has stock or not
             for i in range(len(items_in_order_screen)):
                 # Grt new stock from database
-                url = 'http://mahdiemadi.ir/check_registration_1' 
+                url = 'https://mahdiemadi.ir/check_registration_1' 
                 params = {
                     'variable': items_in_order_screen[i]['p_code']
                 }
@@ -341,7 +341,7 @@ class RV_Order(RecycleView):
                         }
 
                     # Update stock on database
-                    url = 'http://mahdiemadi.ir/check_registration_2' 
+                    url = 'https://mahdiemadi.ir/check_registration_2' 
                     response = requests.post(url, json=my_dict)
                                                         
             else:
@@ -517,7 +517,7 @@ class MainScreen(ScreenManager):
                 DKP = int(DKP)
 
         # Get data from APIs 
-        url3 = 'http://mahdiemadi.ir/api_3' 
+        url3 = 'https://mahdiemadi.ir/api_3' 
 
         # Define the request parameters
         params = {'variable': DKP}
@@ -558,7 +558,7 @@ class MainScreen(ScreenManager):
             # Calculate the number of photos
             try:
                 # Get data from APIs 
-                url = 'http://mahdiemadi.ir/count_files' 
+                url = 'https://mahdiemadi.ir/count_files' 
 
                 # Define the request parameters
                 params = {'variable': DKP}
@@ -588,7 +588,7 @@ class MainScreen(ScreenManager):
             self.get_screen('product').mgr1.slide_num = '1'
             self.get_screen('product').mgr1.ids._carousel_.temp = 1
             for i in range(No_of_files):
-                self.get_screen('product').mgr1.ids._carousel_.add_widget(AsyncImage(source= 'http://mahdiemadi.ir/Products/%s/%s-%s.jpg'%(DKP, DKP, i), size_hint= (1, 1), allow_stretch= True ))
+                self.get_screen('product').mgr1.ids._carousel_.add_widget(AsyncImage(source= 'https://mahdiemadi.ir/Products/%s/%s-%s.jpg'%(DKP, DKP, i), size_hint= (1, 1), allow_stretch= True ))
             self.get_screen('product').mgr1.ids._carousel_.load_slide((self.get_screen('product').mgr1.ids._carousel_.slides)[0])
             # Creating a list of colors in Farsi and English
             list_colors = [row[10] for row in result]
@@ -627,7 +627,7 @@ class MainScreen(ScreenManager):
             cat = result[0][2]  
 
             # Get data from APIs 
-            url3 = 'http://mahdiemadi.ir/api_4' 
+            url3 = 'https://mahdiemadi.ir/api_4' 
 
             # Define the request parameters
             params = {'variable1': DKP, 'variable2': cat }
@@ -651,7 +651,7 @@ class MainScreen(ScreenManager):
 
             # Add Image to similar products
             for i in range(len(list_cat)):
-                self.get_screen('product').mgr1.mgr2.image_source[i] = 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(list_cat[i], list_cat[i])
+                self.get_screen('product').mgr1.mgr2.image_source[i] = 'https://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(list_cat[i], list_cat[i])
 
             # Set current screen
             self.current= "product"
@@ -784,7 +784,7 @@ class MainScreen(ScreenManager):
                 self.get_screen('off').title= get_display(reshape(self.category_dict[cat]))
 
             # Get data from APIs 
-            url = 'http://mahdiemadi.ir/open_category' 
+            url = 'https://mahdiemadi.ir/open_category' 
 
             # Define the request parameters
             params = {'variable': cat}
@@ -815,7 +815,7 @@ class MainScreen(ScreenManager):
 
                 self.items_in_category_screen.append(
                     {'title1': title,
-                    'source1': 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(result[i][0], result[i][0]),
+                    'source1': 'https://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(result[i][0], result[i][0]),
                     'detail_3_1': get_display(reshape(result[i][2])),
                         'detail_4_1': get_display(reshape(result[i][3])),
                         'price1': price,
@@ -842,7 +842,7 @@ class MainScreen(ScreenManager):
         word = word_encoded#.decode('utf-8')# to string
 
         # Get data from APIs 
-        url = 'http://mahdiemadi.ir/Search_in_search_bar' 
+        url = 'https://mahdiemadi.ir/Search_in_search_bar' 
 
         # Define the request parameters
         params = {'variable': word}
@@ -885,7 +885,7 @@ class MainScreen(ScreenManager):
             list_ = list(self.category_dict.keys())
             for i in range(len(list_)):
                 # Get data from APIs 
-                url = 'http://mahdiemadi.ir/open_grouping' 
+                url = 'https://mahdiemadi.ir/open_grouping' 
 
                 # Define the request parameters
                 params = {'variable': list_[i]}
@@ -914,7 +914,7 @@ class MainScreen(ScreenManager):
 
                 for j in range(len(DKP_list) if len(DKP_list) < 5 else 5):
                     cat_.ids._grid.add_widget(AsyncImage(
-                    source= 'http://mahdiemadi.ir/Products/%s/%s-%s-v_200-h_200-q_90.jpg'%(str(int(DKP_list[j][0])), str(int(DKP_list[j][0])), 0),
+                    source= 'https://mahdiemadi.ir/Products/%s/%s-%s-v_200-h_200-q_90.jpg'%(str(int(DKP_list[j][0])), str(int(DKP_list[j][0])), 0),
                     size_hint= (None, None), width= '15mm', height= '15mm', allow_stretch= True
                         ))
 
@@ -1025,7 +1025,7 @@ class MainScreen(ScreenManager):
         except:
 
             # Get data from APIs 
-            url = 'http://mahdiemadi.ir/sign_up_1' 
+            url = 'https://mahdiemadi.ir/sign_up_1' 
 
             try:
                 response3 = requests.get(url, timeout=2)            
@@ -1066,7 +1066,7 @@ class MainScreen(ScreenManager):
         }
         
         # Add data to customers database
-        url = 'http://mahdiemadi.ir/sign_up_2' 
+        url = 'https://mahdiemadi.ir/sign_up_2' 
         response = requests.post(url, json=my_dict)
         
         # Parse the response as JSON
@@ -1125,7 +1125,7 @@ class MainScreen(ScreenManager):
         customer_id = f.read().split('-')[0]        
 
         # Get data from APIs 
-        url = 'http://mahdiemadi.ir/load_account_data' 
+        url = 'https://mahdiemadi.ir/load_account_data' 
 
         # Define the request parameters
         params = {'variable': customer_id}
@@ -1203,7 +1203,7 @@ class MainScreen(ScreenManager):
         self.customer_id = f.read().split('-')[0]        
 
         # Get data from APIs 
-        url = 'http://mahdiemadi.ir/see_orders' 
+        url = 'https://mahdiemadi.ir/see_orders' 
 
         # Define the request parameters
         params = {'variable': self.customer_id}
@@ -1275,7 +1275,7 @@ class MainScreen(ScreenManager):
         order_number = arg[0].split(':')[0].strip()
 
         # Get data from APIs 
-        url = 'http://mahdiemadi.ir/see_order_detail' 
+        url = 'https://mahdiemadi.ir/see_order_detail' 
 
         # Define the request parameters
         params = {'variable1': order_number, 'variable2': self.customer_id}
@@ -1385,7 +1385,7 @@ class MainScreen(ScreenManager):
 
 
         # Get data from APIs
-        url = 'http://mahdiemadi.ir/login_check'
+        url = 'https://mahdiemadi.ir/login_check'
 
         # Define the request parameters
         params = {'variable1': email, 'variable2': password}

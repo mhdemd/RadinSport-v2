@@ -31,6 +31,9 @@ Window.softinput_mode = "below_target"
 Builder.load_file('main.kv')
 
 class DigiApp(MDApp):
+    #result1 = None
+    #result2 = None
+
 
     def build(self):
         Loader.loading_image = 'img/loading1.zip'
@@ -55,18 +58,61 @@ class DigiApp(MDApp):
 
     def heavy_processing(self, *args):
         # Get data from APIs 
-        url1 = 'http://mahdiemadi.ir/api_1' 
-        url2 = 'http://mahdiemadi.ir/api_2' 
-        
+        url1 = 'https://mahdiemadi.ir/api_1' 
+        url2 = 'https://mahdiemadi.ir/api_2' 
+
+        from requests.exceptions import JSONDecodeError
+
         try:
-            response1 = requests.get(url1, timeout=2)            
-            response2 = requests.get(url2, timeout=2)
-        except:
-            self.Err_connection()
+            response1 = requests.get(url1, timeout=2)  
+            response1.raise_for_status()  # Check for any HTTP errors
+
+
+            try:
+                self.result1 = response1.json()
+                # Process the JSON data here
+            except JSONDecodeError as e:
+                print(f"Error decoding JSON: {e}")
+                print(f"Response content: {response1.text}")
+                # Handle the error or take appropriate action
+
+        except requests.exceptions.RequestException as e:
+            print(f"Error making the request: {e}")
+            # Handle the error or take appropriate action
             return
 
-        self.result1 = response1.json()
-        self.result2 = response2.json()
+        try:
+
+            response2 = requests.get(url2, timeout=2)  
+            response2.raise_for_status()  # Check for any HTTP errors
+
+            try:
+                self.result2 = response2.json()
+                # Process the JSON data here
+            except JSONDecodeError as e:
+                print(f"Error decoding JSON: {e}")
+                print(f"Response content: {response2.text}")
+                # Handle the error or take appropriate action
+
+        except requests.exceptions.RequestException as e:
+            print(f"Error making the request: {e}")
+            # Handle the error or take appropriate action
+            return
+#################################################################################
+
+        #try:
+        #    response1 = requests.get(url1, timeout=2)            
+        #    response2 = requests.get(url2, timeout=2)
+        #except:
+        #    self.Err_connection()
+        #    return
+#
+        #self.result1 = response1.json()
+        #self.result2 = response2.json()
+#
+#######################################################################################
+
+
 
         Clock.schedule_once(self.create_first_page, 0.05)
         
@@ -107,7 +153,7 @@ class DigiApp(MDApp):
 
             self.root.get_screen('main').mgr3.mgr2.text_title= text_title
             # Add image from host  
-            self.root.get_screen('main').mgr3.mgr2.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(dkp)), str(int(dkp)))
+            self.root.get_screen('main').mgr3.mgr2.source_image= 'https://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(dkp)), str(int(dkp)))
             self.root.get_screen('main').mgr3.mgr2.detail_1= list_detail_3[i]
             self.root.get_screen('main').mgr3.mgr2.detail_2= list_detail_4[i]
             self.root.get_screen('main').mgr3.mgr2.off= list_off[i]
@@ -135,7 +181,7 @@ class DigiApp(MDApp):
                 text_title = '...' + text_title[-17:] 
             self.root.get_screen('main').mgr3.mgr3.text_title= text_title
             # Add image from host
-            self.root.get_screen('main').mgr3.mgr3.source_image= 'http://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(dkp_Gl)), str(int(dkp_Gl)))
+            self.root.get_screen('main').mgr3.mgr3.source_image= 'https://mahdiemadi.ir/Products/%s/%s-0-v_200-h_200-q_90.jpg'%(str(int(dkp_Gl)), str(int(dkp_Gl)))
             self.root.get_screen('main').mgr3.mgr3.detail_1= list_detail_3_Gl[i]
             self.root.get_screen('main').mgr3.mgr3.detail_2= list_detail_4_Gl[i]
             self.root.get_screen('main').mgr3.mgr3.off= list_off_Gl[i]
