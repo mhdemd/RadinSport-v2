@@ -13,10 +13,9 @@ DigiApp is a mobile application built using the Kivy framework, designed to prov
 - Version checking and update prompt
 - Support for RTL languages (Arabic)
 
-## Screenshots
+### Project Video:
 
-![Screenshot 1](screenshot_1.png)
-![Screenshot 2](screenshot_2.png)
+[![Radin Sport - Android App](https://img.youtube.com/vi/PQA1sskEF60/0.jpg)](https://youtube.com/shorts/PQA1sskEF60?feature=share)
 
 ## Installation
 
