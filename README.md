@@ -4,7 +4,8 @@ This project uses the following technologies:
 
 ![Kivy Logo](https://kivy.org/img/kivy-logo-256.png) Kivy  
 ![MySQL Logo](https://upload.wikimedia.org/wikipedia/commons/0/01/MySQL_Logo_2013.svg) MySQL  
-![Flask Logo](https://upload.wikimedia.org/wikipedia/commons/8/84/Flask_logo.svg) Flask
+![Flask Logo](./Logo.wine.png) Flask  
+
  
 # DigiApp - A Kivy-based Mobile Application
 
