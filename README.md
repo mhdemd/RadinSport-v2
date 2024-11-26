@@ -1,14 +1,11 @@
 ## Technologies Used
 
 This project uses the following technologies:
+<img src="./Python-programming-logo-on-transparent-background-PNG.png" width="100"/>
+<img src="./Android-icon-on-transparent--background-PNG.png" width="100"/>
+<img src="./MySQL-Logo.wine.png" width="100"/>
+<img src="./Flask_(web_framework)-Logo.wine.png" width="100"/>
 
-![Kivy Logo](https://kivy.org/img/kivy-logo-256.png) Kivy  
-![MySQL Logo](https://upload.wikimedia.org/wikipedia/commons/0/01/MySQL_Logo_2013.svg) MySQL  
-<img src="./Flask_(web_framework)-Logo.wine.png" width="200"/>
-
-
-
- 
 # DigiApp - A Kivy-based Mobile Application
 
 ## Overview
