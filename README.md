@@ -15,8 +15,8 @@ DigiApp is a mobile application built using the Kivy framework, designed to prov
 
 ## Screenshots
 
-![Screenshot 1](path_to_screenshot_1.png)
-![Screenshot 2](path_to_screenshot_2.png)
+![Screenshot 1](screenshot_1.png)
+![Screenshot 2](screenshot_2.png)
 
 ## Installation
 
@@ -118,5 +118,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **Arabic Reshaper & Bidi**: For handling RTL text rendering.
 
 ## Author
-[Your Name] – Developer  
-Email: [your.email@example.com]
+[Mehdi Emadi] – Developer  
+Email: [mahdi.emadi@yahoo.com]
