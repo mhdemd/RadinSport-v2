@@ -1,6 +1,6 @@
 ## Technologies Used
 
-This project uses the following technologies:
+
 <img src="./Python-programming-logo-on-transparent-background-PNG.png" width="100"/>
 <img src="./Android-icon-on-transparent--background-PNG.png" width="100"/>
 <img src="./MySQL-Logo.wine.png" width="100"/>
