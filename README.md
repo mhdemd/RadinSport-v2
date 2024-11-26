@@ -1,10 +1,10 @@
 ## Technologies Used
 
 <p align="center">
-  <img src="./Python-programming-logo-on-transparent-background-PNG.png" width="100" />
-  <img src="./Android-icon-on-transparent--background-PNG.png" width="100" />
-  <img src="./MySQL-Logo.wine.png" width="100" />
-  <img src="./Flask_(web_framework)-Logo.wine.png" width="100" />
+  <img src="./Python-programming-logo-on-transparent-background-PNG.png" width="80" />
+  <img src="./Android-icon-on-transparent--background-PNG.png" width="80" />
+  <img src="./MySQL-Logo.wine.png" width="80" />
+  <img src="./Flask_(web_framework)-Logo.wine.png" width="80" />
 </p>
 
 
